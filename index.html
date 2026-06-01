@@ -96,18 +96,24 @@
     .drink{width:48.5%;background:var(--tile);border-radius:20px;padding:18px;text-align:left;margin-bottom:11px;box-shadow:0 2px 10px rgba(80,90,160,.05);transition:transform .05s}
     .drink:active{transform:scale(.97)}
     .drink.on{outline:2px solid #2563eb;outline-offset:-2px}
-    .drink .em{font-size:30px}
+    .drink .em{width:34px;height:34px;border-radius:10px}
     .drink .dn{font-weight:700;margin-top:10px;font-size:15px;color:#16243f}
 
     /* my cup card */
     .mycup{background:#fff;border-radius:22px;padding:18px;display:flex;gap:14px;align-items:center;margin-bottom:8px;box-shadow:0 6px 18px rgba(80,90,160,.08)}
-    .mycup .mc{width:58px;height:58px;border-radius:16px;background:linear-gradient(135deg,#e3eefe,#eef5ff);display:flex;align-items:center;justify-content:center;font-size:30px}
+    .mycup .mc{width:54px;height:54px;border-radius:14px;flex:0 0 auto}
     .mycup .mlbl{font-size:12px;color:#2563eb;font-weight:700}
     .mycup .mname{font-size:20px;font-weight:800;margin-top:3px;letter-spacing:-0.01em}
     .mycup .mstat{font-size:13px;color:var(--sub);margin-top:6px}
     .chg{font-size:13px;color:#2563eb;font-weight:600;margin-top:8px;display:inline-block}
 
-    .back{display:flex;align-items:center;gap:4px;font-size:15px;color:var(--sub);padding:8px 0;margin-bottom:8px;font-weight:600}
+    .back{display:inline-flex;align-items:center;gap:6px;font-size:16px;color:#2563eb;padding:12px 18px 12px 12px;margin-bottom:10px;font-weight:700;background:#fff;border-radius:14px;box-shadow:0 2px 8px rgba(80,90,160,.06)}
+    .back:active{background:#eef4fc}
+    /* color square used in place of drink emoji */
+    .csq{display:inline-block;border-radius:7px;vertical-align:middle}
+    .csq.sm{width:18px;height:18px;border-radius:5px}
+    .csq.md{width:26px;height:26px}
+    .csq.lg{width:46px;height:46px;border-radius:12px}
 
     /* order rows */
     .orow{background:#fff;border-radius:16px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;box-shadow:0 2px 10px rgba(80,90,160,.05)}
@@ -131,6 +137,15 @@
     .navbtns button{width:48.5%;background:var(--tile);border-radius:20px;padding:18px 14px;font-weight:700;font-size:14px;display:flex;flex-direction:column;align-items:center;gap:8px;margin-bottom:11px;color:#16243f;box-shadow:0 2px 10px rgba(80,90,160,.05)}
     .navbtns button .ic{width:40px;height:40px;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:20px}
     .navbtns button:active{transform:scale(.97)}
+    /* heading row with inline refresh */
+    .sechead{display:flex;align-items:center;justify-content:space-between;margin:26px 4px 12px}
+    .sechead h2{font-size:18px;font-weight:800}
+    .refreshbtn{background:#fff;border-radius:99px;padding:8px 14px;font-size:13px;font-weight:700;color:#2563eb;box-shadow:0 2px 8px rgba(80,90,160,.08)}
+    .refreshbtn:active{background:#eef4fc}
+    /* text-only management menu (compact) */
+    .navtext{display:flex;flex-wrap:wrap;gap:8px}
+    .navtext button{flex:0 0 calc(50% - 4px);background:var(--tile);border-radius:14px;padding:14px;font-weight:700;font-size:15px;color:#16243f;box-shadow:0 2px 8px rgba(80,90,160,.05)}
+    .navtext button:active{background:#dde8f7}
 
     .batch{background:#fff;border-radius:22px;padding:20px;margin-bottom:16px;box-shadow:0 6px 18px rgba(80,90,160,.07)}
     .batch .lbl{font-size:12px;letter-spacing:.02em;color:var(--sub);margin-bottom:14px;font-weight:700}
@@ -174,11 +189,11 @@
     .editrow .del:active{background:#dc2626}
     .addbtn{width:100%;border:2px dashed #c4d4ef;border-radius:16px;padding:14px;color:var(--sub);font-size:14px;font-weight:600;background:#fff}
     .timefield{background:#fff;border-radius:18px;padding:16px;margin-bottom:11px;box-shadow:0 2px 10px rgba(80,90,160,.05)}
-    .timefield .tl{font-size:13px;color:var(--sub);margin-bottom:10px;font-weight:700}
-    .timefield .tt{display:flex;align-items:center;gap:8px}
-    .timefield .tgrid{display:grid;grid-template-columns:60px 1fr 1fr;align-items:center;row-gap:10px;column-gap:8px}
-    .timefield .tgrid .tl{margin:0;font-size:14px;color:#16243f}
-    .tsel{width:100%;border:1px solid var(--line);border-radius:12px;padding:13px 12px;font-size:15px;background:#f7faff;font-weight:600;color:#16243f;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%237e8aa6' d='M6 8 0 0h12z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:30px}
+    .timefield .tcap{font-size:14px;color:#16243f;font-weight:700;margin-bottom:12px}
+    .trow{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+    .trow:last-child{margin-bottom:0}
+    .trow .trl{flex:0 0 44px;font-size:14px;font-weight:600;color:var(--sub)}
+    .tsel{flex:1 1 0;min-width:0;border:1px solid var(--line);border-radius:12px;padding:13px 30px 13px 14px;font-size:15px;background:#f7faff;font-weight:600;color:#16243f;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%237e8aa6' d='M6 8 0 0h12z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
     .tsel:focus{border-color:#3b82f6;background-color:#fff;outline:none}
 
     .picklbl{font-size:13px;color:var(--sub);margin:16px 4px 9px;font-weight:700}
@@ -222,14 +237,15 @@
     const TEAM_COLORS = ["#2563eb","#0891b2","#7c3aed","#d97706","#db2777","#16a34a","#dc2626","#0d9488","#9333ea","#ca8a04","#e11d48","#4f46e5"];
     const DEFAULT_TEAM_NAMES = ["관리팀","B-후반영","UPW","CHEMICAL","전기","진공","BULK","S-GAS","B-CAD","MEP/OBJ","기타A","기타B"];
     const DEFAULT_TEAMS = DEFAULT_TEAM_NAMES.map((nm,i)=>({ id:"team"+(i+1), name:nm, color:TEAM_COLORS[i%TEAM_COLORS.length] }));
+    const MENU_COLORS = ["#2563eb","#0891b2","#16a34a","#d97706","#db2777","#7c3aed","#0d9488","#dc2626","#ca8a04","#4f46e5","#e11d48","#9333ea"];
     const DEFAULT_MENU = [
-      { id:"hot-americano", name:"HOT 아메리카노", emoji:"☕" },
-      { id:"ice-americano", name:"ICE 아메리카노", emoji:"🧊" },
-      { id:"grapefruit-ade",name:"자몽 에이드",    emoji:"🍊" },
-      { id:"grape-ade",     name:"청포도 에이드",  emoji:"🍇" },
-      { id:"ice-vanilla",   name:"ICE 바닐라라떼", emoji:"🥛" },
-      { id:"ice-latte",     name:"ICE 카페라떼",   emoji:"🍶" },
-      { id:"ice-toffeenut", name:"ICE 토피넛라떼", emoji:"🍯" },
+      { id:"hot-americano", name:"HOT 아메리카노", color:"#2563eb" },
+      { id:"ice-americano", name:"ICE 아메리카노", color:"#0891b2" },
+      { id:"grapefruit-ade",name:"자몽 에이드",    color:"#16a34a" },
+      { id:"grape-ade",     name:"청포도 에이드",  color:"#d97706" },
+      { id:"ice-vanilla",   name:"ICE 바닐라라떼", color:"#db2777" },
+      { id:"ice-latte",     name:"ICE 카페라떼",   color:"#7c3aed" },
+      { id:"ice-toffeenut", name:"ICE 토피넛라떼", color:"#0d9488" },
     ];
     const DEFAULT_HOURS = {
       amStart:"07:00", amEnd:"09:20",
@@ -237,6 +253,8 @@
     };
     // TEAMS is now dynamic: read from state.teams everywhere
     const colorFor = i => TEAM_COLORS[i%TEAM_COLORS.length];
+    const menuColorFor = i => MENU_COLORS[i%MENU_COLORS.length];
+    const mColor = m => (m && m.color) ? m.color : "#94a3b8";
 
     const todayKey = () => { const d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; };
     const toMin = hhmm => { const [h,m]=hhmm.split(":").map(Number); return h*60+m; };
@@ -283,7 +301,7 @@
     // ---------- firestore ----------
     function startSync(){
       onSnapshot(doc(db,"daily",todayKey()),s=>{ const d=s.exists()?s.data():{}; state.orders=d.orders||{}; checkNotif(); render(); },e=>console.error(e));
-      onSnapshot(doc(db,"config","menu"),s=>{ if(s.exists()&&Array.isArray(s.data().items)&&s.data().items.length) state.menu=s.data().items; else state.menu=DEFAULT_MENU; render(); },e=>console.error(e));
+      onSnapshot(doc(db,"config","menu"),s=>{ if(s.exists()&&Array.isArray(s.data().items)&&s.data().items.length){ state.menu=s.data().items.map((m,i)=>({...m, color:m.color||menuColorFor(i)})); } else state.menu=DEFAULT_MENU; render(); },e=>console.error(e));
       onSnapshot(doc(db,"config","teams"),s=>{ if(s.exists()&&Array.isArray(s.data().items)&&s.data().items.length) state.teams=s.data().items; else state.teams=DEFAULT_TEAMS; render(); },e=>console.error(e));
       onSnapshot(doc(db,"config","hours"),s=>{ if(s.exists()) state.hours={...DEFAULT_HOURS,...s.data()}; render(); },e=>console.error(e));
     }
@@ -318,6 +336,7 @@
     // ============ RENDER ============
     function render(){
       if(!state.user) return renderLogin();
+      syncHistory();
       app.innerHTML = renderHeader() + `<div class="wrap" id="wrap"></div>`;
       const w=document.getElementById("wrap");
       if(state.user.team==="barista"){
@@ -335,6 +354,24 @@
       }
       bind();
     }
+
+    // ----- hardware/browser back handling -----
+    // When we move to a sub-view, push one history entry. Android's back button
+    // (and browser back) then fires popstate, which we use to return to home.
+    let _onSub = false;
+    function syncHistory(){
+      const isSub = state.user && state.view !== "home";
+      if(isSub && !_onSub){ history.pushState({sub:true}, ""); _onSub = true; }
+      else if(!isSub){ _onSub = false; }
+    }
+    window.addEventListener("popstate", ()=>{
+      if(state.user && state.view !== "home"){
+        state.view = "home";
+        _onSub = false;
+        render();
+      }
+      // if already on home, let the browser/OS handle it (exits app)
+    });
 
     function renderHeader(){
       const u=state.user, t=TEAMS.find(x=>x.id===u.team), isB=u.team==="barista", nc=myNotifs().length;
@@ -419,7 +456,7 @@
                  : o.status==="confirmed" ? "담당자가 확인했어요 · 제조 중"
                  : "주문 접수됨 · 담당자 확인 대기";
       return `<div class="mycup">
-        <div class="mc">${m?m.emoji:"🥤"}</div>
+        <div class="mc" style="background:${mColor(m)}"></div>
         <div style="flex:1">
           <div class="mlbl">${o.session==="am"?"오전 주문":"오후 주문"}${o.by&&o.by!==o.name?` · ${esc(o.by)}님이 대신 주문`:""}</div>
           <div class="mname">${m?esc(m.name):esc(o.drinkId)}</div>
@@ -436,7 +473,7 @@
         <div style="margin-bottom:16px"><div style="font-size:12px;font-weight:600;color:${t.color};margin-bottom:4px">${t.name} · ${esc(state.user.name)}</div>
         <h1 class="serif" style="font-size:26px">음료를 선택하세요</h1>
         <div class="sub" style="font-size:14px;color:var(--sub);margin-top:4px">하나만 고르면 바로 주문됩니다</div></div>
-        <div class="grid2">${state.menu.map(m=>`<button class="drink" data-pick="${m.id}"><div class="em">${m.emoji}</div><div class="dn">${esc(m.name)}</div></button>`).join("")}</div>`;
+        <div class="grid2">${state.menu.map(m=>`<button class="drink" data-pick="${m.id}"><div class="em" style="background:${mColor(m)}"></div><div class="dn">${esc(m.name)}</div></button>`).join("")}</div>`;
     }
 
     // ---- add person (order for someone else) ----
@@ -455,7 +492,7 @@
           <div class="picklbl">2. 이름 입력</div>
           <input id="addName" value="${esc(state.addName)}" placeholder="동료 이름" autocomplete="off" style="width:100%;border:1px solid var(--line);border-radius:14px;padding:14px 16px;font-size:16px;outline:none"/>
           <div class="picklbl">3. 음료 선택</div>
-          <div class="grid2">${state.menu.map(m=>`<button class="drink" data-addpick="${m.id}"><div class="em">${m.emoji}</div><div class="dn">${esc(m.name)}</div></button>`).join("")}</div>
+          <div class="grid2">${state.menu.map(m=>`<button class="drink" data-addpick="${m.id}"><div class="em" style="background:${mColor(m)}"></div><div class="dn">${esc(m.name)}</div></button>`).join("")}</div>
           <div class="footnote">이름을 입력하고 음료를 누르면 바로 주문됩니다.</div>
         `:``}`;
     }
@@ -493,7 +530,7 @@
         </div>
         ${list.length===0?`<div class="empty">${sess==="am"?"오전":"오후"} 주문이 없어요</div>`:
           list.map(o=>{const m=menuById(o.drinkId);
-            return `<div class="disprow"><span class="who">${esc(o.name)}</span><span class="wd">${m?m.emoji+" "+esc(m.name):esc(o.drinkId)}</span></div>`;}).join("")}`;
+            return `<div class="disprow"><span class="who">${esc(o.name)}</span><span class="wd">${m?`<span class="csq sm" style="background:${mColor(m)}"></span> ${esc(m.name)}`:esc(o.drinkId)}</span></div>`;}).join("")}`;
     }
 
     // ---- barista main ----
@@ -523,19 +560,18 @@
         </div>
 
         ${Object.keys(counts).length?`<div class="batch"><div class="lbl">지금 만들어야 할 잔 수</div>
-          <div class="grid">${state.menu.filter(m=>counts[m.id]).map(m=>`<div class="row"><span style="font-size:14px">${m.emoji} ${esc(m.name)}</span><b>${counts[m.id]}</b></div>`).join("")}</div></div>`:""}
+          <div class="grid">${state.menu.filter(m=>counts[m.id]).map(m=>`<div class="row"><span style="font-size:14px"><span class="csq sm" style="background:${mColor(m)}"></span> ${esc(m.name)}</span><b>${counts[m.id]}</b></div>`).join("")}</div></div>`:""}
 
-        <h2 class="sec serif">팀별 주문</h2>
+        <div class="sechead"><h2 class="sec serif" style="margin:0">팀별 주문</h2><button class="refreshbtn" data-act="refresh">🔄 새로고침</button></div>
         ${Object.keys(byTeam).length===0?`<div class="empty">아직 주문이 없어요</div>`:
           TEAMS.filter(t=>byTeam[t.id]).map(t=>teamCard(t,byTeam[t.id])).join("")}
 
         <h2 class="sec serif" style="margin-top:24px">관리 메뉴</h2>
-        <div class="navbtns">
-          <button data-act="disp"><span class="ic">📋</span>주문 목록</button>
-          <button data-act="editMenu"><span class="ic">🥤</span>메뉴 관리</button>
-          <button data-act="editTeams"><span class="ic">🏢</span>팀 관리</button>
-          <button data-act="editTime"><span class="ic">🕘</span>주문 시간 설정</button>
-          <button data-act="refresh"><span class="ic">🔄</span>새로고침</button>
+        <div class="navtext">
+          <button data-act="disp">주문 목록</button>
+          <button data-act="editMenu">메뉴 관리</button>
+          <button data-act="editTeams">팀 관리</button>
+          <button data-act="editTime">주문 시간 설정</button>
         </div>
       `;
     }
@@ -546,7 +582,7 @@
       return `<div class="tcard" style="border-color:${team.color}">
         <div class="th"><div class="tname"><span class="cdot" style="background:${team.color}"></span><b>${team.name}</b><span class="tmeta">· ${total}잔</span></div></div>
         ${orders.map(o=>{const m=menuById(o.drinkId);
-          return `<div class="ln"><span class="who">${esc(o.name)}${o.by&&o.by!==o.name?` <span class="wd">(대리:${esc(o.by)})</span>`:""}</span><span class="wd">${m?m.emoji+" "+esc(m.name):esc(o.drinkId)}</span></div>`;}).join("")}
+          return `<div class="ln"><span class="who">${esc(o.name)}${o.by&&o.by!==o.name?` <span class="wd">(대리:${esc(o.by)})</span>`:""}</span><span class="wd">${m?`<span class="csq sm" style="background:${mColor(m)}"></span> ${esc(m.name)}`:esc(o.drinkId)}</span></div>`;}).join("")}
         ${!allConfirmed
           ? `<button class="act confirm" data-confirmteam="${team.id}">✓ ${team.name} 주문 확인</button>`
           : `<div class="stbar c">✓ 확인 완료 · 제조 중</div><button class="act ready" data-readyteam="${team.id}">🔔 다 만들었어요 — ${team.name}에 알림</button>`}
@@ -577,9 +613,9 @@
     function renderMenuEdit(){
       return `<button class="back" data-act="back">‹ 뒤로</button>
         <h1 class="serif" style="font-size:26px;margin-bottom:4px">메뉴 관리</h1>
-        <div class="sub" style="font-size:14px;color:var(--sub);margin-bottom:16px">이모지·이름 수정, 추가·삭제 가능 (모든 메뉴)</div>
+        <div class="sub" style="font-size:14px;color:var(--sub);margin-bottom:16px">메뉴 이름 수정, 추가·삭제 가능 (색상은 자동 배정)</div>
         <div id="el">${state.menu.map((m,i)=>`<div class="editrow">
-          <input class="emj" data-emj="${i}" value="${esc(m.emoji)}" maxlength="2"/>
+          <span class="cdot" style="width:14px;height:14px;border-radius:99px;background:${mColor(m)};flex:0 0 auto"></span>
           <input class="nm" data-nm="${i}" value="${esc(m.name)}"/>
           <button class="del" data-del="${i}">삭제</button></div>`).join("")}</div>
         <button class="addbtn" data-act="addMenu">＋ 메뉴 추가</button>
@@ -605,7 +641,8 @@
     function minOpts(sel){ let o=""; for(let m=0;m<=50;m+=10){const v=String(m).padStart(2,"0");o+=`<option value="${v}"${v===sel?" selected":""}>${v}분</option>`;} return o; }
     function timeRow(label, idH, idM, hhmm){
       const [hh,mm]=hhmm.split(":");
-      return `<div class="tl">${label}</div><div class="tt">
+      return `<div class="trow">
+        <span class="trl">${label}</span>
         <select id="${idH}" class="tsel">${hourOpts(hh)}</select>
         <select id="${idM}" class="tsel">${minOpts(mm)}</select>
       </div>`;
@@ -615,10 +652,10 @@
       return `<button class="back" data-act="back">‹ 뒤로</button>
         <h1 class="serif" style="font-size:26px;margin-bottom:4px">주문 시간 설정</h1>
         <div class="sub" style="font-size:14px;color:var(--sub);margin-bottom:16px">오전·오후 주문 시작/마감 시간을 조정하세요</div>
-        <div class="timefield"><div class="tl" style="margin-bottom:12px;font-size:14px;color:#16243f">오전 주문</div>
-          <div class="tgrid">${timeRow("시작", "amSh","amSm", h.amStart)}${timeRow("마감", "amEh","amEm", h.amEnd)}</div></div>
-        <div class="timefield"><div class="tl" style="margin-bottom:12px;font-size:14px;color:#16243f">오후 주문</div>
-          <div class="tgrid">${timeRow("시작", "pmSh","pmSm", h.pmStart)}${timeRow("마감", "pmEh","pmEm", h.pmEnd)}</div></div>
+        <div class="timefield"><div class="tcap">오전 주문</div>
+          ${timeRow("시작", "amSh","amSm", h.amStart)}${timeRow("마감", "amEh","amEm", h.amEnd)}</div>
+        <div class="timefield"><div class="tcap">오후 주문</div>
+          ${timeRow("시작", "pmSh","pmSm", h.pmStart)}${timeRow("마감", "pmEh","pmEm", h.pmEnd)}</div>
         <button class="primary" style="margin-top:8px" data-act="saveTime">저장하기</button>
         <div class="footnote">마감 시간이 지나면 새 주문은 자동으로 차단됩니다. 이미 들어온 주문은 그대로 유지돼요.</div>`;
     }
@@ -651,7 +688,7 @@
         case "editTeams": state.view="team-edit"; render(); break;
         case "editTime": state.view="time-edit"; render(); break;
         case "refresh": toast("최신 상태예요"); render(); break;
-        case "addMenu": state.menu.push({id:"m"+Date.now(),name:"새 메뉴",emoji:"🥤"}); render(); break;
+        case "addMenu": state.menu.push({id:"m"+Date.now(),name:"새 메뉴",color:menuColorFor(state.menu.length)}); render(); break;
         case "addTeam": state.teams.push({id:"t"+Date.now(),name:"새 팀",color:colorFor(state.teams.length)}); render(); break;
         case "saveMenu": doSaveMenu(); break;
         case "saveTeams": doSaveTeams(); break;
@@ -707,7 +744,7 @@
 
     async function doSaveMenu(){
       document.querySelectorAll("[data-nm]").forEach(inp=>{const i=+inp.dataset.nm;if(state.menu[i])state.menu[i].name=inp.value;});
-      document.querySelectorAll("[data-emj]").forEach(inp=>{const i=+inp.dataset.emj;if(state.menu[i])state.menu[i].emoji=inp.value||"🥤";});
+      state.menu.forEach((m,i)=>{ if(!m.color) m.color=menuColorFor(i); });
       await saveMenu(state.menu); state.view="home"; render(); toast("메뉴를 저장했어요");
     }
     async function doSaveTeams(){
