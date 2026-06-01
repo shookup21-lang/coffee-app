@@ -36,8 +36,11 @@
     .wrap{padding:6px 20px 120px}
 
     /* login */
-    .login{background:linear-gradient(160deg,#3b82f6 0%,#2563eb 60%,#60a5fa 100%);color:#fff;min-height:100vh;padding:64px 26px 40px;display:flex;flex-direction:column}
+    .login{background:linear-gradient(165deg,#5b81c6 0%,#3f5fa8 55%,#7190ce 100%);color:#fff;min-height:100vh;padding:64px 26px 40px;display:flex;flex-direction:column}
     .login .lc{width:46px;height:46px;border-radius:14px;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:18px}
+    .login .brandrow{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+    .login .appicon{flex:0 0 auto;display:inline-flex;box-shadow:0 6px 16px rgba(20,30,80,.25);border-radius:12px}
+    .login .brandrow h1{font-size:40px;line-height:1;font-weight:800;letter-spacing:-0.02em}
     .login h1{font-size:38px;line-height:1.08;font-weight:800;letter-spacing:-0.02em}
     .login p{color:rgba(255,255,255,.82);font-size:15px;margin-top:10px}
     .login .field{margin-top:26px}
@@ -74,12 +77,15 @@
 
     /* window bar */
     .windowbar{display:flex;gap:10px;margin-bottom:14px}
-    .wb{flex:1;border-radius:18px;padding:14px;text-align:center;background:#fff;box-shadow:0 3px 12px rgba(80,90,160,.06)}
-    .wb .wlbl{font-size:12px;color:var(--sub);font-weight:600}
-    .wb .wtime{font-size:14px;font-weight:700;margin-top:3px}
-    .wb.open{background:linear-gradient(135deg,#e3eefe,#eef5ff);box-shadow:0 3px 14px rgba(59,130,246,.18)}
-    .wb.open .wlbl{color:#2563eb}
-    .wb.closed{opacity:.6}
+    .wb{flex:1;border-radius:18px;padding:14px 12px;text-align:center;background:#eef1f6}
+    .wb .wlbl{font-size:12px;color:#9aa4b6;font-weight:700;display:flex;align-items:center;justify-content:center;gap:5px}
+    .wb .wtime{font-size:15px;font-weight:800;margin-top:4px;color:#aeb7c7}
+    .wb .live{display:none;width:7px;height:7px;border-radius:99px;background:#fff;animation:wbpulse 1.5s infinite}
+    @keyframes wbpulse{0%{box-shadow:0 0 0 0 rgba(255,255,255,.65)}70%{box-shadow:0 0 0 6px rgba(255,255,255,0)}100%{box-shadow:0 0 0 0 rgba(255,255,255,0)}}
+    .wb.open{background:linear-gradient(135deg,var(--p1),var(--p2));box-shadow:0 8px 20px rgba(37,99,235,.32)}
+    .wb.open .wlbl{color:#fff}
+    .wb.open .wtime{color:#fff}
+    .wb.open .live{display:inline-block}
 
     /* buttons */
     .primary{width:100%;background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff;font-weight:800;font-size:16px;border-radius:18px;padding:18px;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 8px 20px rgba(59,130,246,.30)}
@@ -219,6 +225,7 @@
     .tsel:focus{border-color:#3b82f6;background-color:#fff;outline:none}
 
     .picklbl{font-size:13px;color:var(--sub);margin:16px 4px 9px;font-weight:700}
+    .teamfixed{display:flex;align-items:center;gap:9px;background:#e8f0fd;border-radius:14px;padding:14px 16px;font-weight:700;font-size:15px;color:#16243f}
 
     .notif{background:#fff;border-radius:20px;padding:20px;margin-bottom:12px;box-shadow:0 6px 18px rgba(80,90,160,.08);border-left:5px solid #2563eb}
     .notif h3{font-size:19px;font-weight:800;margin-bottom:5px}
@@ -256,10 +263,10 @@
     // ---------- config ----------
     const APP_NAME = "이안음료주문";
     // color palette auto-assigned to teams by index
-    const TEAM_COLORS = ["#2563eb","#0891b2","#7c3aed","#d97706","#db2777","#16a34a","#dc2626","#0d9488","#9333ea","#ca8a04","#e11d48","#4f46e5"];
+    const TEAM_COLORS = ["#e0555b","#e8803c","#caa12b","#7faa3e","#46a866","#23ab9a","#2a9fcf","#4a82ed","#6c6fe0","#9760d0","#c258ac","#dd6196"];
     const DEFAULT_TEAM_NAMES = ["관리팀","B-후반영","UPW","CHEMICAL","전기","진공","BULK","S-GAS","B-CAD","MEP/OBJ","기타A","기타B"];
     const DEFAULT_TEAMS = DEFAULT_TEAM_NAMES.map((nm,i)=>({ id:"team"+(i+1), name:nm, color:TEAM_COLORS[i%TEAM_COLORS.length] }));
-    const MENU_COLORS = ["#2563eb","#0891b2","#16a34a","#d97706","#db2777","#7c3aed","#0d9488","#dc2626","#ca8a04","#4f46e5","#e11d48","#9333ea"];
+    const MENU_COLORS = ["#e0555b","#e8803c","#caa12b","#7faa3e","#46a866","#23ab9a","#2a9fcf","#4a82ed","#6c6fe0","#9760d0","#c258ac","#dd6196"];
     const DEFAULT_MENU = [
       { id:"hot-americano", name:"HOT 아메리카노", color:"#2563eb" },
       { id:"ice-americano", name:"ICE 아메리카노", color:"#0891b2" },
@@ -324,7 +331,7 @@
     function startSync(){
       onSnapshot(doc(db,"daily",todayKey()),s=>{ const d=s.exists()?s.data():{}; state.orders=d.orders||{}; checkNotif(); render(); },e=>console.error(e));
       onSnapshot(doc(db,"config","menu"),s=>{ if(s.exists()&&Array.isArray(s.data().items)&&s.data().items.length){ state.menu=s.data().items.map((m,i)=>({...m, color:m.color||menuColorFor(i)})); } else state.menu=DEFAULT_MENU; render(); },e=>console.error(e));
-      onSnapshot(doc(db,"config","teams"),s=>{ if(s.exists()&&Array.isArray(s.data().items)&&s.data().items.length) state.teams=s.data().items; else state.teams=DEFAULT_TEAMS; render(); },e=>console.error(e));
+      onSnapshot(doc(db,"config","teams"),s=>{ if(s.exists()&&Array.isArray(s.data().items)&&s.data().items.length) state.teams=s.data().items.map((t,i)=>({...t, color:colorFor(i)})); else state.teams=DEFAULT_TEAMS; render(); },e=>console.error(e));
       onSnapshot(doc(db,"config","hours"),s=>{ if(s.exists()) state.hours={...DEFAULT_HOURS,...s.data()}; render(); },e=>console.error(e));
     }
     const saveOrders=async n=>{state.orders=n;await setDoc(doc(db,"daily",todayKey()),{orders:n},{merge:true});};
@@ -333,20 +340,24 @@
     const saveHours=async h=>{state.hours=h;await setDoc(doc(db,"config","hours"),h);};
 
     // ---------- notifications ----------
+    function isMyOrder(o){
+      // an order "belongs" to this user if they placed it (their own, or one they ordered on behalf of someone)
+      return o.by===state.user.name || (o.name===state.user.name && (!o.by));
+    }
     function checkNotif(){
       if(!state.user||state.user.team==="barista")return;
       Object.entries(state.orders).forEach(([id,o])=>{
-        if(o.team===state.user.team && o.status==="ready" && !state.seenReady.includes(id)){
+        if(isMyOrder(o) && o.status==="ready" && !state.seenReady.includes(id)){
           if("Notification" in window && Notification.permission==="granted"){
-            const t=TEAMS.find(x=>x.id===o.team);
-            new Notification("☕ 음료가 준비됐어요!",{body:`${t?.name} 음료가 완성됐어요. 1층에서 가져가세요.`,icon:"icon-192.png"});
+            const who = (o.name!==state.user.name) ? `${o.name}님 ` : "";
+            new Notification("☕ 음료가 준비됐어요!",{body:`${who}음료가 완성됐어요. 1층에서 가져가세요.`,icon:"icon-192.png"});
           }
         }
       });
     }
     function myNotifs(){
       if(!state.user||state.user.team==="barista")return [];
-      return Object.entries(state.orders).filter(([_,o])=>o.team===state.user.team&&o.status==="ready").map(([id,o])=>({id,...o}));
+      return Object.entries(state.orders).filter(([_,o])=>isMyOrder(o)&&o.status==="ready").map(([id,o])=>({id,...o}));
     }
 
     // ---------- helpers ----------
@@ -407,10 +418,26 @@
     }
 
     // ---- login ----
+    function appIconSVG(size){
+      return `<svg width="${size}" height="${size}" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;border-radius:${Math.round(size*0.226)}px">
+        <defs>
+          <linearGradient id="libg" x1="0" y1="0" x2="512" y2="512" gradientUnits="userSpaceOnUse"><stop stop-color="#3b82f6"/><stop offset="1" stop-color="#2563eb"/></linearGradient>
+          <linearGradient id="liliq" x1="0" y1="240" x2="0" y2="430" gradientUnits="userSpaceOnUse"><stop stop-color="#fde68a"/><stop offset="1" stop-color="#fbbf24"/></linearGradient>
+        </defs>
+        <rect width="512" height="512" rx="116" fill="url(#libg)"/>
+        <rect x="296" y="118" width="20" height="200" rx="10" transform="rotate(12 306 218)" fill="#ffffff"/>
+        <path d="M176 214 h160 v176 a26 26 0 0 1 -26 26 H202 a26 26 0 0 1 -26 -26 z" fill="#ffffff" opacity="0.96"/>
+        <path d="M188 252 h136 v138 a18 18 0 0 1 -18 18 H206 a18 18 0 0 1 -18 -18 z" fill="url(#liliq)"/>
+        <circle cx="256" cy="306" r="34" fill="#fff7cc"/>
+        <circle cx="256" cy="306" r="34" stroke="#f59e0b" stroke-width="6"/>
+        <g stroke="#f59e0b" stroke-width="4"><line x1="256" y1="276" x2="256" y2="336"/><line x1="226" y1="306" x2="286" y2="306"/><line x1="235" y1="285" x2="277" y2="327"/><line x1="277" y1="285" x2="235" y2="327"/></g>
+        <circle cx="214" cy="288" r="7" fill="#ffffff" opacity="0.85"/><circle cx="300" cy="350" r="6" fill="#ffffff" opacity="0.8"/><circle cx="220" cy="356" r="5" fill="#ffffff" opacity="0.75"/>
+        <rect x="170" y="206" width="172" height="20" rx="10" fill="#bfdbfe"/><rect x="186" y="232" width="140" height="10" rx="5" fill="#dbeafe" opacity="0.8"/>
+      </svg>`;
+    }
     function renderLogin(){
       app.innerHTML=`<div class="login">
-        <div class="lc">☕</div>
-        <h1 class="serif">${APP_NAME}</h1>
+        <div class="brandrow"><span class="appicon">${appIconSVG(52)}</span><h1 class="serif" style="margin:0">${APP_NAME}</h1></div>
         <p>팀을 선택하고 이름을 입력하세요</p>
         <div class="field"><label>팀 선택</label>
           <div class="teamgrid" id="ts">${TEAMS.map(t=>`<button data-team="${t.id}">${esc(t.name)}</button>`).join("")}</div></div>
@@ -443,9 +470,10 @@
     function windowBarHTML(){
       const ss=sessionState(), h=state.hours;
       const amOpen=ss.open&&ss.session==="am", pmOpen=ss.open&&ss.session==="pm";
+      const dot='<span class="live"></span>';
       return `<div class="windowbar">
-        <div class="wb ${amOpen?'open':'closed'}"><div class="wlbl">오전 주문</div><div class="wtime">${h.amStart}~${h.amEnd}</div></div>
-        <div class="wb ${pmOpen?'open':'closed'}"><div class="wlbl">오후 주문</div><div class="wtime">${h.pmStart}~${h.pmEnd}</div></div>
+        <div class="wb ${amOpen?'open':'closed'}"><div class="wlbl">${amOpen?dot:''}오전 주문${amOpen?' 중':''}</div><div class="wtime">${h.amStart}~${h.amEnd}</div></div>
+        <div class="wb ${pmOpen?'open':'closed'}"><div class="wlbl">${pmOpen?dot:''}오후 주문${pmOpen?' 중':''}</div><div class="wtime">${h.pmStart}~${h.pmEnd}</div></div>
       </div>`;
     }
 
@@ -481,7 +509,7 @@
       return `<div class="mycup">
         <div class="mc" style="background:${mColor(m)}"></div>
         <div style="flex:1">
-          <div class="mlbl">${o.session==="am"?"오전 주문":"오후 주문"}${o.by&&o.by!==o.name?` · ${esc(o.by)}님이 대신 주문`:""}</div>
+          <div class="mlbl">${o.session==="am"?"오전 주문":"오후 주문"}${o.by&&o.by!==o.name?` · ${esc(o.by)}님이 대행 주문`:""}</div>
           <div class="mname">${m?esc(m.name):esc(o.drinkId)}</div>
           <div class="mstat">${stat}</div>
           ${ss.open&&o.status==="pending"?`<span class="chg" data-act="goOrder">음료 변경하기</span>`:""}
@@ -501,23 +529,21 @@
 
     // ---- add person (order for someone else) ----
     function renderAddPerson(){
-      const teamChosen=state.addTeam;
+      const myTeam = TEAMS.find(t=>t.id===state.user.team);
       return `<button class="back" data-act="back">‹ 뒤로</button>
         <h1 class="serif" style="font-size:26px;margin-bottom:4px">다른 사람 대신 주문</h1>
-        <div class="sub" style="font-size:14px;color:var(--sub);margin-bottom:8px">폰이 없는 동료의 주문을 넣어줄 수 있어요</div>
+        <div class="sub" style="font-size:14px;color:var(--sub);margin-bottom:14px">폰이 없는 우리 팀 동료의 주문을 넣어줄 수 있어요</div>
 
-        <div class="picklbl">1. 팀 선택</div>
-        <div class="teamgrid">
-          ${TEAMS.map(t=>`<button data-addteam="${t.id}" style="${teamChosen===t.id?`background:${t.color};color:#fff;border-color:${t.color}`:''}">${esc(t.name)}</button>`).join("")}
+        <div class="teamfixed">
+          <span class="cdot" style="width:12px;height:12px;border-radius:99px;background:${myTeam?myTeam.color:'#2563eb'};flex:0 0 auto"></span>
+          <span>${myTeam?esc(myTeam.name):''} 동료</span>
         </div>
 
-        ${teamChosen?`
-          <div class="picklbl">2. 이름 입력</div>
-          <input id="addName" value="${esc(state.addName)}" placeholder="동료 이름" autocomplete="off" style="width:100%;border:1px solid var(--line);border-radius:14px;padding:14px 16px;font-size:16px;outline:none"/>
-          <div class="picklbl">3. 음료 선택</div>
-          <div class="grid2">${state.menu.map(m=>`<button class="drink" data-addpick="${m.id}"><div class="em" style="background:${mColor(m)}"></div><div class="dn">${esc(m.name)}</div></button>`).join("")}</div>
-          <div class="footnote">이름을 입력하고 음료를 누르면 바로 주문됩니다.</div>
-        `:``}`;
+        <div class="picklbl">1. 이름 입력</div>
+        <input id="addName" value="${esc(state.addName)}" placeholder="동료 이름" autocomplete="off" style="width:100%;border:1px solid var(--line);border-radius:14px;padding:14px 16px;font-size:16px;outline:none;background:#f7faff"/>
+        <div class="picklbl">2. 음료 선택</div>
+        <div class="grid2">${state.menu.map(m=>`<button class="drink" data-addpick="${m.id}"><div class="em" style="background:${mColor(m)}"></div><div class="dn">${esc(m.name)}</div></button>`).join("")}</div>
+        <div class="footnote">이름을 입력하고 음료를 누르면 바로 주문됩니다. 대행 주문은 본인 팀(${myTeam?esc(myTeam.name):''})으로만 들어갑니다.</div>`;
     }
 
     // ---- notifications (employee) ----
@@ -527,9 +553,9 @@
         <h1 class="serif" style="font-size:26px;margin-bottom:4px">알림</h1>
         <div class="sub" style="font-size:14px;color:var(--sub);margin-bottom:16px">담당자가 보낸 메시지</div>
         ${list.length===0?`<div class="empty">🔔<br/><br/>새 알림이 없어요</div>`:
-          list.map(n=>{const t=TEAMS.find(x=>x.id===n.team),m=menuById(n.drinkId);
-          return `<div class="notif"><h3>${t.name} 음료 준비 완료!</h3>
-            <div class="nsub">1층 커피샵에서 가져가세요 · ${esc(n.name)}님 · ${m?esc(m.name):""}</div>
+          list.map(n=>{const m=menuById(n.drinkId); const forSomeone = n.name!==state.user.name;
+          return `<div class="notif"><h3>${forSomeone?esc(n.name)+"님 ":""}음료 준비 완료!</h3>
+            <div class="nsub">1층 커피샵에서 가져가세요 · ${m?`<span class="csq sm" style="background:${mColor(m)}"></span> ${esc(m.name)}`:""}${forSomeone?" · 대행 주문":""}</div>
             <button class="nack" data-ack="${n.id}">확인 (가져갈게요)</button></div>`;}).join("")}`;
     }
 
@@ -557,7 +583,7 @@
           list.map(o=>{const m=menuById(o.drinkId);
             return `<div class="lrow">
               <div class="lrow-main">
-                <span class="who">${esc(o.name)}${o.by&&o.by!==o.name?` <span class="bytag">대리</span>`:""}</span>
+                <span class="who">${esc(o.name)}${o.by&&o.by!==o.name?` <span class="bytag">대행:${esc(o.by)}</span>`:""}</span>
                 <span class="wd">${m?`<span class="csq sm" style="background:${mColor(m)}"></span> ${esc(m.name)}`:esc(o.drinkId)}</span>
               </div>
               ${editable?`<div class="lrow-act">
@@ -656,7 +682,7 @@
           TEAMS.filter(t=>byTeam[t.id]).map(t=>{
             const arr=byTeam[t.id].sort((a,b)=>krSort(a.name,b.name));
             return `<div class="listteam"><span class="cdot" style="background:${t.color}"></span>${esc(t.name)} · ${arr.length}잔</div>
-              ${arr.map(o=>{const m=menuById(o.drinkId);return `<div class="disprow"><span class="who">${esc(o.name)}${o.by&&o.by!==o.name?` <span class="bytag">대리:${esc(o.by)}</span>`:""}</span><span class="wd">${m?`<span class="csq sm" style="background:${mColor(m)}"></span> ${esc(m.name)}`:esc(o.drinkId)}</span></div>`;}).join("")}`;
+              ${arr.map(o=>{const m=menuById(o.drinkId);return `<div class="disprow"><span class="who">${esc(o.name)}${o.by&&o.by!==o.name?` <span class="bytag">대행:${esc(o.by)}</span>`:""}</span><span class="wd">${m?`<span class="csq sm" style="background:${mColor(m)}"></span> ${esc(m.name)}`:esc(o.drinkId)}</span></div>`;}).join("")}`;
           }).join("")}`;
     }
 
@@ -776,11 +802,12 @@
       if(!ss.open){ toast("지금은 주문 시간이 아니에요"); return; }
       const name=(state.addName||"").trim();
       if(!name){ toast("이름을 입력하세요"); return; }
+      const team=state.user.team; // 대행 주문은 항상 본인 팀으로 고정
       // prevent dup: same team+name today
-      const dup=Object.entries(state.orders).find(([_,o])=>o.team===state.addTeam&&o.name===name);
+      const dup=Object.entries(state.orders).find(([_,o])=>o.team===team&&o.name===name);
       const id=dup?dup[0]:"o-"+Date.now();
       await saveOrders({...state.orders,[id]:{
-        team:state.addTeam, name, drinkId,
+        team, name, drinkId,
         session:ss.session, status:"pending", time:new Date().toISOString(), by:state.user.name
       }});
       toast(`${name}님 주문을 ${dup?"변경":"추가"}했어요`);
