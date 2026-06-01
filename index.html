@@ -244,7 +244,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
-    import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+    import { getFirestore, doc, setDoc, deleteField, onSnapshot } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
 
     // 🔻🔻🔻 여기를 본인 Firebase 설정값으로 교체 (가이드 1~2단계) 🔻🔻🔻
     const firebaseConfig = {
@@ -823,7 +823,9 @@
       const o=state.orders[id]; if(!o) return;
       if(!confirm(`${o.name}님 주문을 삭제할까요?`)) return;
       const n={...state.orders}; delete n[id];
-      await saveOrders(n);
+      state.orders=n;
+      // merge로 저장하면 삭제가 반영되지 않으므로 해당 항목만 콕 집어 서버에서 제거
+      await setDoc(doc(db,"daily",todayKey()),{orders:{[id]:deleteField()}},{merge:true});
       // if I deleted my own order, go home; otherwise stay on list
       if(o.name===state.user.name && o.team===state.user.team){ state.view="home"; }
       render(); toast(`${o.name}님 주문을 삭제했어요`);
