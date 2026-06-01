@@ -1,0 +1,40 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgC" x1="0" y1="0" x2="512" y2="512" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3b82f6"/><stop offset="1" stop-color="#2563eb"/>
+    </linearGradient>
+    <linearGradient id="liqC" x1="0" y1="240" x2="0" y2="430" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#fde68a"/><stop offset="1" stop-color="#fbbf24"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="116" fill="url(#bgC)"/>
+
+  <!-- straw -->
+  <rect x="296" y="118" width="20" height="200" rx="10" transform="rotate(12 306 218)" fill="#ffffff"/>
+  <rect x="296" y="118" width="20" height="200" rx="10" transform="rotate(12 306 218)" fill="#ef4444" opacity="0.0"/>
+
+  <!-- jar body -->
+  <path d="M176 214 h160 v176 a26 26 0 0 1 -26 26 H202 a26 26 0 0 1 -26 -26 z" fill="#ffffff" opacity="0.96"/>
+
+  <!-- liquid -->
+  <path d="M188 252 h136 v138 a18 18 0 0 1 -18 18 H206 a18 18 0 0 1 -18 -18 z" fill="url(#liqC)"/>
+
+  <!-- lemon slice -->
+  <circle cx="256" cy="306" r="34" fill="#fff7cc"/>
+  <circle cx="256" cy="306" r="34" stroke="#f59e0b" stroke-width="6"/>
+  <g stroke="#f59e0b" stroke-width="4">
+    <line x1="256" y1="276" x2="256" y2="336"/>
+    <line x1="226" y1="306" x2="286" y2="306"/>
+    <line x1="235" y1="285" x2="277" y2="327"/>
+    <line x1="277" y1="285" x2="235" y2="327"/>
+  </g>
+
+  <!-- bubbles -->
+  <circle cx="214" cy="288" r="7" fill="#ffffff" opacity="0.85"/>
+  <circle cx="300" cy="350" r="6" fill="#ffffff" opacity="0.8"/>
+  <circle cx="220" cy="356" r="5" fill="#ffffff" opacity="0.75"/>
+
+  <!-- jar band/lid rim -->
+  <rect x="170" y="206" width="172" height="20" rx="10" fill="#bfdbfe"/>
+  <rect x="186" y="232" width="140" height="10" rx="5" fill="#dbeafe" opacity="0.8"/>
+</svg>

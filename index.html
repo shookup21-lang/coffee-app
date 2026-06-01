@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#1c1917" />
+  <title>이안음료주문</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
+  <style>
+    :root{
+      --bg:#eaf1fb;--card:#ffffff;--ink:#16243f;--sub:#7e8aa6;--line:#e8eef8;
+      --p1:#3b82f6;--p2:#2563eb;--p3:#60a5fa;
+      --tile:#e8f0fd;--soft:#eef5ff;--good:#22c55e;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+    body{font-family:'Pretendard',system-ui,sans-serif;background:var(--bg);color:var(--ink);max-width:560px;margin:0 auto;min-height:100vh;-webkit-font-smoothing:antialiased}
+    .serif{font-family:'Pretendard',system-ui,sans-serif;font-weight:800;letter-spacing:-0.02em}
+    button{font-family:inherit;cursor:pointer;border:none;background:none}
+    input,select{font-family:inherit}
+
+    /* header */
+    header{position:sticky;top:0;z-index:20;background:var(--bg);display:flex;align-items:center;justify-content:space-between;padding:16px 20px 12px}
+    .logo{display:flex;align-items:center;gap:9px;font-weight:800;font-size:20px;letter-spacing:-0.02em}
+    .logo .badge-ic{height:30px;padding:0 11px;border-radius:10px;background:linear-gradient(135deg,var(--p1),var(--p2));display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;font-weight:800;letter-spacing:-0.01em}
+    .h-right{display:flex;align-items:center;gap:6px}
+    .userchip{font-size:13px;color:var(--sub);padding:7px 12px;border-radius:99px;background:#fff;display:flex;gap:6px;align-items:center;box-shadow:0 2px 8px rgba(80,90,160,.06)}
+    .userchip:active{background:#f3f4fa}
+    .bell{position:relative;width:40px;height:40px;border-radius:99px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 2px 8px rgba(80,90,160,.06)}
+    .bell:active{background:#f3f4fa}
+    .badge{position:absolute;top:5px;right:5px;background:#ff5a7a;color:#fff;font-size:10px;font-weight:700;min-width:16px;height:16px;border-radius:99px;display:flex;align-items:center;justify-content:center;padding:0 4px}
+
+    .wrap{padding:6px 20px 120px}
+
+    /* login */
+    .login{background:linear-gradient(160deg,#3b82f6 0%,#2563eb 60%,#60a5fa 100%);color:#fff;min-height:100vh;padding:64px 26px 40px;display:flex;flex-direction:column}
+    .login .lc{width:46px;height:46px;border-radius:14px;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:18px}
+    .login h1{font-size:38px;line-height:1.08;font-weight:800;letter-spacing:-0.02em}
+    .login p{color:rgba(255,255,255,.82);font-size:15px;margin-top:10px}
+    .login .field{margin-top:26px}
+    .login label{font-size:13px;color:rgba(255,255,255,.85);display:block;margin-bottom:9px;font-weight:600}
+    .login input{width:100%;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:16px;padding:16px;font-size:16px;outline:none}
+    .login input::placeholder{color:rgba(255,255,255,.6)}
+    .login input:focus{border-color:#fff;background:rgba(255,255,255,.24)}
+    .login .teams{display:flex;gap:8px}
+    .login .teams button{flex:1;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);color:#fff;border-radius:16px;padding:15px 0;font-size:14px;font-weight:600}
+    .login .teams button.on{background:#fff;color:#2563eb;border-color:#fff}
+    /* wrapping team grid (many teams) */
+    .login .teamgrid{display:flex;flex-wrap:wrap;gap:8px;max-height:38vh;overflow-y:auto;padding:2px}
+    .login .teamgrid button{flex:0 0 calc(50% - 4px);background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);color:#fff;border-radius:14px;padding:14px 8px;font-size:14px;font-weight:600;text-align:center;line-height:1.2;word-break:break-word}
+    .login .teamgrid button.on{background:#fff;color:#2563eb;border-color:#fff}
+    .teamgrid{display:flex;flex-wrap:wrap;gap:8px}
+    .teamgrid button{flex:0 0 calc(50% - 4px);background:#fff;border:1px solid var(--line);color:var(--ink);border-radius:14px;padding:14px 8px;font-weight:700;font-size:14px;text-align:center;line-height:1.2;word-break:break-word;box-shadow:0 2px 8px rgba(80,90,160,.05)}
+    .login .start{margin-top:auto;background:#fff;color:#2563eb;font-weight:800;border-radius:18px;padding:18px;font-size:16px;box-shadow:0 8px 20px rgba(40,30,120,.2)}
+    .login .start:disabled{background:rgba(255,255,255,.4);color:rgba(109,92,255,.5);box-shadow:none}
+    .login .blink{margin-top:18px;text-align:center;color:rgba(255,255,255,.85);font-size:14px;text-decoration:underline}
+
+    /* hero gradient banner */
+    .hero{background:linear-gradient(135deg,#3b82f6 0%,#2563eb 100%);color:#fff;border-radius:26px;padding:24px 24px 26px;position:relative;overflow:hidden;margin-bottom:14px;box-shadow:0 14px 30px rgba(37,99,235,.30)}
+    .hero .bigcup{position:absolute;right:-6px;bottom:-10px;font-size:96px;line-height:1;user-select:none;opacity:.9}
+    .hero .rel{position:relative;z-index:1}
+    .hero .team{font-size:13px;font-weight:700;margin-bottom:8px;color:rgba(255,255,255,.9)}
+    .hero h1{font-size:27px;line-height:1.15;font-weight:800;letter-spacing:-0.02em}
+    .hero .sub{font-size:14px;color:rgba(255,255,255,.88);margin-top:8px}
+
+    /* greeting (home top) */
+    .greet{padding:4px 4px 14px}
+    .greet h1{font-size:28px;font-weight:800;line-height:1.25;letter-spacing:-0.02em}
+    .greet h1 .nm{color:#2563eb}
+    .greet .date{color:var(--sub);font-size:15px;margin-top:8px}
+
+    /* window bar */
+    .windowbar{display:flex;gap:10px;margin-bottom:14px}
+    .wb{flex:1;border-radius:18px;padding:14px;text-align:center;background:#fff;box-shadow:0 3px 12px rgba(80,90,160,.06)}
+    .wb .wlbl{font-size:12px;color:var(--sub);font-weight:600}
+    .wb .wtime{font-size:14px;font-weight:700;margin-top:3px}
+    .wb.open{background:linear-gradient(135deg,#e3eefe,#eef5ff);box-shadow:0 3px 14px rgba(59,130,246,.18)}
+    .wb.open .wlbl{color:#2563eb}
+    .wb.closed{opacity:.6}
+
+    /* buttons */
+    .primary{width:100%;background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff;font-weight:800;font-size:16px;border-radius:18px;padding:18px;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 8px 20px rgba(59,130,246,.30)}
+    .primary:active{filter:brightness(.96)}
+    .primary:disabled{background:#bcc9e2;color:#fff;box-shadow:none}
+    .ghost{width:100%;background:#fff;color:var(--ink);font-weight:700;font-size:15px;border-radius:18px;padding:16px;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:10px;box-shadow:0 3px 12px rgba(80,90,160,.06)}
+    .ghost:active{background:#eef4fc}
+
+    h2.sec{font-size:18px;margin:24px 4px 12px;font-weight:800;letter-spacing:-0.01em}
+    .empty{background:#fff;border-radius:20px;padding:34px;text-align:center;color:#9aa6bd;font-size:14px;box-shadow:0 3px 12px rgba(80,90,160,.05)}
+
+    /* tiles (feature grid look) */
+    .grid2{display:flex;flex-wrap:wrap;justify-content:space-between}
+    .drink{width:48.5%;background:var(--tile);border-radius:20px;padding:18px;text-align:left;margin-bottom:11px;box-shadow:0 2px 10px rgba(80,90,160,.05);transition:transform .05s}
+    .drink:active{transform:scale(.97)}
+    .drink.on{outline:2px solid #2563eb;outline-offset:-2px}
+    .drink .em{font-size:30px}
+    .drink .dn{font-weight:700;margin-top:10px;font-size:15px;color:#16243f}
+
+    /* my cup card */
+    .mycup{background:#fff;border-radius:22px;padding:18px;display:flex;gap:14px;align-items:center;margin-bottom:8px;box-shadow:0 6px 18px rgba(80,90,160,.08)}
+    .mycup .mc{width:58px;height:58px;border-radius:16px;background:linear-gradient(135deg,#e3eefe,#eef5ff);display:flex;align-items:center;justify-content:center;font-size:30px}
+    .mycup .mlbl{font-size:12px;color:#2563eb;font-weight:700}
+    .mycup .mname{font-size:20px;font-weight:800;margin-top:3px;letter-spacing:-0.01em}
+    .mycup .mstat{font-size:13px;color:var(--sub);margin-top:6px}
+    .chg{font-size:13px;color:#2563eb;font-weight:600;margin-top:8px;display:inline-block}
+
+    .back{display:flex;align-items:center;gap:4px;font-size:15px;color:var(--sub);padding:8px 0;margin-bottom:8px;font-weight:600}
+
+    /* order rows */
+    .orow{background:#fff;border-radius:16px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;box-shadow:0 2px 10px rgba(80,90,160,.05)}
+    .orow .nm{font-weight:700}
+    .orow .dr{font-size:13px;color:var(--sub);margin-top:2px}
+    .pill{font-size:12px;font-weight:700;padding:6px 12px;border-radius:99px}
+    .pill.pending{background:#fff4e6;color:#e08a14}
+    .pill.confirmed{background:#eaf1ff;color:#3b6ef5}
+    .pill.ready{background:#e7f9ee;color:#16a34a}
+
+    /* barista dashboard (For me banner style) */
+    .dash{background:linear-gradient(135deg,#3b82f6 0%,#2563eb 100%);color:#fff;border-radius:26px;padding:24px;margin-bottom:16px;box-shadow:0 14px 30px rgba(37,99,235,.30)}
+    .dash .date{font-size:13px;color:rgba(255,255,255,.85);margin-bottom:5px;font-weight:600}
+    .dash h1{font-size:25px;font-weight:800;letter-spacing:-0.02em}
+    .dash .stats{display:flex;gap:22px;margin-top:18px}
+    .dash .stat b{font-size:30px;display:block;font-weight:800}
+    .dash .stat.a b{color:#ffe8a3}
+    .dash .stat small{font-size:12px;color:rgba(255,255,255,.85)}
+
+    .navbtns{display:flex;flex-wrap:wrap;justify-content:space-between;margin-bottom:16px}
+    .navbtns button{width:48.5%;background:var(--tile);border-radius:20px;padding:18px 14px;font-weight:700;font-size:14px;display:flex;flex-direction:column;align-items:center;gap:8px;margin-bottom:11px;color:#16243f;box-shadow:0 2px 10px rgba(80,90,160,.05)}
+    .navbtns button .ic{width:40px;height:40px;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:20px}
+    .navbtns button:active{transform:scale(.97)}
+
+    .batch{background:#fff;border-radius:22px;padding:20px;margin-bottom:16px;box-shadow:0 6px 18px rgba(80,90,160,.07)}
+    .batch .lbl{font-size:12px;letter-spacing:.02em;color:var(--sub);margin-bottom:14px;font-weight:700}
+    .batch .grid{display:flex;flex-wrap:wrap}
+    .batch .row{width:50%;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;padding-right:10px}
+    .batch .row b{font-size:22px;color:#2563eb;font-weight:800}
+
+    .tcard{background:#fff;border-radius:20px;padding:18px;margin-bottom:12px;box-shadow:0 4px 16px rgba(80,90,160,.07);border-top:4px solid}
+    .tcard .th{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+    .tcard .tname{display:flex;align-items:center;gap:8px}
+    .tcard .tname .cdot{width:10px;height:10px;border-radius:99px}
+    .tcard .tname b{font-size:19px;font-weight:800}
+    .tcard .tmeta{font-size:12px;color:var(--sub)}
+    .tcard .ln{display:flex;justify-content:space-between;background:#eef4fc;border-radius:12px;padding:11px 14px;margin-bottom:7px;font-size:14px}
+    .tcard .ln .who{font-weight:700}
+    .tcard .ln .wd{color:var(--sub)}
+    .tcard .act{width:100%;color:#fff;font-weight:800;border-radius:14px;padding:14px;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:7px}
+    .tcard .act.confirm{background:linear-gradient(135deg,#5b86ff,#3b6ef5)}
+    .tcard .act.ready{background:linear-gradient(135deg,#3b82f6,#2563eb)}
+    .tcard .stbar{border-radius:14px;padding:13px;text-align:center;font-weight:700;font-size:14px;margin-top:8px}
+    .tcard .stbar.c{background:#eaf1ff;color:#3b6ef5}
+    .tcard .stbar.r{background:#e7f9ee;color:#16a34a}
+
+    /* segmented + dispense */
+    .seg{display:flex;gap:8px;margin-bottom:16px;background:#dde8f7;padding:5px;border-radius:16px}
+    .seg button{flex:1;padding:11px;border-radius:12px;font-size:14px;font-weight:700;background:transparent;color:var(--sub)}
+    .seg button.on{background:#fff;color:#2563eb;box-shadow:0 2px 8px rgba(80,90,160,.1)}
+    .listteam{font-size:16px;font-weight:800;margin:18px 4px 9px;display:flex;align-items:center;gap:8px}
+    .listteam .cdot{width:10px;height:10px;border-radius:99px}
+    .disprow{display:flex;justify-content:space-between;background:#fff;border-radius:14px;padding:13px 16px;margin-bottom:7px;box-shadow:0 2px 8px rgba(80,90,160,.05)}
+    .disprow .who{font-weight:700}
+    .disprow .wd{color:var(--sub);font-size:14px}
+
+    /* editors */
+    .editrow{display:flex;align-items:center;gap:8px;background:#fff;border-radius:16px;padding:11px 14px;margin-bottom:8px;box-shadow:0 2px 8px rgba(80,90,160,.05)}
+    .editrow input.nm{flex:1;border:none;font-size:15px;outline:none;font-weight:600}
+    .editrow input.emj{width:46px;border:none;font-size:22px;outline:none;text-align:center}
+    .editrow .del{color:#ff5a7a;font-size:13px;padding:6px 10px;font-weight:600}
+    .addbtn{width:100%;border:2px dashed #c4d4ef;border-radius:16px;padding:14px;color:var(--sub);font-size:14px;font-weight:600;background:#fff}
+    .timefield{background:#fff;border-radius:18px;padding:16px;margin-bottom:11px;box-shadow:0 2px 10px rgba(80,90,160,.05)}
+    .timefield .tl{font-size:13px;color:var(--sub);margin-bottom:10px;font-weight:700}
+    .timefield .tt{display:flex;align-items:center;gap:8px}
+    .timefield input[type=time]{flex:1;border:1px solid var(--line);border-radius:12px;padding:12px;font-size:15px;background:#eef4fc}
+
+    .picklbl{font-size:13px;color:var(--sub);margin:16px 4px 9px;font-weight:700}
+
+    .notif{background:#fff;border-radius:20px;padding:20px;margin-bottom:12px;box-shadow:0 6px 18px rgba(80,90,160,.08);border-left:5px solid #2563eb}
+    .notif h3{font-size:19px;font-weight:800;margin-bottom:5px}
+    .notif .nsub{font-size:14px;color:var(--sub);margin-bottom:13px}
+    .notif .nack{background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff;font-weight:700;font-size:14px;padding:11px 20px;border-radius:99px}
+
+    .toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);background:#16243f;color:#fff;padding:13px 22px;border-radius:99px;font-size:14px;z-index:50;opacity:0;transition:opacity .25s;pointer-events:none;white-space:nowrap;box-shadow:0 8px 24px rgba(30,30,70,.3)}
+    .toast.show{opacity:1}
+    .loading{text-align:center;padding:60px;color:var(--sub)}
+    .footnote{font-size:12px;color:#9aa6bd;margin-top:24px;padding:0 4px;line-height:1.7}
+  </style>
+</head>
+<body>
+  <div id="app"><div class="loading">불러오는 중…</div></div>
+  <div id="toast" class="toast"></div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+    import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+
+    // 🔻🔻🔻 여기를 본인 Firebase 설정값으로 교체 (가이드 1~2단계) 🔻🔻🔻
+    const firebaseConfig = {
+      apiKey: "AIzaSyDUyW7A9COdCnfuSAfHd8MOUYhDs72r2CQ",
+      authDomain: "drink-order-439e4.firebaseapp.com",
+      projectId: "drink-order-439e4",
+      storageBucket: "drink-order-439e4.firebasestorage.app",
+      messagingSenderId: "812079022318",
+      appId: "1:812079022318:web:cccce794414ffda52e33ff"
+    };
+    // 🔺🔺🔺 여기까지 교체 🔺🔺🔺
+
+    const fbApp = initializeApp(firebaseConfig);
+    const db = getFirestore(fbApp);
+
+    // ---------- config ----------
+    const APP_NAME = "이안음료주문";
+    // color palette auto-assigned to teams by index
+    const TEAM_COLORS = ["#2563eb","#0891b2","#7c3aed","#d97706","#db2777","#16a34a","#dc2626","#0d9488","#9333ea","#ca8a04","#e11d48","#4f46e5"];
+    const DEFAULT_TEAM_NAMES = ["관리팀","B-후반영","UPW","CHEMICAL","전기","진공","BULK","S-GAS","B-CAD","MEP/OBJ","기타A","기타B"];
+    const DEFAULT_TEAMS = DEFAULT_TEAM_NAMES.map((nm,i)=>({ id:"team"+(i+1), name:nm, color:TEAM_COLORS[i%TEAM_COLORS.length] }));
+    const DEFAULT_MENU = [
+      { id:"hot-americano", name:"HOT 아메리카노", emoji:"☕" },
+      { id:"ice-americano", name:"ICE 아메리카노", emoji:"🧊" },
+      { id:"grapefruit-ade",name:"자몽 에이드",    emoji:"🍊" },
+      { id:"grape-ade",     name:"청포도 에이드",  emoji:"🍇" },
+      { id:"ice-vanilla",   name:"ICE 바닐라라떼", emoji:"🥛" },
+      { id:"ice-latte",     name:"ICE 카페라떼",   emoji:"🍶" },
+      { id:"ice-toffeenut", name:"ICE 토피넛라떼", emoji:"🍯" },
+    ];
+    const DEFAULT_HOURS = {
+      amStart:"07:00", amEnd:"09:20",
+      pmStart:"11:00", pmEnd:"13:20",
+    };
+    // TEAMS is now dynamic: read from state.teams everywhere
+    const colorFor = i => TEAM_COLORS[i%TEAM_COLORS.length];
+
+    const todayKey = () => { const d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; };
+    const toMin = hhmm => { const [h,m]=hhmm.split(":").map(Number); return h*60+m; };
+    const nowMin = () => { const d=new Date(); return d.getHours()*60+d.getMinutes(); };
+
+    // ---------- state ----------
+    let state = {
+      user: JSON.parse(localStorage.getItem("ian_user")||"null"),
+      view: "home",
+      orders: {},          // { orderId: {team, name, drinkId, session, status, time, by} }
+      menu: DEFAULT_MENU,
+      teams: DEFAULT_TEAMS,
+      hours: DEFAULT_HOURS,
+      seenReady: JSON.parse(localStorage.getItem("ian_seen")||"[]"),
+      // add-person flow temp
+      addTeam:null, addName:"",
+      dispSession:"am",
+    };
+    // accessor so existing TEAMS.* code keeps working
+    const TEAMS = { get list(){return state.teams;}, find(fn){return state.teams.find(fn);}, filter(fn){return state.teams.filter(fn);}, map(fn){return state.teams.map(fn);} };
+    const teamById = id => state.teams.find(t=>t.id===id) || {id,name:id,color:"#64748b"};
+
+    const app=document.getElementById("app"), toastEl=document.getElementById("toast");
+    let tTimer=null;
+    const toast=m=>{toastEl.textContent=m;toastEl.classList.add("show");clearTimeout(tTimer);tTimer=setTimeout(()=>toastEl.classList.remove("show"),2200);};
+
+    // ---------- which session is open now ----------
+    function sessionState(){
+      const n=nowMin(), h=state.hours;
+      if(n>=toMin(h.amStart) && n<=toMin(h.amEnd)) return {open:true, session:"am", endsAt:h.amEnd};
+      if(n>=toMin(h.pmStart) && n<=toMin(h.pmEnd)) return {open:true, session:"pm", endsAt:h.pmEnd};
+      // closed: figure out next
+      if(n<toMin(h.amStart)) return {open:false, next:"오전", at:h.amStart};
+      if(n<toMin(h.pmStart)) return {open:false, next:"오후", at:h.pmStart};
+      return {open:false, next:"내일 오전", at:h.amStart};
+    }
+    // has this user ordered today (any session)?
+    function myTodayOrder(){
+      if(!state.user) return null;
+      const e=Object.entries(state.orders).find(([_,o])=>o.team===state.user.team && o.name===state.user.name);
+      return e?{id:e[0],...e[1]}:null;
+    }
+
+    // ---------- firestore ----------
+    function startSync(){
+      onSnapshot(doc(db,"daily",todayKey()),s=>{ const d=s.exists()?s.data():{}; state.orders=d.orders||{}; checkNotif(); render(); },e=>console.error(e));
+      onSnapshot(doc(db,"config","menu"),s=>{ if(s.exists()&&Array.isArray(s.data().items)&&s.data().items.length) state.menu=s.data().items; else state.menu=DEFAULT_MENU; render(); },e=>console.error(e));
+      onSnapshot(doc(db,"config","teams"),s=>{ if(s.exists()&&Array.isArray(s.data().items)&&s.data().items.length) state.teams=s.data().items; else state.teams=DEFAULT_TEAMS; render(); },e=>console.error(e));
+      onSnapshot(doc(db,"config","hours"),s=>{ if(s.exists()) state.hours={...DEFAULT_HOURS,...s.data()}; render(); },e=>console.error(e));
+    }
+    const saveOrders=async n=>{state.orders=n;await setDoc(doc(db,"daily",todayKey()),{orders:n},{merge:true});};
+    const saveMenu=async i=>{state.menu=i;await setDoc(doc(db,"config","menu"),{items:i});};
+    const saveTeams=async i=>{state.teams=i;await setDoc(doc(db,"config","teams"),{items:i});};
+    const saveHours=async h=>{state.hours=h;await setDoc(doc(db,"config","hours"),h);};
+
+    // ---------- notifications ----------
+    function checkNotif(){
+      if(!state.user||state.user.team==="barista")return;
+      Object.entries(state.orders).forEach(([id,o])=>{
+        if(o.team===state.user.team && o.status==="ready" && !state.seenReady.includes(id)){
+          if("Notification" in window && Notification.permission==="granted"){
+            const t=TEAMS.find(x=>x.id===o.team);
+            new Notification("☕ 음료가 준비됐어요!",{body:`${t?.name} 음료가 완성됐어요. 1층에서 가져가세요.`,icon:"icon-192.png"});
+          }
+        }
+      });
+    }
+    function myNotifs(){
+      if(!state.user||state.user.team==="barista")return [];
+      return Object.entries(state.orders).filter(([_,o])=>o.team===state.user.team&&o.status==="ready").map(([id,o])=>({id,...o}));
+    }
+
+    // ---------- helpers ----------
+    const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));
+    const menuById=id=>state.menu.find(m=>m.id===id);
+    const timeStr=iso=>new Date(iso).toLocaleTimeString("ko-KR",{hour:"2-digit",minute:"2-digit"});
+    const krSort=(a,b)=>a.localeCompare(b,"ko");
+
+    // ============ RENDER ============
+    function render(){
+      if(!state.user) return renderLogin();
+      app.innerHTML = renderHeader() + `<div class="wrap" id="wrap"></div>`;
+      const w=document.getElementById("wrap");
+      if(state.user.team==="barista"){
+        if(state.view==="menu-edit") w.innerHTML=renderMenuEdit();
+        else if(state.view==="team-edit") w.innerHTML=renderTeamEdit();
+        else if(state.view==="time-edit") w.innerHTML=renderTimeEdit();
+        else if(state.view==="disp") w.innerHTML=renderDispense();
+        else w.innerHTML=renderBarista();
+      } else {
+        if(state.view==="order") w.innerHTML=renderOrder();
+        else if(state.view==="add-person") w.innerHTML=renderAddPerson();
+        else if(state.view==="notifications") w.innerHTML=renderNotifs();
+        else if(state.view==="team-list") w.innerHTML=renderTeamList();
+        else w.innerHTML=renderHome();
+      }
+      bind();
+    }
+
+    function renderHeader(){
+      const u=state.user, t=TEAMS.find(x=>x.id===u.team), isB=u.team==="barista", nc=myNotifs().length;
+      return `<header>
+        <div class="logo"><span class="badge-ic">iaan</span>${APP_NAME}</div>
+        <div class="h-right">
+          ${!isB?`<button class="bell" data-act="bell">🔔${nc>0?`<span class="badge">${nc}</span>`:""}</button>`:""}
+          <button class="userchip" data-act="logout"><b>${esc(u.name)}</b><span style="color:#bcc9e2">·</span><span style="color:${isB?'#2563eb':t.color}">${isB?'담당자':t.name}</span></button>
+        </div></header>`;
+    }
+
+    // ---- login ----
+    function renderLogin(){
+      app.innerHTML=`<div class="login">
+        <div class="lc">☕</div>
+        <h1 class="serif">${APP_NAME}</h1>
+        <p>팀을 선택하고 이름을 입력하세요</p>
+        <div class="field"><label>팀 선택</label>
+          <div class="teamgrid" id="ts">${TEAMS.map(t=>`<button data-team="${t.id}">${esc(t.name)}</button>`).join("")}</div></div>
+        <div class="field"><label>이름</label><input id="ni" placeholder="이름 입력" autocomplete="off"/></div>
+        <button class="start" id="sb" disabled>시작하기</button>
+        <button class="blink" id="bb">담당자로 로그인 →</button>
+      </div>`;
+      let name="",team="";
+      const ni=document.getElementById("ni"),sb=document.getElementById("sb"),tb=[...document.querySelectorAll("#ts button")];
+      const rf=()=>sb.disabled=!(name.trim()&&team);
+      ni.addEventListener("input",e=>{name=e.target.value;rf();});
+      tb.forEach(b=>b.addEventListener("click",()=>{tb.forEach(x=>x.classList.remove("on"));b.classList.add("on");team=b.dataset.team;rf();}));
+      sb.addEventListener("click",()=>doLogin(name.trim(),team));
+      document.getElementById("bb").addEventListener("click",()=>{
+        const pin=prompt("담당자 비밀번호를 입력하세요");
+        if(pin===null) return;
+        if(pin.trim()!=="0825"){ toast("비밀번호가 틀렸어요"); return; }
+        doLogin((ni.value||"담당자").trim(),"barista");
+      });
+    }
+    function doLogin(name,team){
+      state.user={name,team};
+      localStorage.setItem("ian_user",JSON.stringify(state.user));
+      state.view="home";
+      if("Notification" in window && Notification.permission==="default") Notification.requestPermission();
+      render();
+    }
+
+    // ---- window bar (shared) ----
+    function windowBarHTML(){
+      const ss=sessionState(), h=state.hours;
+      const amOpen=ss.open&&ss.session==="am", pmOpen=ss.open&&ss.session==="pm";
+      return `<div class="windowbar">
+        <div class="wb ${amOpen?'open':'closed'}"><div class="wlbl">오전 주문</div><div class="wtime">${h.amStart}~${h.amEnd}</div></div>
+        <div class="wb ${pmOpen?'open':'closed'}"><div class="wlbl">오후 주문</div><div class="wtime">${h.pmStart}~${h.pmEnd}</div></div>
+      </div>`;
+    }
+
+    // ---- employee home ----
+    function renderHome(){
+      const u=state.user, t=TEAMS.find(x=>x.id===u.team);
+      const ss=sessionState(), mine=myTodayOrder();
+      return `
+        <div class="greet">
+          <h1><span class="nm">${esc(u.name)}</span>님, 안녕하세요.<br/>좋은 하루 보내세요.</h1>
+          <div class="date">${new Date().toLocaleDateString("ko-KR",{month:"long",day:"numeric",weekday:"long"})}</div>
+        </div>
+        <div class="hero"><div class="bigcup">☕</div><div class="rel">
+          <div class="team">${t.name} · ${ss.open?`${ss.session==="am"?"오전":"오후"} 주문 중`:"주문 시간 외"}</div>
+          <h1>${mine?(mine.status==="ready"?"음료가 준비됐어요":"오늘 주문 완료"):"오늘의 한 잔"}</h1>
+          <div class="sub">${ss.open?`지금 주문을 받고 있어요 (~${ss.endsAt})`:`${ss.next} 주문은 ${ss.at}부터예요`}</div>
+        </div></div>
+        ${windowBarHTML()}
+        ${mine ? myCupHTML(mine, ss) : (ss.open ? `
+          <button class="primary" data-act="goOrder">＋ 내 음료 주문하기</button>
+          <button class="ghost" data-act="goAdd">👥 다른 사람 대신 주문하기</button>
+        ` : `<div class="empty">지금은 주문 시간이 아니에요</div>
+          <button class="ghost" data-act="goAdd" style="margin-top:12px">👥 다른 사람 대신 주문하기</button>`)}
+        <button class="ghost" data-act="goTeamList" style="margin-top:10px">📋 우리 팀 주문 목록 보기</button>
+        <div class="footnote">하루 한 잔, 무료로 제공됩니다. 폰이 없는 동료는 '다른 사람 대신 주문하기'로 넣어줄 수 있어요. 완성된 음료를 받을 땐 '우리 팀 주문 목록 보기'에서 누가 무엇을 주문했는지 확인할 수 있어요.</div>
+      `;
+    }
+    function myCupHTML(o,ss){
+      const m=menuById(o.drinkId);
+      const stat = o.status==="ready" ? "✓ 1층에서 가져가세요"
+                 : o.status==="confirmed" ? "담당자가 확인했어요 · 제조 중"
+                 : "주문 접수됨 · 담당자 확인 대기";
+      return `<div class="mycup">
+        <div class="mc">${m?m.emoji:"🥤"}</div>
+        <div style="flex:1">
+          <div class="mlbl">${o.session==="am"?"오전 주문":"오후 주문"}${o.by&&o.by!==o.name?` · ${esc(o.by)}님이 대신 주문`:""}</div>
+          <div class="mname">${m?esc(m.name):esc(o.drinkId)}</div>
+          <div class="mstat">${stat}</div>
+          ${ss.open&&o.status==="pending"?`<span class="chg" data-act="goOrder">음료 변경하기</span>`:""}
+        </div></div>
+        <button class="ghost" data-act="goAdd">👥 다른 사람 대신 주문하기</button>`;
+    }
+
+    // ---- order (pick 1 drink) ----
+    function renderOrder(){
+      const t=TEAMS.find(x=>x.id===state.user.team);
+      return `<button class="back" data-act="back">‹ 뒤로</button>
+        <div style="margin-bottom:16px"><div style="font-size:12px;font-weight:600;color:${t.color};margin-bottom:4px">${t.name} · ${esc(state.user.name)}</div>
+        <h1 class="serif" style="font-size:26px">음료를 선택하세요</h1>
+        <div class="sub" style="font-size:14px;color:var(--sub);margin-top:4px">하나만 고르면 바로 주문됩니다</div></div>
+        <div class="grid2">${state.menu.map(m=>`<button class="drink" data-pick="${m.id}"><div class="em">${m.emoji}</div><div class="dn">${esc(m.name)}</div></button>`).join("")}</div>`;
+    }
+
+    // ---- add person (order for someone else) ----
+    function renderAddPerson(){
+      const teamChosen=state.addTeam;
+      return `<button class="back" data-act="back">‹ 뒤로</button>
+        <h1 class="serif" style="font-size:26px;margin-bottom:4px">다른 사람 대신 주문</h1>
+        <div class="sub" style="font-size:14px;color:var(--sub);margin-bottom:8px">폰이 없는 동료의 주문을 넣어줄 수 있어요</div>
+
+        <div class="picklbl">1. 팀 선택</div>
+        <div class="teamgrid">
+          ${TEAMS.map(t=>`<button data-addteam="${t.id}" style="${teamChosen===t.id?`background:${t.color};color:#fff;border-color:${t.color}`:''}">${esc(t.name)}</button>`).join("")}
+        </div>
+
+        ${teamChosen?`
+          <div class="picklbl">2. 이름 입력</div>
+          <input id="addName" value="${esc(state.addName)}" placeholder="동료 이름" autocomplete="off" style="width:100%;border:1px solid var(--line);border-radius:14px;padding:14px 16px;font-size:16px;outline:none"/>
+          <div class="picklbl">3. 음료 선택</div>
+          <div class="grid2">${state.menu.map(m=>`<button class="drink" data-addpick="${m.id}"><div class="em">${m.emoji}</div><div class="dn">${esc(m.name)}</div></button>`).join("")}</div>
+          <div class="footnote">이름을 입력하고 음료를 누르면 바로 주문됩니다.</div>
+        `:``}`;
+    }
+
+    // ---- notifications (employee) ----
+    function renderNotifs(){
+      const list=myNotifs();
+      return `<button class="back" data-act="back">‹ 뒤로</button>
+        <h1 class="serif" style="font-size:26px;margin-bottom:4px">알림</h1>
+        <div class="sub" style="font-size:14px;color:var(--sub);margin-bottom:16px">담당자가 보낸 메시지</div>
+        ${list.length===0?`<div class="empty">🔔<br/><br/>새 알림이 없어요</div>`:
+          list.map(n=>{const t=TEAMS.find(x=>x.id===n.team),m=menuById(n.drinkId);
+          return `<div class="notif"><h3>${t.name} 음료 준비 완료!</h3>
+            <div class="nsub">1층 커피샵에서 가져가세요 · ${esc(n.name)}님 · ${m?esc(m.name):""}</div>
+            <button class="nack" data-ack="${n.id}">확인 (가져갈게요)</button></div>`;}).join("")}`;
+    }
+
+    // ---- employee: own team order list (am/pm, name-sorted) ----
+    function renderTeamList(){
+      const u=state.user, t=TEAMS.find(x=>x.id===u.team);
+      const sess=state.dispSession||"am";
+      const all=Object.entries(state.orders).map(([id,o])=>({id,...o})).filter(o=>o.team===u.team);
+      const amCount=all.filter(o=>o.session==="am").length;
+      const pmCount=all.filter(o=>o.session==="pm").length;
+      const list=all.filter(o=>o.session===sess).sort((a,b)=>krSort(a.name,b.name));
+      return `<button class="back" data-act="back">‹ 뒤로</button>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+          <span class="cdot" style="width:11px;height:11px;border-radius:99px;background:${t.color};display:inline-block"></span>
+          <h1 class="serif" style="font-size:26px">${t.name} 주문 목록</h1>
+        </div>
+        <div class="sub" style="font-size:14px;color:var(--sub);margin-bottom:16px">완성된 음료를 받을 때 누구 것인지 확인하세요 (이름순)</div>
+        <div class="seg">
+          <button class="${sess==="am"?'on':''}" data-disp="am">오전 (${amCount})</button>
+          <button class="${sess==="pm"?'on':''}" data-disp="pm">오후 (${pmCount})</button>
+        </div>
+        ${list.length===0?`<div class="empty">${sess==="am"?"오전":"오후"} 주문이 없어요</div>`:
+          list.map(o=>{const m=menuById(o.drinkId);
+            return `<div class="disprow"><span class="who">${esc(o.name)}</span><span class="wd">${m?m.emoji+" "+esc(m.name):esc(o.drinkId)}</span></div>`;}).join("")}`;
+    }
+
+    // ---- barista main ----
+    function renderBarista(){
+      const list=Object.entries(state.orders).map(([id,o])=>({id,...o}));
+      const pending=list.filter(o=>o.status==="pending");
+      const confirmed=list.filter(o=>o.status==="confirmed");
+      const ready=list.filter(o=>o.status==="ready");
+      const ss=sessionState();
+      const counts={}; [...pending,...confirmed].forEach(o=>{counts[o.drinkId]=(counts[o.drinkId]||0)+1;});
+      const dateStr=new Date().toLocaleDateString("ko-KR",{month:"long",day:"numeric",weekday:"long"});
+
+      // group active (pending+confirmed) by team
+      const byTeam={};
+      [...pending,...confirmed].forEach(o=>{(byTeam[o.team]=byTeam[o.team]||[]).push(o);});
+
+      return `
+        <div class="dash"><div class="date">${dateStr}</div><h1 class="serif">담당자 대시보드</h1>
+          <div class="stats">
+            <div class="stat a"><b>${pending.length}</b><small>확인 대기</small></div>
+            <div class="stat"><b>${confirmed.length}</b><small>제조 중</small></div>
+            <div class="stat"><b>${list.length}</b><small>오늘 총 주문</small></div>
+          </div>
+          <div style="margin-top:14px;padding-top:14px;border-top:1px solid #292524;font-size:12px;color:#a8a29e">
+            ${ss.open?`<span style="color:#34d399">● ${ss.session==="am"?"오전":"오후"} 주문 접수 중 (~${ss.endsAt})</span>`:`○ 주문 시간 외 · 다음: ${ss.next} ${ss.at}`}
+          </div>
+        </div>
+
+        <div class="navbtns">
+          <button data-act="disp"><span class="ic">📋</span>분배용 목록</button>
+          <button data-act="editMenu"><span class="ic">🥤</span>메뉴 관리</button>
+          <button data-act="editTeams"><span class="ic">🏢</span>팀 관리</button>
+          <button data-act="editTime"><span class="ic">🕘</span>주문 시간 설정</button>
+          <button data-act="refresh"><span class="ic">🔄</span>새로고침</button>
+        </div>
+
+        ${Object.keys(counts).length?`<div class="batch"><div class="lbl">지금 만들어야 할 잔 수</div>
+          <div class="grid">${state.menu.filter(m=>counts[m.id]).map(m=>`<div class="row"><span style="font-size:14px">${m.emoji} ${esc(m.name)}</span><b>${counts[m.id]}</b></div>`).join("")}</div></div>`:""}
+
+        <h2 class="sec serif">팀별 주문</h2>
+        ${Object.keys(byTeam).length===0?`<div class="empty">아직 주문이 없어요</div>`:
+          TEAMS.filter(t=>byTeam[t.id]).map(t=>teamCard(t,byTeam[t.id])).join("")}
+      `;
+    }
+    function teamCard(team, orders){
+      orders.sort((a,b)=>krSort(a.name,b.name));
+      const allConfirmed = orders.every(o=>o.status!=="pending");
+      const total=orders.length;
+      return `<div class="tcard" style="border-color:${team.color}">
+        <div class="th"><div class="tname"><span class="cdot" style="background:${team.color}"></span><b>${team.name}</b><span class="tmeta">· ${total}잔</span></div></div>
+        ${orders.map(o=>{const m=menuById(o.drinkId);
+          return `<div class="ln"><span class="who">${esc(o.name)}${o.by&&o.by!==o.name?` <span class="wd">(대리:${esc(o.by)})</span>`:""}</span><span class="wd">${m?m.emoji+" "+esc(m.name):esc(o.drinkId)}</span></div>`;}).join("")}
+        ${!allConfirmed
+          ? `<button class="act confirm" data-confirmteam="${team.id}">✓ ${team.name} 주문 확인</button>`
+          : `<div class="stbar c">✓ 확인 완료 · 제조 중</div><button class="act ready" data-readyteam="${team.id}">🔔 다 만들었어요 — ${team.name}에 알림</button>`}
+      </div>`;
+    }
+
+    // ---- dispensing list (sorted, am/pm) ----
+    function renderDispense(){
+      const sess=state.dispSession;
+      const list=Object.entries(state.orders).map(([id,o])=>({id,...o})).filter(o=>o.session===sess);
+      const byTeam={}; list.forEach(o=>{(byTeam[o.team]=byTeam[o.team]||[]).push(o);});
+      return `<button class="back" data-act="back">‹ 뒤로</button>
+        <h1 class="serif" style="font-size:26px;margin-bottom:4px">분배용 목록</h1>
+        <div class="sub" style="font-size:14px;color:var(--sub);margin-bottom:16px">음료를 나눠줄 때 보는 이름순 목록</div>
+        <div class="seg">
+          <button class="${sess==="am"?'on':''}" data-disp="am">오전 (${Object.values(state.orders).filter(o=>o.session==="am").length})</button>
+          <button class="${sess==="pm"?'on':''}" data-disp="pm">오후 (${Object.values(state.orders).filter(o=>o.session==="pm").length})</button>
+        </div>
+        ${list.length===0?`<div class="empty">${sess==="am"?"오전":"오후"} 주문이 없어요</div>`:
+          TEAMS.filter(t=>byTeam[t.id]).map(t=>{
+            const arr=byTeam[t.id].sort((a,b)=>krSort(a.name,b.name));
+            return `<div class="listteam"><span class="cdot" style="background:${t.color}"></span>${t.name} · ${arr.length}잔</div>
+              ${arr.map(o=>{const m=menuById(o.drinkId);return `<div class="disprow"><span class="who">${esc(o.name)}</span><span class="wd">${m?esc(m.name):esc(o.drinkId)}</span></div>`;}).join("")}`;
+          }).join("")}`;
+    }
+
+    // ---- menu editor ----
+    function renderMenuEdit(){
+      return `<button class="back" data-act="back">‹ 뒤로</button>
+        <h1 class="serif" style="font-size:26px;margin-bottom:4px">메뉴 관리</h1>
+        <div class="sub" style="font-size:14px;color:var(--sub);margin-bottom:16px">이모지·이름 수정, 추가·삭제 가능 (모든 메뉴)</div>
+        <div id="el">${state.menu.map((m,i)=>`<div class="editrow">
+          <input class="emj" data-emj="${i}" value="${esc(m.emoji)}" maxlength="2"/>
+          <input class="nm" data-nm="${i}" value="${esc(m.name)}"/>
+          <button class="del" data-del="${i}">삭제</button></div>`).join("")}</div>
+        <button class="addbtn" data-act="addMenu">＋ 메뉴 추가</button>
+        <button class="primary" style="margin-top:16px" data-act="saveMenu">저장하기</button>`;
+    }
+
+    // ---- team editor ----
+    function renderTeamEdit(){
+      return `<button class="back" data-act="back">‹ 뒤로</button>
+        <h1 class="serif" style="font-size:26px;margin-bottom:4px">팀 관리</h1>
+        <div class="sub" style="font-size:14px;color:var(--sub);margin-bottom:16px">팀 이름 수정, 추가·삭제 가능 (색상은 자동 배정)</div>
+        <div id="tl">${state.teams.map((t,i)=>`<div class="editrow">
+          <span class="cdot" style="width:14px;height:14px;border-radius:99px;background:${t.color};flex:0 0 auto"></span>
+          <input class="nm" data-tnm="${i}" value="${esc(t.name)}"/>
+          <button class="del" data-tdel="${i}">삭제</button></div>`).join("")}</div>
+        <button class="addbtn" data-act="addTeam">＋ 팀 추가</button>
+        <button class="primary" style="margin-top:16px" data-act="saveTeams">저장하기</button>
+        <div class="footnote">팀을 삭제해도 오늘 이미 들어온 그 팀의 주문은 남아있어요. 팀 이름을 바꾸면 모든 화면에 바로 반영됩니다.</div>`;
+    }
+
+    // ---- time editor ----
+    function renderTimeEdit(){
+      const h=state.hours;
+      return `<button class="back" data-act="back">‹ 뒤로</button>
+        <h1 class="serif" style="font-size:26px;margin-bottom:4px">주문 시간 설정</h1>
+        <div class="sub" style="font-size:14px;color:var(--sub);margin-bottom:16px">오전·오후 주문 시작/마감 시간을 조정하세요</div>
+        <div class="timefield"><div class="tl">오전 주문</div><div class="tt">
+          <input type="time" id="amS" value="${h.amStart}"/> <span>~</span> <input type="time" id="amE" value="${h.amEnd}"/></div></div>
+        <div class="timefield"><div class="tl">오후 주문</div><div class="tt">
+          <input type="time" id="pmS" value="${h.pmStart}"/> <span>~</span> <input type="time" id="pmE" value="${h.pmEnd}"/></div></div>
+        <button class="primary" style="margin-top:8px" data-act="saveTime">저장하기</button>
+        <div class="footnote">마감 시간이 지나면 새 주문은 자동으로 차단됩니다. 이미 들어온 주문은 그대로 유지돼요.</div>`;
+    }
+
+    // ============ EVENTS ============
+    function bind(){
+      document.querySelectorAll("[data-act]").forEach(el=>el.onclick=()=>handle(el.dataset.act,el));
+      document.querySelectorAll("[data-pick]").forEach(el=>el.onclick=()=>placeOrder(el.dataset.pick));
+      document.querySelectorAll("[data-addteam]").forEach(el=>el.onclick=()=>{ state.addTeam=el.dataset.addteam; render(); });
+      document.querySelectorAll("[data-addpick]").forEach(el=>el.onclick=()=>addPersonOrder(el.dataset.addpick));
+      document.querySelectorAll("[data-ack]").forEach(el=>el.onclick=()=>ackNotif(el.dataset.ack));
+      document.querySelectorAll("[data-confirmteam]").forEach(el=>el.onclick=()=>confirmTeam(el.dataset.confirmteam));
+      document.querySelectorAll("[data-readyteam]").forEach(el=>el.onclick=()=>readyTeam(el.dataset.readyteam));
+      document.querySelectorAll("[data-disp]").forEach(el=>el.onclick=()=>{ state.dispSession=el.dataset.disp; render(); });
+      document.querySelectorAll("[data-del]").forEach(el=>el.onclick=()=>{ state.menu.splice(+el.dataset.del,1); render(); });
+      document.querySelectorAll("[data-tdel]").forEach(el=>el.onclick=()=>{ if(state.teams.length<=1){toast("최소 1개 팀은 있어야 해요");return;} state.teams.splice(+el.dataset.tdel,1); render(); });
+      const an=document.getElementById("addName"); if(an) an.addEventListener("input",e=>state.addName=e.target.value);
+    }
+
+    function handle(act){
+      switch(act){
+        case "logout": if(confirm("로그아웃 할까요? (다시 이름·팀을 입력해야 해요)")){localStorage.removeItem("ian_user");state.user=null;render();} break;
+        case "bell": state.view="notifications"; render(); break;
+        case "goOrder": state.view="order"; render(); break;
+        case "goAdd": state.addTeam=state.user.team!=="barista"?state.user.team:null; state.addName=""; state.view="add-person"; render(); break;
+        case "goTeamList": state.dispSession=sessionState().session||"am"; state.view="team-list"; render(); break;
+        case "back": state.view="home"; render(); break;
+        case "disp": state.dispSession=sessionState().session||"am"; state.view="disp"; render(); break;
+        case "editMenu": state.view="menu-edit"; render(); break;
+        case "editTeams": state.view="team-edit"; render(); break;
+        case "editTime": state.view="time-edit"; render(); break;
+        case "refresh": toast("최신 상태예요"); render(); break;
+        case "addMenu": state.menu.push({id:"m"+Date.now(),name:"새 메뉴",emoji:"🥤"}); render(); break;
+        case "addTeam": state.teams.push({id:"t"+Date.now(),name:"새 팀",color:colorFor(state.teams.length)}); render(); break;
+        case "saveMenu": doSaveMenu(); break;
+        case "saveTeams": doSaveTeams(); break;
+        case "saveTime": doSaveTime(); break;
+      }
+    }
+
+    async function placeOrder(drinkId){
+      const ss=sessionState();
+      if(!ss.open){ toast("지금은 주문 시간이 아니에요"); state.view="home"; render(); return; }
+      const mine=myTodayOrder();
+      const id = mine? mine.id : "o-"+Date.now();
+      await saveOrders({...state.orders,[id]:{
+        team:state.user.team, name:state.user.name, drinkId,
+        session:ss.session, status:"pending", time:new Date().toISOString(), by:state.user.name
+      }});
+      state.view="home"; render(); toast(mine?"음료를 변경했어요 ☕":"주문했어요 ☕");
+    }
+
+    async function addPersonOrder(drinkId){
+      const ss=sessionState();
+      if(!ss.open){ toast("지금은 주문 시간이 아니에요"); return; }
+      const name=(state.addName||"").trim();
+      if(!name){ toast("이름을 입력하세요"); return; }
+      // prevent dup: same team+name today
+      const dup=Object.entries(state.orders).find(([_,o])=>o.team===state.addTeam&&o.name===name);
+      const id=dup?dup[0]:"o-"+Date.now();
+      await saveOrders({...state.orders,[id]:{
+        team:state.addTeam, name, drinkId,
+        session:ss.session, status:"pending", time:new Date().toISOString(), by:state.user.name
+      }});
+      toast(`${name}님 주문을 ${dup?"변경":"추가"}했어요`);
+      state.addName=""; state.view="home"; render();
+    }
+
+    async function ackNotif(id){
+      state.seenReady.push(id); localStorage.setItem("ian_seen",JSON.stringify(state.seenReady));
+      state.view="home"; render(); toast("맛있게 드세요 ☕");
+    }
+
+    async function confirmTeam(teamId){
+      const n={...state.orders};
+      Object.keys(n).forEach(k=>{ if(n[k].team===teamId&&n[k].status==="pending") n[k]={...n[k],status:"confirmed"}; });
+      await saveOrders(n);
+      toast(`${TEAMS.find(t=>t.id===teamId).name} 주문을 확인했어요`);
+    }
+    async function readyTeam(teamId){
+      const n={...state.orders};
+      Object.keys(n).forEach(k=>{ if(n[k].team===teamId&&(n[k].status==="confirmed"||n[k].status==="pending")) n[k]={...n[k],status:"ready",readyAt:new Date().toISOString()}; });
+      await saveOrders(n);
+      toast(`${TEAMS.find(t=>t.id===teamId).name}에 알림을 보냈어요`);
+    }
+
+    async function doSaveMenu(){
+      document.querySelectorAll("[data-nm]").forEach(inp=>{const i=+inp.dataset.nm;if(state.menu[i])state.menu[i].name=inp.value;});
+      document.querySelectorAll("[data-emj]").forEach(inp=>{const i=+inp.dataset.emj;if(state.menu[i])state.menu[i].emoji=inp.value||"🥤";});
+      await saveMenu(state.menu); state.view="home"; render(); toast("메뉴를 저장했어요");
+    }
+    async function doSaveTeams(){
+      document.querySelectorAll("[data-tnm]").forEach(inp=>{const i=+inp.dataset.tnm;if(state.teams[i])state.teams[i].name=(inp.value||"이름없음");});
+      // ensure colors assigned
+      state.teams.forEach((t,i)=>{ if(!t.color) t.color=colorFor(i); });
+      await saveTeams(state.teams); state.view="home"; render(); toast("팀을 저장했어요");
+    }
+    async function doSaveTime(){
+      const h={amStart:document.getElementById("amS").value,amEnd:document.getElementById("amE").value,pmStart:document.getElementById("pmS").value,pmEnd:document.getElementById("pmE").value};
+      await saveHours(h); state.view="home"; render(); toast("주문 시간을 저장했어요");
+    }
+
+    // boot
+    startSync(); render();
+    setInterval(()=>{ if(state.user&&state.view==="home") render(); }, 60000); // refresh window state each minute
+  </script>
+</body>
+</html>
