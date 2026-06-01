@@ -178,6 +178,18 @@
     .disprow{display:flex;justify-content:space-between;background:#fff;border-radius:14px;padding:13px 16px;margin-bottom:7px;box-shadow:0 2px 8px rgba(80,90,160,.05)}
     .disprow .who{font-weight:700}
     .disprow .wd{color:var(--sub);font-size:14px}
+    /* list row with edit/delete (employee team list) */
+    .lrow{background:#fff;border-radius:14px;padding:12px 14px;margin-bottom:8px;box-shadow:0 2px 8px rgba(80,90,160,.05)}
+    .lrow-main{display:flex;justify-content:space-between;align-items:center}
+    .lrow-main .who{font-weight:700}
+    .lrow-main .wd{color:var(--sub);font-size:14px}
+    .bytag{font-size:11px;color:#2563eb;background:#eef4fc;border-radius:99px;padding:2px 7px;font-weight:700;margin-left:4px}
+    .lrow-act{display:flex;gap:8px;margin-top:10px}
+    .lrow-act .mini{flex:1;border-radius:10px;padding:10px;font-size:13px;font-weight:700}
+    .mini.edit{background:#eef4fc;color:#2563eb}
+    .mini.edit:active{background:#dde8f7}
+    .mini.del{background:#fef2f2;color:#ef4444}
+    .mini.del:active{background:#fee2e2}
 
     /* editors */
     .editrow{display:flex;align-items:center;gap:10px;background:#fff;border-radius:16px;padding:12px 12px 12px 16px;margin-bottom:8px;box-shadow:0 2px 8px rgba(80,90,160,.05)}
@@ -187,6 +199,16 @@
     .editrow input.emj{flex:0 0 auto;width:48px;border:1px solid #e8eef8;background:#f7faff;border-radius:10px;font-size:22px;outline:none;text-align:center;padding:8px 0}
     .editrow .del{flex:0 0 auto;color:#fff;background:#ef4444;font-size:13px;padding:9px 14px;font-weight:700;border-radius:10px;white-space:nowrap}
     .editrow .del:active{background:#dc2626}
+    /* menu editor card with color picker */
+    .editcard{background:#fff;border-radius:16px;padding:14px;margin-bottom:10px;box-shadow:0 2px 8px rgba(80,90,160,.05)}
+    .editcard-top{display:flex;align-items:center;gap:10px}
+    .editcard-top .nm{flex:1 1 auto;min-width:0;border:1px solid #e8eef8;background:#f7faff;border-radius:10px;font-size:15px;outline:none;font-weight:600;padding:10px 12px}
+    .editcard-top .nm:focus{border-color:#3b82f6;background:#fff}
+    .editcard-top .del{flex:0 0 auto;color:#fff;background:#ef4444;font-size:13px;padding:9px 14px;font-weight:700;border-radius:10px;white-space:nowrap}
+    .editcard-top .del:active{background:#dc2626}
+    .swatches{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+    .sw{width:30px;height:30px;border-radius:9px;flex:0 0 auto;border:3px solid transparent;box-sizing:border-box}
+    .sw.on{border-color:#16243f}
     .addbtn{width:100%;border:2px dashed #c4d4ef;border-radius:16px;padding:14px;color:var(--sub);font-size:14px;font-weight:600;background:#fff}
     .timefield{background:#fff;border-radius:18px;padding:16px;margin-bottom:11px;box-shadow:0 2px 10px rgba(80,90,160,.05)}
     .timefield .tcap{font-size:14px;color:#16243f;font-weight:700;margin-bottom:12px}
@@ -270,7 +292,7 @@
       hours: DEFAULT_HOURS,
       seenReady: JSON.parse(localStorage.getItem("ian_seen")||"[]"),
       // add-person flow temp
-      addTeam:null, addName:"",
+      addTeam:null, addName:"", editOrderId:null,
       dispSession:"am",
     };
     // accessor so existing TEAMS.* code keeps working
@@ -350,6 +372,7 @@
         else if(state.view==="add-person") w.innerHTML=renderAddPerson();
         else if(state.view==="notifications") w.innerHTML=renderNotifs();
         else if(state.view==="team-list") w.innerHTML=renderTeamList();
+        else if(state.view==="edit-order") w.innerHTML=renderEditOrder();
         else w.innerHTML=renderHome();
       }
       bind();
@@ -514,6 +537,8 @@
     function renderTeamList(){
       const u=state.user, t=TEAMS.find(x=>x.id===u.team);
       const sess=state.dispSession||"am";
+      const ss=sessionState();
+      const editable = ss.open; // can only change while ordering window is open
       const all=Object.entries(state.orders).map(([id,o])=>({id,...o})).filter(o=>o.team===u.team);
       const amCount=all.filter(o=>o.session==="am").length;
       const pmCount=all.filter(o=>o.session==="pm").length;
@@ -523,14 +548,37 @@
           <span class="cdot" style="width:11px;height:11px;border-radius:99px;background:${t.color};display:inline-block"></span>
           <h1 class="serif" style="font-size:26px">${t.name} 주문 목록</h1>
         </div>
-        <div class="sub" style="font-size:14px;color:var(--sub);margin-bottom:16px">완성된 음료를 받을 때 누구 것인지 확인하세요 (이름순)</div>
+        <div class="sub" style="font-size:14px;color:var(--sub);margin-bottom:16px">완성된 음료를 받을 때 누구 것인지 확인하세요 (이름순)${editable?" · 수정·삭제 가능":""}</div>
         <div class="seg">
           <button class="${sess==="am"?'on':''}" data-disp="am">오전 (${amCount})</button>
           <button class="${sess==="pm"?'on':''}" data-disp="pm">오후 (${pmCount})</button>
         </div>
         ${list.length===0?`<div class="empty">${sess==="am"?"오전":"오후"} 주문이 없어요</div>`:
           list.map(o=>{const m=menuById(o.drinkId);
-            return `<div class="disprow"><span class="who">${esc(o.name)}</span><span class="wd">${m?`<span class="csq sm" style="background:${mColor(m)}"></span> ${esc(m.name)}`:esc(o.drinkId)}</span></div>`;}).join("")}`;
+            return `<div class="lrow">
+              <div class="lrow-main">
+                <span class="who">${esc(o.name)}${o.by&&o.by!==o.name?` <span class="bytag">대리</span>`:""}</span>
+                <span class="wd">${m?`<span class="csq sm" style="background:${mColor(m)}"></span> ${esc(m.name)}`:esc(o.drinkId)}</span>
+              </div>
+              ${editable?`<div class="lrow-act">
+                <button class="mini edit" data-editorder="${o.id}">수정</button>
+                <button class="mini del" data-delorder="${o.id}">삭제</button>
+              </div>`:""}
+            </div>`;}).join("")}`;
+    }
+
+    // ---- edit one order's drink ----
+    function renderEditOrder(){
+      const o=state.orders[state.editOrderId];
+      if(!o){ state.view="team-list"; return renderTeamList(); }
+      const t=TEAMS.find(x=>x.id===o.team);
+      return `<button class="back" data-act="backToList">‹ 뒤로</button>
+        <div style="margin-bottom:16px">
+          <div style="font-size:12px;font-weight:600;color:${t?t.color:'#2563eb'};margin-bottom:4px">${t?t.name:''} · ${esc(o.name)}</div>
+          <h1 class="serif" style="font-size:26px">음료 변경</h1>
+          <div class="sub" style="font-size:14px;color:var(--sub);margin-top:4px">새 음료를 누르면 바로 변경됩니다</div>
+        </div>
+        <div class="grid2">${state.menu.map(m=>`<button class="drink ${m.id===o.drinkId?'on':''}" data-editpick="${m.id}"><div class="em" style="background:${mColor(m)}"></div><div class="dn">${esc(m.name)}</div></button>`).join("")}</div>`;
     }
 
     // ---- barista main ----
@@ -576,16 +624,19 @@
       `;
     }
     function teamCard(team, orders){
-      orders.sort((a,b)=>krSort(a.name,b.name));
       const allConfirmed = orders.every(o=>o.status!=="pending");
       const total=orders.length;
+      // tally drinks for this team
+      const counts={}; orders.forEach(o=>{counts[o.drinkId]=(counts[o.drinkId]||0)+1;});
+      const lines = state.menu.filter(m=>counts[m.id]).map(m=>
+        `<div class="ln"><span class="who"><span class="csq sm" style="background:${mColor(m)}"></span> ${esc(m.name)}</span><b>${counts[m.id]}잔</b></div>`
+      ).join("");
       return `<div class="tcard" style="border-color:${team.color}">
-        <div class="th"><div class="tname"><span class="cdot" style="background:${team.color}"></span><b>${team.name}</b><span class="tmeta">· ${total}잔</span></div></div>
-        ${orders.map(o=>{const m=menuById(o.drinkId);
-          return `<div class="ln"><span class="who">${esc(o.name)}${o.by&&o.by!==o.name?` <span class="wd">(대리:${esc(o.by)})</span>`:""}</span><span class="wd">${m?`<span class="csq sm" style="background:${mColor(m)}"></span> ${esc(m.name)}`:esc(o.drinkId)}</span></div>`;}).join("")}
+        <div class="th"><div class="tname"><span class="cdot" style="background:${team.color}"></span><b>${esc(team.name)}</b><span class="tmeta">· 총 ${total}잔</span></div></div>
+        ${lines}
         ${!allConfirmed
-          ? `<button class="act confirm" data-confirmteam="${team.id}">✓ ${team.name} 주문 확인</button>`
-          : `<div class="stbar c">✓ 확인 완료 · 제조 중</div><button class="act ready" data-readyteam="${team.id}">🔔 다 만들었어요 — ${team.name}에 알림</button>`}
+          ? `<button class="act confirm" data-confirmteam="${team.id}">✓ ${esc(team.name)} 주문 확인</button>`
+          : `<div class="stbar c">✓ 확인 완료 · 제조 중</div><button class="act ready" data-readyteam="${team.id}">🔔 다 만들었어요 — ${esc(team.name)}에 알림</button>`}
       </div>`;
     }
 
@@ -604,20 +655,27 @@
         ${list.length===0?`<div class="empty">${sess==="am"?"오전":"오후"} 주문이 없어요</div>`:
           TEAMS.filter(t=>byTeam[t.id]).map(t=>{
             const arr=byTeam[t.id].sort((a,b)=>krSort(a.name,b.name));
-            return `<div class="listteam"><span class="cdot" style="background:${t.color}"></span>${t.name} · ${arr.length}잔</div>
-              ${arr.map(o=>{const m=menuById(o.drinkId);return `<div class="disprow"><span class="who">${esc(o.name)}</span><span class="wd">${m?esc(m.name):esc(o.drinkId)}</span></div>`;}).join("")}`;
+            return `<div class="listteam"><span class="cdot" style="background:${t.color}"></span>${esc(t.name)} · ${arr.length}잔</div>
+              ${arr.map(o=>{const m=menuById(o.drinkId);return `<div class="disprow"><span class="who">${esc(o.name)}${o.by&&o.by!==o.name?` <span class="bytag">대리:${esc(o.by)}</span>`:""}</span><span class="wd">${m?`<span class="csq sm" style="background:${mColor(m)}"></span> ${esc(m.name)}`:esc(o.drinkId)}</span></div>`;}).join("")}`;
           }).join("")}`;
     }
 
     // ---- menu editor ----
+    function swatches(curColor, dataAttr, idx){
+      return MENU_COLORS.map(c=>`<button class="sw${c.toLowerCase()===curColor.toLowerCase()?' on':''}" style="background:${c}" ${dataAttr}="${idx}|${c}"></button>`).join("");
+    }
     function renderMenuEdit(){
       return `<button class="back" data-act="back">‹ 뒤로</button>
         <h1 class="serif" style="font-size:26px;margin-bottom:4px">메뉴 관리</h1>
-        <div class="sub" style="font-size:14px;color:var(--sub);margin-bottom:16px">메뉴 이름 수정, 추가·삭제 가능 (색상은 자동 배정)</div>
-        <div id="el">${state.menu.map((m,i)=>`<div class="editrow">
-          <span class="cdot" style="width:14px;height:14px;border-radius:99px;background:${mColor(m)};flex:0 0 auto"></span>
-          <input class="nm" data-nm="${i}" value="${esc(m.name)}"/>
-          <button class="del" data-del="${i}">삭제</button></div>`).join("")}</div>
+        <div class="sub" style="font-size:14px;color:var(--sub);margin-bottom:16px">메뉴 이름·색상 수정, 추가·삭제 가능</div>
+        <div id="el">${state.menu.map((m,i)=>`<div class="editcard">
+          <div class="editcard-top">
+            <span class="cdot" style="width:16px;height:16px;border-radius:99px;background:${mColor(m)};flex:0 0 auto"></span>
+            <input class="nm" data-nm="${i}" value="${esc(m.name)}"/>
+            <button class="del" data-del="${i}">삭제</button>
+          </div>
+          <div class="swatches">${swatches(mColor(m), "data-mcolor", i)}</div>
+        </div>`).join("")}</div>
         <button class="addbtn" data-act="addMenu">＋ 메뉴 추가</button>
         <button class="primary" style="margin-top:16px" data-act="saveMenu">저장하기</button>`;
     }
@@ -670,8 +728,12 @@
       document.querySelectorAll("[data-confirmteam]").forEach(el=>el.onclick=()=>confirmTeam(el.dataset.confirmteam));
       document.querySelectorAll("[data-readyteam]").forEach(el=>el.onclick=()=>readyTeam(el.dataset.readyteam));
       document.querySelectorAll("[data-disp]").forEach(el=>el.onclick=()=>{ state.dispSession=el.dataset.disp; render(); });
-      document.querySelectorAll("[data-del]").forEach(el=>el.onclick=()=>{ state.menu.splice(+el.dataset.del,1); render(); });
-      document.querySelectorAll("[data-tdel]").forEach(el=>el.onclick=()=>{ if(state.teams.length<=1){toast("최소 1개 팀은 있어야 해요");return;} state.teams.splice(+el.dataset.tdel,1); render(); });
+      document.querySelectorAll("[data-del]").forEach(el=>el.onclick=()=>{ readMenuInputs(); state.menu.splice(+el.dataset.del,1); render(); });
+      document.querySelectorAll("[data-tdel]").forEach(el=>el.onclick=()=>{ if(state.teams.length<=1){toast("최소 1개 팀은 있어야 해요");return;} readTeamInputs(); state.teams.splice(+el.dataset.tdel,1); render(); });
+      document.querySelectorAll("[data-editorder]").forEach(el=>el.onclick=()=>{ state.editOrderId=el.dataset.editorder; state.view="edit-order"; render(); });
+      document.querySelectorAll("[data-delorder]").forEach(el=>el.onclick=()=>delOrder(el.dataset.delorder));
+      document.querySelectorAll("[data-editpick]").forEach(el=>el.onclick=()=>editOrderDrink(el.dataset.editpick));
+      document.querySelectorAll("[data-mcolor]").forEach(el=>el.onclick=()=>{ const [i,c]=el.dataset.mcolor.split("|"); readMenuInputs(); if(state.menu[+i])state.menu[+i].color=c; render(); });
       const an=document.getElementById("addName"); if(an) an.addEventListener("input",e=>state.addName=e.target.value);
     }
 
@@ -683,13 +745,14 @@
         case "goAdd": state.addTeam=state.user.team!=="barista"?state.user.team:null; state.addName=""; state.view="add-person"; render(); break;
         case "goTeamList": state.dispSession=sessionState().session||"am"; state.view="team-list"; render(); break;
         case "back": state.view="home"; render(); break;
+        case "backToList": state.view="team-list"; render(); break;
         case "disp": state.dispSession=sessionState().session||"am"; state.view="disp"; render(); break;
         case "editMenu": state.view="menu-edit"; render(); break;
         case "editTeams": state.view="team-edit"; render(); break;
         case "editTime": state.view="time-edit"; render(); break;
         case "refresh": toast("최신 상태예요"); render(); break;
-        case "addMenu": state.menu.push({id:"m"+Date.now(),name:"새 메뉴",color:menuColorFor(state.menu.length)}); render(); break;
-        case "addTeam": state.teams.push({id:"t"+Date.now(),name:"새 팀",color:colorFor(state.teams.length)}); render(); break;
+        case "addMenu": readMenuInputs(); state.menu.push({id:"m"+Date.now(),name:"새 메뉴",color:menuColorFor(state.menu.length)}); render(); break;
+        case "addTeam": readTeamInputs(); state.teams.push({id:"t"+Date.now(),name:"새 팀",color:colorFor(state.teams.length)}); render(); break;
         case "saveMenu": doSaveMenu(); break;
         case "saveTeams": doSaveTeams(); break;
         case "saveTime": doSaveTime(); break;
@@ -729,6 +792,22 @@
       state.view="home"; render(); toast("맛있게 드세요 ☕");
     }
 
+    async function delOrder(id){
+      const o=state.orders[id]; if(!o) return;
+      if(!confirm(`${o.name}님 주문을 삭제할까요?`)) return;
+      const n={...state.orders}; delete n[id];
+      await saveOrders(n);
+      // if I deleted my own order, go home; otherwise stay on list
+      if(o.name===state.user.name && o.team===state.user.team){ state.view="home"; }
+      render(); toast(`${o.name}님 주문을 삭제했어요`);
+    }
+    async function editOrderDrink(drinkId){
+      const id=state.editOrderId, o=state.orders[id];
+      if(!o){ state.view="team-list"; render(); return; }
+      await saveOrders({...state.orders,[id]:{...o,drinkId}});
+      state.view="team-list"; render(); toast(`${o.name}님 음료를 변경했어요`);
+    }
+
     async function confirmTeam(teamId){
       const n={...state.orders};
       Object.keys(n).forEach(k=>{ if(n[k].team===teamId&&n[k].status==="pending") n[k]={...n[k],status:"confirmed"}; });
@@ -742,15 +821,21 @@
       toast(`${TEAMS.find(t=>t.id===teamId).name}에 알림을 보냈어요`);
     }
 
-    async function doSaveMenu(){
+    // read current edit-field values back into state (prevents reset on re-render)
+    function readMenuInputs(){
       document.querySelectorAll("[data-nm]").forEach(inp=>{const i=+inp.dataset.nm;if(state.menu[i])state.menu[i].name=inp.value;});
+    }
+    function readTeamInputs(){
+      document.querySelectorAll("[data-tnm]").forEach(inp=>{const i=+inp.dataset.tnm;if(state.teams[i])state.teams[i].name=inp.value;});
+    }
+    async function doSaveMenu(){
+      readMenuInputs();
       state.menu.forEach((m,i)=>{ if(!m.color) m.color=menuColorFor(i); });
       await saveMenu(state.menu); state.view="home"; render(); toast("메뉴를 저장했어요");
     }
     async function doSaveTeams(){
-      document.querySelectorAll("[data-tnm]").forEach(inp=>{const i=+inp.dataset.tnm;if(state.teams[i])state.teams[i].name=(inp.value||"이름없음");});
-      // ensure colors assigned
-      state.teams.forEach((t,i)=>{ if(!t.color) t.color=colorFor(i); });
+      readTeamInputs();
+      state.teams.forEach((t,i)=>{ if(!t.color) t.color=colorFor(i); if(!t.name) t.name="이름없음"; });
       await saveTeams(state.teams); state.view="home"; render(); toast("팀을 저장했어요");
     }
     async function doSaveTime(){
