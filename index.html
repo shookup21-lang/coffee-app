@@ -165,15 +165,21 @@
     .disprow .wd{color:var(--sub);font-size:14px}
 
     /* editors */
-    .editrow{display:flex;align-items:center;gap:8px;background:#fff;border-radius:16px;padding:11px 14px;margin-bottom:8px;box-shadow:0 2px 8px rgba(80,90,160,.05)}
-    .editrow input.nm{flex:1;border:none;font-size:15px;outline:none;font-weight:600}
-    .editrow input.emj{width:46px;border:none;font-size:22px;outline:none;text-align:center}
-    .editrow .del{color:#ff5a7a;font-size:13px;padding:6px 10px;font-weight:600}
+    .editrow{display:flex;align-items:center;gap:10px;background:#fff;border-radius:16px;padding:12px 12px 12px 16px;margin-bottom:8px;box-shadow:0 2px 8px rgba(80,90,160,.05)}
+    .editrow .cdot{flex:0 0 auto}
+    .editrow input.nm{flex:1 1 auto;min-width:0;border:1px solid #e8eef8;background:#f7faff;border-radius:10px;font-size:15px;outline:none;font-weight:600;padding:10px 12px}
+    .editrow input.nm:focus{border-color:#3b82f6;background:#fff}
+    .editrow input.emj{flex:0 0 auto;width:48px;border:1px solid #e8eef8;background:#f7faff;border-radius:10px;font-size:22px;outline:none;text-align:center;padding:8px 0}
+    .editrow .del{flex:0 0 auto;color:#fff;background:#ef4444;font-size:13px;padding:9px 14px;font-weight:700;border-radius:10px;white-space:nowrap}
+    .editrow .del:active{background:#dc2626}
     .addbtn{width:100%;border:2px dashed #c4d4ef;border-radius:16px;padding:14px;color:var(--sub);font-size:14px;font-weight:600;background:#fff}
     .timefield{background:#fff;border-radius:18px;padding:16px;margin-bottom:11px;box-shadow:0 2px 10px rgba(80,90,160,.05)}
     .timefield .tl{font-size:13px;color:var(--sub);margin-bottom:10px;font-weight:700}
     .timefield .tt{display:flex;align-items:center;gap:8px}
-    .timefield input[type=time]{flex:1;border:1px solid var(--line);border-radius:12px;padding:12px;font-size:15px;background:#eef4fc}
+    .timefield .tgrid{display:grid;grid-template-columns:60px 1fr 1fr;align-items:center;row-gap:10px;column-gap:8px}
+    .timefield .tgrid .tl{margin:0;font-size:14px;color:#16243f}
+    .tsel{width:100%;border:1px solid var(--line);border-radius:12px;padding:13px 12px;font-size:15px;background:#f7faff;font-weight:600;color:#16243f;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%237e8aa6' d='M6 8 0 0h12z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:30px}
+    .tsel:focus{border-color:#3b82f6;background-color:#fff;outline:none}
 
     .picklbl{font-size:13px;color:var(--sub);margin:16px 4px 9px;font-weight:700}
 
@@ -511,17 +517,9 @@
             <div class="stat"><b>${confirmed.length}</b><small>제조 중</small></div>
             <div class="stat"><b>${list.length}</b><small>오늘 총 주문</small></div>
           </div>
-          <div style="margin-top:14px;padding-top:14px;border-top:1px solid #292524;font-size:12px;color:#a8a29e">
-            ${ss.open?`<span style="color:#34d399">● ${ss.session==="am"?"오전":"오후"} 주문 접수 중 (~${ss.endsAt})</span>`:`○ 주문 시간 외 · 다음: ${ss.next} ${ss.at}`}
+          <div style="margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,.25);font-size:12px;color:rgba(255,255,255,.85)">
+            ${ss.open?`<span style="color:#bbf7d0">● ${ss.session==="am"?"오전":"오후"} 주문 접수 중 (~${ss.endsAt})</span>`:`○ 주문 시간 외 · 다음: ${ss.next} ${ss.at}`}
           </div>
-        </div>
-
-        <div class="navbtns">
-          <button data-act="disp"><span class="ic">📋</span>분배용 목록</button>
-          <button data-act="editMenu"><span class="ic">🥤</span>메뉴 관리</button>
-          <button data-act="editTeams"><span class="ic">🏢</span>팀 관리</button>
-          <button data-act="editTime"><span class="ic">🕘</span>주문 시간 설정</button>
-          <button data-act="refresh"><span class="ic">🔄</span>새로고침</button>
         </div>
 
         ${Object.keys(counts).length?`<div class="batch"><div class="lbl">지금 만들어야 할 잔 수</div>
@@ -530,6 +528,15 @@
         <h2 class="sec serif">팀별 주문</h2>
         ${Object.keys(byTeam).length===0?`<div class="empty">아직 주문이 없어요</div>`:
           TEAMS.filter(t=>byTeam[t.id]).map(t=>teamCard(t,byTeam[t.id])).join("")}
+
+        <h2 class="sec serif" style="margin-top:24px">관리 메뉴</h2>
+        <div class="navbtns">
+          <button data-act="disp"><span class="ic">📋</span>주문 목록</button>
+          <button data-act="editMenu"><span class="ic">🥤</span>메뉴 관리</button>
+          <button data-act="editTeams"><span class="ic">🏢</span>팀 관리</button>
+          <button data-act="editTime"><span class="ic">🕘</span>주문 시간 설정</button>
+          <button data-act="refresh"><span class="ic">🔄</span>새로고침</button>
+        </div>
       `;
     }
     function teamCard(team, orders){
@@ -552,7 +559,7 @@
       const list=Object.entries(state.orders).map(([id,o])=>({id,...o})).filter(o=>o.session===sess);
       const byTeam={}; list.forEach(o=>{(byTeam[o.team]=byTeam[o.team]||[]).push(o);});
       return `<button class="back" data-act="back">‹ 뒤로</button>
-        <h1 class="serif" style="font-size:26px;margin-bottom:4px">분배용 목록</h1>
+        <h1 class="serif" style="font-size:26px;margin-bottom:4px">주문 목록</h1>
         <div class="sub" style="font-size:14px;color:var(--sub);margin-bottom:16px">음료를 나눠줄 때 보는 이름순 목록</div>
         <div class="seg">
           <button class="${sess==="am"?'on':''}" data-disp="am">오전 (${Object.values(state.orders).filter(o=>o.session==="am").length})</button>
@@ -594,15 +601,24 @@
     }
 
     // ---- time editor ----
+    function hourOpts(sel){ let o=""; for(let h=0;h<=23;h++){const v=String(h).padStart(2,"0");o+=`<option value="${v}"${v===sel?" selected":""}>${v}시</option>`;} return o; }
+    function minOpts(sel){ let o=""; for(let m=0;m<=50;m+=10){const v=String(m).padStart(2,"0");o+=`<option value="${v}"${v===sel?" selected":""}>${v}분</option>`;} return o; }
+    function timeRow(label, idH, idM, hhmm){
+      const [hh,mm]=hhmm.split(":");
+      return `<div class="tl">${label}</div><div class="tt">
+        <select id="${idH}" class="tsel">${hourOpts(hh)}</select>
+        <select id="${idM}" class="tsel">${minOpts(mm)}</select>
+      </div>`;
+    }
     function renderTimeEdit(){
       const h=state.hours;
       return `<button class="back" data-act="back">‹ 뒤로</button>
         <h1 class="serif" style="font-size:26px;margin-bottom:4px">주문 시간 설정</h1>
         <div class="sub" style="font-size:14px;color:var(--sub);margin-bottom:16px">오전·오후 주문 시작/마감 시간을 조정하세요</div>
-        <div class="timefield"><div class="tl">오전 주문</div><div class="tt">
-          <input type="time" id="amS" value="${h.amStart}"/> <span>~</span> <input type="time" id="amE" value="${h.amEnd}"/></div></div>
-        <div class="timefield"><div class="tl">오후 주문</div><div class="tt">
-          <input type="time" id="pmS" value="${h.pmStart}"/> <span>~</span> <input type="time" id="pmE" value="${h.pmEnd}"/></div></div>
+        <div class="timefield"><div class="tl" style="margin-bottom:12px;font-size:14px;color:#16243f">오전 주문</div>
+          <div class="tgrid">${timeRow("시작", "amSh","amSm", h.amStart)}${timeRow("마감", "amEh","amEm", h.amEnd)}</div></div>
+        <div class="timefield"><div class="tl" style="margin-bottom:12px;font-size:14px;color:#16243f">오후 주문</div>
+          <div class="tgrid">${timeRow("시작", "pmSh","pmSm", h.pmStart)}${timeRow("마감", "pmEh","pmEm", h.pmEnd)}</div></div>
         <button class="primary" style="margin-top:8px" data-act="saveTime">저장하기</button>
         <div class="footnote">마감 시간이 지나면 새 주문은 자동으로 차단됩니다. 이미 들어온 주문은 그대로 유지돼요.</div>`;
     }
@@ -701,7 +717,11 @@
       await saveTeams(state.teams); state.view="home"; render(); toast("팀을 저장했어요");
     }
     async function doSaveTime(){
-      const h={amStart:document.getElementById("amS").value,amEnd:document.getElementById("amE").value,pmStart:document.getElementById("pmS").value,pmEnd:document.getElementById("pmE").value};
+      const g=id=>document.getElementById(id).value;
+      const h={
+        amStart:`${g("amSh")}:${g("amSm")}`, amEnd:`${g("amEh")}:${g("amEm")}`,
+        pmStart:`${g("pmSh")}:${g("pmSm")}`, pmEnd:`${g("pmEh")}:${g("pmEm")}`
+      };
       await saveHours(h); state.view="home"; render(); toast("주문 시간을 저장했어요");
     }
 
