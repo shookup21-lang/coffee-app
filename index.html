@@ -183,9 +183,11 @@
     .seg button.on{background:#fff;color:#2563eb;box-shadow:0 2px 8px rgba(80,90,160,.1)}
     .listteam{font-size:16px;font-weight:800;margin:18px 4px 9px;display:flex;align-items:center;gap:8px}
     .listteam .cdot{width:10px;height:10px;border-radius:99px}
-    .disprow{display:flex;justify-content:space-between;background:#fff;border-radius:14px;padding:13px 16px;margin-bottom:7px;box-shadow:0 2px 8px rgba(80,90,160,.05)}
-    .disprow .who{font-weight:700}
-    .disprow .wd{color:var(--sub);font-size:14px}
+    .disprow{display:flex;align-items:center;gap:10px;background:#fff;border-radius:14px;padding:11px 12px 11px 16px;margin-bottom:7px;box-shadow:0 2px 8px rgba(80,90,160,.05)}
+    .disprow .who{font-weight:700;flex:0 0 auto}
+    .disprow .wd{color:var(--sub);font-size:14px;flex:1 1 auto;text-align:right;min-width:0;word-break:keep-all}
+    .disprow .dispdel{flex:0 0 auto;width:32px;height:32px;border-radius:9px;background:#fef2f2;color:#ef4444;font-size:16px;font-weight:800;line-height:1}
+    .disprow .dispdel:active{background:#fee2e2}
     /* list row with edit/delete (employee team list) */
     .lrow{background:#fff;border-radius:14px;padding:12px 14px;margin-bottom:8px;box-shadow:0 2px 8px rgba(80,90,160,.05)}
     .lrow-main{display:flex;justify-content:space-between;align-items:center}
@@ -307,6 +309,13 @@
     // accessor so existing TEAMS.* code keeps working
     const TEAMS = { get list(){return state.teams;}, find(fn){return state.teams.find(fn);}, filter(fn){return state.teams.filter(fn);}, map(fn){return state.teams.map(fn);} };
     const teamById = id => state.teams.find(t=>t.id===id) || {id,name:id,color:"#64748b"};
+    // 주문이 들어온 모든 팀 id를 정렬: 현재 팀(순서 유지) + 사라진 팀(주문은 있는데 목록엔 없는 경우)
+    const groupTeamIds = byTeam => {
+      const knownSet=new Set(state.teams.map(t=>t.id));
+      const known=state.teams.filter(t=>byTeam[t.id]).map(t=>t.id);
+      const orphans=Object.keys(byTeam).filter(id=>!knownSet.has(id));
+      return [...known, ...orphans];
+    };
 
     const app=document.getElementById("app"), toastEl=document.getElementById("toast");
     let tTimer=null;
@@ -640,7 +649,7 @@
 
         <div class="sechead"><h2 class="sec serif" style="margin:0">팀별 주문</h2><button class="refreshbtn" data-act="refresh">🔄 새로고침</button></div>
         ${Object.keys(byTeam).length===0?`<div class="empty">아직 주문이 없어요</div>`:
-          TEAMS.filter(t=>byTeam[t.id]).map(t=>teamCard(t,byTeam[t.id])).join("")}
+          groupTeamIds(byTeam).map(tid=>teamCard(teamById(tid),byTeam[tid])).join("")}
 
         <h2 class="sec serif" style="margin-top:24px">관리 메뉴</h2>
         <div class="navtext">
@@ -675,16 +684,17 @@
       const byTeam={}; list.forEach(o=>{(byTeam[o.team]=byTeam[o.team]||[]).push(o);});
       return `<button class="back" data-act="back">‹ 뒤로</button>
         <h1 class="serif" style="font-size:26px;margin-bottom:4px">주문 목록</h1>
-        <div class="sub" style="font-size:14px;color:var(--sub);margin-bottom:16px">음료를 나눠줄 때 보는 이름순 목록</div>
+        <div class="sub" style="font-size:14px;color:var(--sub);margin-bottom:16px">음료를 나눠줄 때 보는 이름순 목록 · 잘못된 주문은 ✕로 삭제</div>
         <div class="seg">
           <button class="${sess==="am"?'on':''}" data-disp="am">오전 (${Object.values(state.orders).filter(o=>o.session==="am").length})</button>
           <button class="${sess==="pm"?'on':''}" data-disp="pm">오후 (${Object.values(state.orders).filter(o=>o.session==="pm").length})</button>
         </div>
         ${list.length===0?`<div class="empty">${sess==="am"?"오전":"오후"} 주문이 없어요</div>`:
-          TEAMS.filter(t=>byTeam[t.id]).map(t=>{
-            const arr=byTeam[t.id].sort((a,b)=>krSort(a.name,b.name));
+          groupTeamIds(byTeam).map(tid=>{
+            const t=teamById(tid);
+            const arr=byTeam[tid].sort((a,b)=>krSort(a.name,b.name));
             return `<div class="listteam"><span class="cdot" style="background:${t.color}"></span>${esc(t.name)} · ${arr.length}잔</div>
-              ${arr.map(o=>{const m=menuById(o.drinkId);return `<div class="disprow"><span class="who">${esc(o.name)}${o.by&&o.by!==o.name?` <span class="bytag">대행:${esc(o.by)}</span>`:""}</span><span class="wd">${m?`<span class="csq sm" style="background:${mColor(m)}"></span> ${esc(m.name)}`:esc(o.drinkId)}</span></div>`;}).join("")}`;
+              ${arr.map(o=>{const m=menuById(o.drinkId);return `<div class="disprow"><span class="who">${esc(o.name)}${o.by&&o.by!==o.name?` <span class="bytag">대행:${esc(o.by)}</span>`:""}</span><span class="wd">${m?`<span class="csq sm" style="background:${mColor(m)}"></span> ${esc(m.name)}`:esc(o.drinkId)}</span><button class="dispdel" data-delorder="${o.id}" aria-label="삭제">✕</button></div>`;}).join("")}`;
           }).join("")}`;
     }
 
@@ -843,13 +853,13 @@
       const n={...state.orders};
       Object.keys(n).forEach(k=>{ if(n[k].team===teamId&&n[k].status==="pending") n[k]={...n[k],status:"confirmed"}; });
       await saveOrders(n);
-      toast(`${TEAMS.find(t=>t.id===teamId).name} 주문을 확인했어요`);
+      toast(`${teamById(teamId).name} 주문을 확인했어요`);
     }
     async function readyTeam(teamId){
       const n={...state.orders};
       Object.keys(n).forEach(k=>{ if(n[k].team===teamId&&(n[k].status==="confirmed"||n[k].status==="pending")) n[k]={...n[k],status:"ready",readyAt:new Date().toISOString()}; });
       await saveOrders(n);
-      toast(`${TEAMS.find(t=>t.id===teamId).name}에 알림을 보냈어요`);
+      toast(`${teamById(teamId).name}에 알림을 보냈어요`);
     }
 
     // read current edit-field values back into state (prevents reset on re-render)
