@@ -156,6 +156,9 @@
     .navtext button:active{background:#dde8f7}
 
     .batch{background:#fff;border-radius:22px;padding:20px;margin-bottom:16px;box-shadow:0 6px 18px rgba(80,90,160,.07)}
+    .soundtoggle{width:100%;margin-bottom:16px;padding:13px;border-radius:14px;background:#eaf6ec;color:#15803d;font-weight:700;font-size:14px;box-shadow:0 2px 8px rgba(80,90,160,.05)}
+    .soundtoggle.off{background:#fdeaea;color:#b91c1c}
+    .soundtoggle:active{filter:brightness(.96)}
     .batch .lbl{font-size:12px;letter-spacing:.02em;color:var(--sub);margin-bottom:8px;font-weight:700}
     .batch .grid{display:flex;flex-direction:column}
     .batch .row{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
@@ -167,6 +170,7 @@
     .tcard .th{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
     .tcard .tname{display:flex;align-items:center;gap:8px}
     .tcard .tname .cdot{width:10px;height:10px;border-radius:99px}
+    .tcard .tname .tno{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:99px;color:#fff;font-size:14px;font-weight:800;flex:0 0 auto}
     .tcard .tname b{font-size:19px;font-weight:800}
     .tcard .tmeta{font-size:12px;color:var(--sub)}
     .tcard .ln{display:flex;justify-content:space-between;background:#eef4fc;border-radius:12px;padding:11px 14px;margin-bottom:7px;font-size:14px}
@@ -313,20 +317,74 @@
       teams: DEFAULT_TEAMS,
       hours: DEFAULT_HOURS,
       seenReady: JSON.parse(localStorage.getItem("ian_seen")||"[]"),
+      soundOn: JSON.parse(localStorage.getItem("ian_sound")||"true"),
       // add-person flow temp
       addTeam:null, addName:"", editOrderId:null,
       dispSession:"am",
     };
+
+    // ---------- 담당자 새 주문 알림 (소리·진동·화면 유지) ----------
+    let _audioCtx=null, _knownIds=null, _wakeLock=null;
+    function armAudio(){
+      try{
+        if(!_audioCtx) _audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+        if(_audioCtx.state==="suspended") _audioCtx.resume();
+      }catch(e){}
+    }
+    function playDing(){
+      if(!state.soundOn) return;
+      try{
+        if(!_audioCtx) return;
+        if(_audioCtx.state==="suspended") _audioCtx.resume();
+        const ctx=_audioCtx, now=ctx.currentTime;
+        [880,660].forEach((freq,i)=>{
+          const o=ctx.createOscillator(), g=ctx.createGain(), start=now+i*0.18;
+          o.type="sine"; o.frequency.value=freq;
+          g.gain.setValueAtTime(0.0001,start);
+          g.gain.exponentialRampToValueAtTime(0.35,start+0.02);
+          g.gain.exponentialRampToValueAtTime(0.0001,start+0.16);
+          o.connect(g); g.connect(ctx.destination);
+          o.start(start); o.stop(start+0.18);
+        });
+      }catch(e){}
+    }
+    // 첫 사용자 터치에 오디오 활성화 (브라우저 자동재생 정책)
+    document.addEventListener("pointerdown", armAudio);
+    // 화면 꺼짐 방지 (담당자가 앱을 보고 있는 동안)
+    async function maybeWake(){
+      try{
+        if(_wakeLock) return;
+        if(state.user && state.user.team==="barista" && document.visibilityState==="visible" && "wakeLock" in navigator){
+          _wakeLock=await navigator.wakeLock.request("screen");
+          _wakeLock.addEventListener&&_wakeLock.addEventListener("release",()=>{_wakeLock=null;});
+        }
+      }catch(e){}
+    }
+    document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible") maybeWake(); });
     // accessor so existing TEAMS.* code keeps working
     const TEAMS = { get list(){return state.teams;}, find(fn){return state.teams.find(fn);}, filter(fn){return state.teams.filter(fn);}, map(fn){return state.teams.map(fn);} };
     const teamById = id => state.teams.find(t=>t.id===id) || {id,name:id,color:"#64748b"};
     // 주문이 들어온 모든 팀 id를 정렬: 현재 팀(순서 유지) + 사라진 팀(주문은 있는데 목록엔 없는 경우)
     const groupTeamIds = byTeam => {
       const knownSet=new Set(state.teams.map(t=>t.id));
-      const known=state.teams.filter(t=>byTeam[t.id]).map(t=>t.id);
+      const known=state.teams.filter(t=>byTeam[t.id]).map(t=>t.id).sort((a,b)=>(teamDayNo(a)||99)-(teamDayNo(b)||99));
       const orphans=Object.keys(byTeam).filter(id=>!knownSet.has(id));
       return [...known, ...orphans];
     };
+    // 평일 기준 회전 카운터 (주말은 직전 금요일 값 유지, 자정에 갱신). 2024-01-01(월) 기준.
+    function workdayIndex(){
+      const ref=new Date(2024,0,1);
+      const t=new Date(), t0=new Date(t.getFullYear(),t.getMonth(),t.getDate());
+      const diff=Math.round((t0-ref)/86400000);
+      const week=Math.floor(diff/7), dow=((diff%7)+7)%7; // 0=월 … 6=일
+      return dow<=4 ? week*5+dow : week*5+4; // 토·일 = 그 주 금요일
+    }
+    // 팀의 오늘 번호 (기본 순서 + 평일수, 팀 수로 회전). 1부터 시작, 없는 팀은 null
+    function teamDayNo(teamId){
+      const idx=state.teams.findIndex(t=>t.id===teamId), n=state.teams.length;
+      if(idx<0||n===0) return null;
+      return ((idx+workdayIndex())%n+n)%n+1;
+    }
 
     const app=document.getElementById("app"), toastEl=document.getElementById("toast");
     let tTimer=null;
@@ -355,7 +413,18 @@
 
     // ---------- firestore ----------
     function startSync(){
-      onSnapshot(doc(db,"daily",todayKey()),s=>{ const d=s.exists()?s.data():{}; state.orders=d.orders||{}; checkNotif(); render(); },e=>console.error(e));
+      onSnapshot(doc(db,"daily",todayKey()),s=>{
+        const d=s.exists()?s.data():{}; const orders=d.orders||{};
+        const ids=Object.keys(orders);
+        if(_knownIds===null){ _knownIds=new Set(ids); }   // 첫 로드: 알림 없음
+        else {
+          const isBarista=state.user&&state.user.team==="barista";
+          const hasNew=ids.some(id=>!_knownIds.has(id));   // 새로 추가된 주문만
+          if(isBarista&&hasNew) playDing();
+          _knownIds=new Set(ids);
+        }
+        state.orders=orders; checkNotif(); render();
+      },e=>console.error(e));
       onSnapshot(doc(db,"config","menu"),s=>{ if(s.exists()&&Array.isArray(s.data().items)&&s.data().items.length){ state.menu=s.data().items.map((m,i)=>({...m, color:m.color||menuColorFor(i)})); } else state.menu=DEFAULT_MENU; render(); },e=>console.error(e));
       onSnapshot(doc(db,"config","teams"),s=>{ if(s.exists()&&Array.isArray(s.data().items)&&s.data().items.length) state.teams=s.data().items.map((t,i)=>({...t, color:colorFor(i)})); else state.teams=DEFAULT_TEAMS; render(); },e=>console.error(e));
       onSnapshot(doc(db,"config","hours"),s=>{ if(s.exists()) state.hours={...DEFAULT_HOURS,...s.data()}; render(); },e=>console.error(e));
@@ -395,6 +464,7 @@
     // ============ RENDER ============
     function render(){
       if(!state.user) return renderLogin();
+      maybeWake();
       syncHistory();
       app.innerHTML = renderHeader() + `<div class="wrap" id="wrap"></div>`;
       const w=document.getElementById("wrap");
@@ -506,14 +576,14 @@
     // ---- employee home ----
     function renderHome(){
       const u=state.user, t=TEAMS.find(x=>x.id===u.team);
-      const ss=sessionState(), mine=myTodayOrder(), blocked=teamInProgress(u.team);
+      const ss=sessionState(), mine=myTodayOrder(), blocked=teamInProgress(u.team), myNo=teamDayNo(u.team);
       return `
         <div class="greet">
           <h1><span class="nm">${esc(u.name)}</span>님, 안녕하세요.<br/>좋은 하루 보내세요.</h1>
           <div class="date">${new Date().toLocaleDateString("ko-KR",{month:"long",day:"numeric",weekday:"long"})}</div>
         </div>
         <div class="hero"><div class="bigcup">${heroEmoji()}</div><div class="rel">
-          <div class="team">${t.name} · ${ss.open?`${ss.session==="am"?"오전":"오후"} 주문 중`:"주문 시간 외"}</div>
+          <div class="team">${t.name}${myNo?` · 오늘 ${myNo}번`:""} · ${ss.open?`${ss.session==="am"?"오전":"오후"} 주문 중`:"주문 시간 외"}</div>
           <h1>${mine?(mine.status==="ready"?"음료가 준비됐어요":"오늘 주문 완료"):"오늘의 한 잔"}</h1>
           <div class="sub">${ss.open?`지금 주문을 받고 있어요 (~${ss.endsAt})`:`${ss.next} 주문은 ${ss.at}부터예요`}</div>
         </div></div>
@@ -526,7 +596,7 @@
         ` : `<div class="empty">지금은 주문 시간이 아니에요</div>
           <button class="ghost" data-act="goAdd" style="margin-top:12px">👥 다른 사람 대신 주문하기</button>`}
         <button class="ghost" data-act="goTeamList" style="margin-top:10px">📋 우리 팀 주문 목록 보기</button>
-        <div class="footnote">하루 한 잔, 무료로 제공됩니다. 폰이 없는 동료는 '다른 사람 대신 주문하기'로 넣어줄 수 있어요. 완성된 음료를 받을 땐 '우리 팀 주문 목록 보기'에서 누가 무엇을 주문했는지 확인할 수 있어요.</div>
+        <div class="footnote">팀 번호가 빠를수록 먼저 만들어 드려요. 번호는 평일마다 한 칸씩 돌아가서 매일 순서가 바뀝니다. 하루 한 잔, 무료로 제공됩니다. 폰이 없는 동료는 '다른 사람 대신 주문하기'로 넣어줄 수 있어요. 완성된 음료를 받을 땐 '우리 팀 주문 목록 보기'에서 누가 무엇을 주문했는지 확인할 수 있어요.</div>
       `;
     }
     function myCupHTML(o,ss,blocked){
@@ -661,6 +731,8 @@
           </div>
         </div>
 
+        <button class="soundtoggle ${state.soundOn?'':'off'}" data-act="toggleSound">${state.soundOn?"🔔 새 주문 알림 소리 · 켜짐 (눌러서 끄기)":"🔕 새 주문 알림 소리 · 꺼짐 (눌러서 켜기)"}</button>
+
         ${Object.keys(counts).length?`<div class="batch"><div class="lbl">지금 만들어야 할 잔 수</div>
           <div class="grid">${state.menu.filter(m=>counts[m.id]).map(m=>`<div class="row"><span class="csq sm" style="background:${mColor(m)}"></span><span class="nm">${esc(m.name)}</span><b>${counts[m.id]}</b></div>`).join("")}</div></div>`:""}
 
@@ -680,13 +752,14 @@
     function teamCard(team, orders){
       const allConfirmed = orders.every(o=>o.status!=="pending");
       const total=orders.length;
+      const no=teamDayNo(team.id);
       // tally drinks for this team
       const counts={}; orders.forEach(o=>{counts[o.drinkId]=(counts[o.drinkId]||0)+1;});
       const lines = state.menu.filter(m=>counts[m.id]).map(m=>
         `<div class="ln"><span class="who"><span class="csq sm" style="background:${mColor(m)}"></span> ${esc(m.name)}</span><b>${counts[m.id]}잔</b></div>`
       ).join("");
       return `<div class="tcard" style="border-color:${team.color}">
-        <div class="th"><div class="tname"><span class="cdot" style="background:${team.color}"></span><b>${esc(team.name)}</b><span class="tmeta">· 총 ${total}잔</span></div></div>
+        <div class="th"><div class="tname">${no?`<span class="tno" style="background:${team.color}">${no}</span>`:`<span class="cdot" style="background:${team.color}"></span>`}<b>${esc(team.name)}</b><span class="tmeta">· 총 ${total}잔</span></div></div>
         ${lines}
         ${!allConfirmed
           ? `<button class="act confirm" data-confirmteam="${team.id}">✓ ${esc(team.name)} 주문 확인</button>`
@@ -708,9 +781,9 @@
         </div>
         ${list.length===0?`<div class="empty">${sess==="am"?"오전":"오후"} 주문이 없어요</div>`:
           groupTeamIds(byTeam).map(tid=>{
-            const t=teamById(tid);
+            const t=teamById(tid), no=teamDayNo(tid);
             const arr=byTeam[tid].sort((a,b)=>krSort(a.name,b.name));
-            return `<div class="listteam"><span class="cdot" style="background:${t.color}"></span>${esc(t.name)} · ${arr.length}잔</div>
+            return `<div class="listteam"><span class="cdot" style="background:${t.color}"></span>${no?`${no}번 · `:""}${esc(t.name)} · ${arr.length}잔</div>
               ${arr.map(o=>{const m=menuById(o.drinkId);return `<div class="disprow"><span class="who">${esc(o.name)}${o.by&&o.by!==o.name?` <span class="bytag">대행:${esc(o.by)}</span>`:""}</span><span class="wd">${m?`<span class="csq sm" style="background:${mColor(m)}"></span> ${esc(m.name)}`:esc(o.drinkId)}</span><button class="dispdel" data-delorder="${o.id}" aria-label="삭제">✕</button></div>`;}).join("")}`;
           }).join("")}`;
     }
@@ -806,6 +879,13 @@
         case "editTeams": state.view="team-edit"; render(); break;
         case "editTime": state.view="time-edit"; render(); break;
         case "refresh": toast("최신 상태예요"); render(); break;
+        case "toggleSound":
+          state.soundOn=!state.soundOn;
+          localStorage.setItem("ian_sound", JSON.stringify(state.soundOn));
+          armAudio();
+          render();
+          if(state.soundOn){ playDing(); toast("새 주문 알림 소리 켜짐"); } else toast("새 주문 알림 소리 꺼짐");
+          break;
         case "addMenu": readMenuInputs(); state.menu.push({id:"m"+Date.now(),name:"새 메뉴",color:menuColorFor(state.menu.length)}); render(); break;
         case "addTeam": readTeamInputs(); state.teams.push({id:"t"+Date.now(),name:"새 팀",color:colorFor(state.teams.length)}); render(); break;
         case "saveMenu": doSaveMenu(); break;
