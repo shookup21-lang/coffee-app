@@ -318,6 +318,7 @@
       hours: DEFAULT_HOURS,
       seenReady: JSON.parse(localStorage.getItem("ian_seen")||"[]"),
       soundOn: JSON.parse(localStorage.getItem("ian_sound")||"true"),
+      rotation: null,   // { base:[teamId...], baseDate:"YYYY-MM-DD" }
       // add-person flow temp
       addTeam:null, addName:"", editOrderId:null,
       dispSession:"am",
@@ -371,19 +372,34 @@
       const orphans=Object.keys(byTeam).filter(id=>!knownSet.has(id));
       return [...known, ...orphans];
     };
-    // 평일 기준 회전 카운터 (주말은 직전 금요일 값 유지, 자정에 갱신). 2024-01-01(월) 기준.
-    function workdayIndex(){
+    // 평일 카운터 (주말은 직전 금요일 값 유지). 2024-01-01(월) 기준. 날짜를 받을 수 있음
+    function workdayIndexOf(d){
+      const t = (typeof d==="string") ? new Date(d+"T00:00:00") : (d||new Date());
       const ref=new Date(2024,0,1);
-      const t=new Date(), t0=new Date(t.getFullYear(),t.getMonth(),t.getDate());
+      const t0=new Date(t.getFullYear(),t.getMonth(),t.getDate());
       const diff=Math.round((t0-ref)/86400000);
       const week=Math.floor(diff/7), dow=((diff%7)+7)%7; // 0=월 … 6=일
       return dow<=4 ? week*5+dow : week*5+4; // 토·일 = 그 주 금요일
     }
-    // 팀의 오늘 번호 (기본 순서 + 평일수, 팀 수로 회전). 1부터 시작, 없는 팀은 null
+    const workdayIndex = () => workdayIndexOf(new Date());
+    // 저장된 줄 순서(base)를 현재 팀과 맞춤: 삭제된 팀 제거, 새 팀은 맨 뒤에 추가. 없으면 현재 팀 순서/기준일 2024-01-01
+    function effectiveRotation(){
+      const ids=state.teams.map(t=>t.id);
+      if(state.rotation && Array.isArray(state.rotation.base) && state.rotation.base.length){
+        const idSet=new Set(ids);
+        const base=state.rotation.base.filter(id=>idSet.has(id));
+        ids.forEach(id=>{ if(!base.includes(id)) base.push(id); });
+        return { base, baseDate: state.rotation.baseDate || "2024-01-01" };
+      }
+      return { base: ids.slice(), baseDate: "2024-01-01" };
+    }
+    // 팀의 오늘 번호: 줄 순서를 매일 앞→뒤로 회전. 1부터, 없는 팀은 null
     function teamDayNo(teamId){
-      const idx=state.teams.findIndex(t=>t.id===teamId), n=state.teams.length;
-      if(idx<0||n===0) return null;
-      return ((idx+workdayIndex())%n+n)%n+1;
+      const {base,baseDate}=effectiveRotation();
+      const N=base.length, p=base.indexOf(teamId);
+      if(p<0||N===0) return null;
+      const k=workdayIndex()-workdayIndexOf(baseDate);
+      return ((p-k)%N+N)%N+1;
     }
 
     const app=document.getElementById("app"), toastEl=document.getElementById("toast");
@@ -428,10 +444,12 @@
       onSnapshot(doc(db,"config","menu"),s=>{ if(s.exists()&&Array.isArray(s.data().items)&&s.data().items.length){ state.menu=s.data().items.map((m,i)=>({...m, color:m.color||menuColorFor(i)})); } else state.menu=DEFAULT_MENU; render(); },e=>console.error(e));
       onSnapshot(doc(db,"config","teams"),s=>{ if(s.exists()&&Array.isArray(s.data().items)&&s.data().items.length) state.teams=s.data().items.map((t,i)=>({...t, color:colorFor(i)})); else state.teams=DEFAULT_TEAMS; render(); },e=>console.error(e));
       onSnapshot(doc(db,"config","hours"),s=>{ if(s.exists()) state.hours={...DEFAULT_HOURS,...s.data()}; render(); },e=>console.error(e));
+      onSnapshot(doc(db,"config","rotation"),s=>{ state.rotation = s.exists()? s.data() : null; render(); },e=>console.error(e));
     }
     const saveOrders=async n=>{state.orders=n;await setDoc(doc(db,"daily",todayKey()),{orders:n},{merge:true});};
     const saveMenu=async i=>{state.menu=i;await setDoc(doc(db,"config","menu"),{items:i});};
     const saveTeams=async i=>{state.teams=i;await setDoc(doc(db,"config","teams"),{items:i});};
+    const saveRotation=async (base,baseDate)=>{ state.rotation={base,baseDate}; await setDoc(doc(db,"config","rotation"),{base,baseDate}); };
     const saveHours=async h=>{state.hours=h;await setDoc(doc(db,"config","hours"),h);};
 
     // ---------- notifications ----------
@@ -976,7 +994,19 @@
     async function doSaveTeams(){
       readTeamInputs();
       state.teams.forEach((t,i)=>{ if(!t.color) t.color=colorFor(i); if(!t.name) t.name="이름없음"; });
-      await saveTeams(state.teams); state.view="home"; render(); toast("팀을 저장했어요");
+      // 회전 줄 순서 고정: 오늘 순서(생존 팀) + 새 팀 맨 뒤, 기준일=오늘
+      const ids=state.teams.map(t=>t.id);
+      const prev=(state.rotation&&Array.isArray(state.rotation.base)&&state.rotation.base.length)
+        ? state.rotation : { base: ids.slice(), baseDate:"2024-01-01" };
+      const N0=prev.base.length, k=workdayIndex()-workdayIndexOf(prev.baseDate);
+      const rotatedOld=prev.base.map((_,i)=>prev.base[((i+k)%N0+N0)%N0]); // 오늘의 기존 팀 순서
+      const idSet=new Set(ids);
+      const survivors=rotatedOld.filter(id=>idSet.has(id));
+      const newOnes=ids.filter(id=>!prev.base.includes(id));
+      const newBase=[...survivors,...newOnes];
+      await saveTeams(state.teams);
+      await saveRotation(newBase, todayKey());
+      state.view="home"; render(); toast("팀을 저장했어요");
     }
     async function doSaveTime(){
       const g=id=>document.getElementById(id).value;
