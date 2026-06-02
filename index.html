@@ -24,12 +24,14 @@
 
     /* header */
     header{position:sticky;top:0;z-index:20;background:var(--bg);display:flex;align-items:center;justify-content:space-between;padding:16px 20px 12px}
-    .logo{display:flex;align-items:center;gap:9px;font-weight:800;font-size:20px;letter-spacing:-0.02em}
-    .logo .badge-ic{height:30px;padding:0 11px;border-radius:10px;background:linear-gradient(135deg,var(--p1),var(--p2));display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;font-weight:800;letter-spacing:-0.01em}
-    .h-right{display:flex;align-items:center;gap:6px}
-    .userchip{font-size:13px;color:var(--sub);padding:7px 12px;border-radius:99px;background:#fff;display:flex;gap:6px;align-items:center;box-shadow:0 2px 8px rgba(80,90,160,.06)}
+    .logo{display:flex;align-items:center;gap:9px;font-weight:800;font-size:20px;letter-spacing:-0.02em;white-space:nowrap;flex:0 0 auto}
+    .logo .badge-ic{height:30px;padding:0 11px;border-radius:10px;background:linear-gradient(135deg,var(--p1),var(--p2));display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;font-weight:800;letter-spacing:-0.01em;flex:0 0 auto}
+    .h-right{display:flex;align-items:center;gap:6px;flex:1 1 auto;min-width:0;justify-content:flex-end}
+    .userchip{padding:6px 12px;border-radius:15px;background:#fff;display:flex;flex-direction:column;align-items:flex-end;gap:1px;line-height:1.2;text-align:right;min-width:0;max-width:56vw;box-shadow:0 2px 8px rgba(80,90,160,.06)}
+    .userchip .uc-name{font-size:12px;font-weight:600;color:var(--sub);max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .userchip .uc-team{font-size:13px;font-weight:800;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .userchip:active{background:#f3f4fa}
-    .bell{position:relative;width:40px;height:40px;border-radius:99px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 2px 8px rgba(80,90,160,.06)}
+    .bell{position:relative;width:40px;height:40px;border-radius:99px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 2px 8px rgba(80,90,160,.06);flex:0 0 auto}
     .bell:active{background:#f3f4fa}
     .badge{position:absolute;top:5px;right:5px;background:#ff5a7a;color:#fff;font-size:10px;font-weight:700;min-width:16px;height:16px;border-radius:99px;display:flex;align-items:center;justify-content:center;padding:0 4px}
 
@@ -419,12 +421,12 @@
     });
 
     function renderHeader(){
-      const u=state.user, t=TEAMS.find(x=>x.id===u.team), isB=u.team==="barista", nc=myNotifs().length;
+      const u=state.user, isB=u.team==="barista", t=teamById(u.team), nc=myNotifs().length;
       return `<header>
         <div class="logo"><span class="badge-ic">iaan</span>${APP_NAME}</div>
         <div class="h-right">
           ${!isB?`<button class="bell" data-act="bell">🔔${nc>0?`<span class="badge">${nc}</span>`:""}</button>`:""}
-          <button class="userchip" data-act="logout"><b>${esc(u.name)}</b><span style="color:#bcc9e2">·</span><span style="color:${isB?'#2563eb':t.color}">${isB?'담당자':t.name}</span></button>
+          <button class="userchip" data-act="logout"><span class="uc-team" style="color:${isB?'#2563eb':t.color}">${isB?'담당자':esc(t.name)}</span><span class="uc-name">${esc(u.name)}</span></button>
         </div></header>`;
     }
 
