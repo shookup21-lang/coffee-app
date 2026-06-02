@@ -348,6 +348,10 @@
       const e=Object.entries(state.orders).find(([_,o])=>o.team===state.user.team && o.name===state.user.name);
       return e?{id:e[0],...e[1]}:null;
     }
+    // 우리 팀이 제조 중인가 (담당자가 확인해서 만드는 중 = confirmed 상태가 하나라도 있음)
+    function teamInProgress(teamId){
+      return Object.values(state.orders).some(o=>o.team===teamId && o.status==="confirmed");
+    }
 
     // ---------- firestore ----------
     function startSync(){
@@ -502,7 +506,7 @@
     // ---- employee home ----
     function renderHome(){
       const u=state.user, t=TEAMS.find(x=>x.id===u.team);
-      const ss=sessionState(), mine=myTodayOrder();
+      const ss=sessionState(), mine=myTodayOrder(), blocked=teamInProgress(u.team);
       return `
         <div class="greet">
           <h1><span class="nm">${esc(u.name)}</span>님, 안녕하세요.<br/>좋은 하루 보내세요.</h1>
@@ -514,16 +518,18 @@
           <div class="sub">${ss.open?`지금 주문을 받고 있어요 (~${ss.endsAt})`:`${ss.next} 주문은 ${ss.at}부터예요`}</div>
         </div></div>
         ${windowBarHTML()}
-        ${mine ? myCupHTML(mine, ss) : (ss.open ? `
+        ${mine ? myCupHTML(mine, ss, blocked)
+          : blocked ? `<div class="empty">☕ 우리 팀 음료를 제조 중이에요<br/><br/>제조가 끝나면 주문할 수 있어요</div>`
+          : ss.open ? `
           <button class="primary" data-act="goOrder">＋ 내 음료 주문하기</button>
           <button class="ghost" data-act="goAdd">👥 다른 사람 대신 주문하기</button>
         ` : `<div class="empty">지금은 주문 시간이 아니에요</div>
-          <button class="ghost" data-act="goAdd" style="margin-top:12px">👥 다른 사람 대신 주문하기</button>`)}
+          <button class="ghost" data-act="goAdd" style="margin-top:12px">👥 다른 사람 대신 주문하기</button>`}
         <button class="ghost" data-act="goTeamList" style="margin-top:10px">📋 우리 팀 주문 목록 보기</button>
         <div class="footnote">하루 한 잔, 무료로 제공됩니다. 폰이 없는 동료는 '다른 사람 대신 주문하기'로 넣어줄 수 있어요. 완성된 음료를 받을 땐 '우리 팀 주문 목록 보기'에서 누가 무엇을 주문했는지 확인할 수 있어요.</div>
       `;
     }
-    function myCupHTML(o,ss){
+    function myCupHTML(o,ss,blocked){
       const m=menuById(o.drinkId);
       const stat = o.status==="ready" ? "✓ 1층에서 가져가세요"
                  : o.status==="confirmed" ? "담당자가 확인했어요 · 제조 중"
@@ -536,7 +542,7 @@
           <div class="mstat">${stat}</div>
           ${ss.open&&o.status==="pending"?`<span class="chg" data-act="goOrder">음료 변경하기</span>`:""}
         </div></div>
-        <button class="ghost" data-act="goAdd">👥 다른 사람 대신 주문하기</button>`;
+        ${!blocked?`<button class="ghost" data-act="goAdd">👥 다른 사람 대신 주문하기</button>`:""}`;
     }
 
     // ---- order (pick 1 drink) ----
@@ -812,6 +818,7 @@
       const ss=sessionState();
       if(!ss.open){ toast("지금은 주문 시간이 아니에요"); state.view="home"; render(); return; }
       const mine=myTodayOrder();
+      if(!mine && teamInProgress(state.user.team)){ toast("제조 중이에요 · 끝나면 주문할 수 있어요"); state.view="home"; render(); return; }
       const id = mine? mine.id : "o-"+Date.now();
       await saveOrders({...state.orders,[id]:{
         team:state.user.team, name:state.user.name, drinkId,
@@ -828,6 +835,7 @@
       const team=state.user.team; // 대행 주문은 항상 본인 팀으로 고정
       // prevent dup: same team+name today
       const dup=Object.entries(state.orders).find(([_,o])=>o.team===team&&o.name===name);
+      if(!dup && teamInProgress(team)){ toast("제조 중이에요 · 끝나면 주문할 수 있어요"); return; }
       const id=dup?dup[0]:"o-"+Date.now();
       await saveOrders({...state.orders,[id]:{
         team, name, drinkId,
