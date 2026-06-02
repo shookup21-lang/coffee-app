@@ -268,6 +268,14 @@
 
     // ---------- config ----------
     const APP_NAME = "이안음료주문";
+    // 직원 홈 배너 음료 그림 (하루 단위 로테이션): 무알콜 음료 10종
+    // 커피·차·우유·트로피컬(에이드)·빨대컵·주스팩·버블티·마테·찻주전자·얼음
+    const HERO_EMOJIS = ["☕","🍵","🥛","🍹","🥤","🧃","🧋","🧉","🫖","🧊"];
+    function heroEmoji(){
+      const t=new Date();
+      const dayNum=Math.floor(new Date(t.getFullYear(),t.getMonth(),t.getDate()).getTime()/86400000);
+      return HERO_EMOJIS[((dayNum%HERO_EMOJIS.length)+HERO_EMOJIS.length)%HERO_EMOJIS.length];
+    }
     // color palette auto-assigned to teams by index
     const TEAM_COLORS = ["#e0555b","#e8803c","#caa12b","#7faa3e","#46a866","#23ab9a","#2a9fcf","#4a82ed","#6c6fe0","#9760d0","#c258ac","#dd6196"];
     const DEFAULT_TEAM_NAMES = ["관리팀","B-후반영","UPW","CHEMICAL","전기","진공","BULK","S-GAS","B-CAD","MEP/OBJ","기타A","기타B"];
@@ -499,7 +507,7 @@
           <h1><span class="nm">${esc(u.name)}</span>님, 안녕하세요.<br/>좋은 하루 보내세요.</h1>
           <div class="date">${new Date().toLocaleDateString("ko-KR",{month:"long",day:"numeric",weekday:"long"})}</div>
         </div>
-        <div class="hero"><div class="bigcup">☕</div><div class="rel">
+        <div class="hero"><div class="bigcup">${heroEmoji()}</div><div class="rel">
           <div class="team">${t.name} · ${ss.open?`${ss.session==="am"?"오전":"오후"} 주문 중`:"주문 시간 외"}</div>
           <h1>${mine?(mine.status==="ready"?"음료가 준비됐어요":"오늘 주문 완료"):"오늘의 한 잔"}</h1>
           <div class="sub">${ss.open?`지금 주문을 받고 있어요 (~${ss.endsAt})`:`${ss.next} 주문은 ${ss.at}부터예요`}</div>
