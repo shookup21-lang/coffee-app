@@ -272,7 +272,8 @@
     // 커피·차·우유·트로피컬(에이드)·빨대컵·주스팩·버블티·마테·찻주전자·얼음
     const HERO_EMOJIS = ["☕","🍵","🥛","🍹","🥤","🧃","🧋","🧉","🫖","🧊"];
     function heroEmoji(){
-      const t=new Date();
+      // 하루 경계를 오전 11시로 (11시간 당겨서 계산 → 매일 11:00에 다음 그림으로)
+      const t=new Date(Date.now()-11*3600*1000);
       const dayNum=Math.floor(new Date(t.getFullYear(),t.getMonth(),t.getDate()).getTime()/86400000);
       return HERO_EMOJIS[((dayNum%HERO_EMOJIS.length)+HERO_EMOJIS.length)%HERO_EMOJIS.length];
     }
