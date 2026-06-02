@@ -68,7 +68,8 @@
     .hero .bigcup{position:absolute;right:-6px;bottom:-10px;font-size:96px;line-height:1;user-select:none;opacity:.9}
     .hero .rel{position:relative;z-index:1}
     .hero .team{font-size:13px;font-weight:700;margin-bottom:8px;color:rgba(255,255,255,.9)}
-    .hero h1{font-size:27px;line-height:1.15;font-weight:800;letter-spacing:-0.02em}
+    .hero .team .todayno{font-size:1.2em;font-weight:800;color:#fff}
+    .hero h1{font-size:30px;line-height:1.15;font-weight:800;letter-spacing:-0.02em}
     .hero .sub{font-size:14px;color:rgba(255,255,255,.88);margin-top:8px}
 
     /* greeting (home top) */
@@ -133,11 +134,13 @@
     .pill.ready{background:#e7f9ee;color:#16a34a}
 
     /* barista dashboard (For me banner style) */
-    .dash{background:linear-gradient(135deg,#3b82f6 0%,#2563eb 100%);color:#fff;border-radius:26px;padding:24px;margin-bottom:16px;box-shadow:0 14px 30px rgba(37,99,235,.30)}
-    .dash .date{font-size:13px;color:rgba(255,255,255,.85);margin-bottom:5px;font-weight:600}
-    .dash h1{font-size:25px;font-weight:800;letter-spacing:-0.02em}
-    .dash .stats{display:flex;gap:22px;margin-top:18px}
-    .dash .stat b{font-size:30px;display:block;font-weight:800}
+    .dash{position:relative;overflow:hidden;background:linear-gradient(135deg,#3b82f6 0%,#2563eb 100%);color:#fff;border-radius:24px;padding:18px 20px;margin-bottom:16px;box-shadow:0 14px 30px rgba(37,99,235,.30)}
+    .dash .dashbody{position:relative;z-index:1}
+    .dash .dashemo{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:72px;line-height:1;opacity:.92;user-select:none;pointer-events:none}
+    .dash .date{font-size:13px;color:rgba(255,255,255,.85);margin-bottom:3px;font-weight:600}
+    .dash h1{font-size:22px;font-weight:800;letter-spacing:-0.02em}
+    .dash .stats{display:flex;gap:26px;margin-top:12px}
+    .dash .stat b{font-size:26px;display:block;font-weight:800}
     .dash .stat.a b{color:#ffe8a3}
     .dash .stat small{font-size:12px;color:rgba(255,255,255,.85)}
 
@@ -156,9 +159,14 @@
     .navtext button:active{background:#dde8f7}
 
     .batch{background:#fff;border-radius:22px;padding:20px;margin-bottom:16px;box-shadow:0 6px 18px rgba(80,90,160,.07)}
-    .soundtoggle{width:100%;margin-bottom:16px;padding:13px;border-radius:14px;background:#eaf6ec;color:#15803d;font-weight:700;font-size:14px;box-shadow:0 2px 8px rgba(80,90,160,.05)}
-    .soundtoggle.off{background:#fdeaea;color:#b91c1c}
-    .soundtoggle:active{filter:brightness(.96)}
+    .dash .dashfoot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:11px;padding-top:11px;border-top:1px solid rgba(255,255,255,.25)}
+    .dash .dashfoot .dfstatus{font-size:12px;color:rgba(255,255,255,.85);min-width:0}
+    .swt{display:inline-flex;align-items:center;gap:7px;flex:0 0 auto}
+    .swt .swt-l{font-size:13px;font-weight:800;color:#fff}
+    .swt .swt-t{width:38px;height:22px;border-radius:99px;background:rgba(255,255,255,.30);position:relative;transition:background .15s;flex:0 0 auto}
+    .swt .swt-t::after{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:99px;background:#fff;transition:transform .15s}
+    .swt.on .swt-t{background:#34d399}
+    .swt.on .swt-t::after{transform:translateX(16px)}
     .batch .lbl{font-size:12px;letter-spacing:.02em;color:var(--sub);margin-bottom:8px;font-weight:700}
     .batch .grid{display:flex;flex-direction:column}
     .batch .row{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
@@ -223,6 +231,9 @@
     .editcard-top .del{flex:0 0 auto;color:#fff;background:#ef4444;font-size:13px;padding:9px 14px;font-weight:700;border-radius:10px;white-space:nowrap}
     .editcard-top .del:active{background:#dc2626}
     .swatches{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+    .editcard-top .cpick{width:28px;height:28px;border-radius:9px;flex:0 0 auto;border:2px solid rgba(0,0,0,.08);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+    .editcard-top .cpick:active{transform:scale(.93)}
+    .editcard-top .cpick.open{outline:2px solid #16243f;outline-offset:2px}
     .sw{width:30px;height:30px;border-radius:9px;flex:0 0 auto;border:3px solid transparent;box-sizing:border-box}
     .sw.on{border-color:#16243f}
     .addbtn{width:100%;border:2px dashed #c4d4ef;border-radius:16px;padding:14px;color:var(--sub);font-size:14px;font-weight:600;background:#fff}
@@ -283,6 +294,14 @@
       const dayNum=Math.floor(new Date(t.getFullYear(),t.getMonth(),t.getDate()).getTime()/86400000);
       return HERO_EMOJIS[((dayNum%HERO_EMOJIS.length)+HERO_EMOJIS.length)%HERO_EMOJIS.length];
     }
+    // 담당자 대시보드 장식 이모지 (매일 자정 기준으로 바뀜, 모든 기기 호환되는 귀여운 것들)
+    const DASH_EMOJIS = ["🐶","🐱","🐰","🐻","🐼","🦊","🐯","🐵","🐥","🦄","🐧","🐢","🐙","🐳","🌈","🍀","🐹","🦔","🐬","🦋","🐷","🦉"];
+    function dashEmoji(){
+      const t=new Date();
+      const dayNum=Math.floor(new Date(t.getFullYear(),t.getMonth(),t.getDate()).getTime()/86400000);
+      // 소수(7919)를 곱해 매일 다른 위치로 (목록 길이가 어떻든 매일 바뀜)
+      return DASH_EMOJIS[((dayNum*7919)%DASH_EMOJIS.length+DASH_EMOJIS.length)%DASH_EMOJIS.length];
+    }
     // color palette auto-assigned to teams by index
     const TEAM_COLORS = ["#e0555b","#e8803c","#caa12b","#7faa3e","#46a866","#23ab9a","#2a9fcf","#4a82ed","#6c6fe0","#9760d0","#c258ac","#dd6196"];
     const DEFAULT_TEAM_NAMES = ["관리팀","B-후반영","UPW","CHEMICAL","전기","진공","BULK","S-GAS","B-CAD","MEP/OBJ","기타A","기타B"];
@@ -321,6 +340,7 @@
       seenReady: JSON.parse(localStorage.getItem("ian_seen")||"[]"),
       soundOn: JSON.parse(localStorage.getItem("ian_sound")||"true"),
       rotation: null,   // { base:[teamId...], baseDate:"YYYY-MM-DD" }
+      menuPickOpen: null, // 색상 팔레트가 펼쳐진 메뉴 id
       // add-person flow temp
       addTeam:null, addName:"", editOrderId:null,
       dispSession:"am",
@@ -603,8 +623,8 @@
           <div class="date">${new Date().toLocaleDateString("ko-KR",{month:"long",day:"numeric",weekday:"long"})}</div>
         </div>
         <div class="hero"><div class="bigcup">${heroEmoji()}</div><div class="rel">
-          <div class="team">${t.name}${myNo?` · 오늘 ${myNo}번`:""} · ${ss.open?`${ss.session==="am"?"오전":"오후"} 주문 중`:"주문 시간 외"}</div>
-          <h1>${mine?(mine.status==="ready"?"음료가 준비됐어요":"오늘 주문 완료"):"오늘의 한 잔"}</h1>
+          <div class="team">${myNo?`<span class="todayno">오늘 ${myNo}번</span> · `:""}${t.name} · ${ss.open?`${ss.session==="am"?"오전":"오후"} 주문 중`:"주문 시간 외"}</div>
+          <h1>${mine?(mine.status==="ready"?"음료가 준비됐어요":"오늘 주문 완료"):"Daily Drink Order"}</h1>
           <div class="sub">${ss.open?`지금 주문을 받고 있어요 (~${ss.endsAt})`:`${ss.next} 주문은 ${ss.at}부터예요`}</div>
         </div></div>
         ${windowBarHTML()}
@@ -617,9 +637,9 @@
           <button class="ghost" data-act="goAdd" style="margin-top:12px">👥 다른 사람 대신 주문하기</button>`}
         <button class="ghost" data-act="goTeamList" style="margin-top:10px">📋 우리 팀 주문 목록 보기</button>
         <ul class="footlist">
-          <li>팀 번호가 빠를수록 먼저 만들어 드려요</li>
-          <li>팀 번호는 평일자정마다 매일 순서가 변경 됩니다.</li>
-          <li>하루 한 잔, 무료로 제공됩니다.</li>
+          <li>팀 번호 상관없이 주문해 주세요.</li>
+          <li>다만, 번호가 빠른 팀부터 순서대로 만들어 드려요.</li>
+          <li>팀 번호는 평일 자정 변경되며, 하루 1잔 무료로 제공됩니다.</li>
           <li>'다른 사람 대신 주문하기'로 대행 주문이 가능합니다.</li>
           <li>'우리 팀 주문 목록 보기'에서 주문을 확인할 수 있어요.</li>
         </ul>
@@ -746,18 +766,17 @@
       [...pending,...confirmed].forEach(o=>{(byTeam[o.team]=byTeam[o.team]||[]).push(o);});
 
       return `
-        <div class="dash"><div class="date">${dateStr}</div><h1 class="serif">담당자 대시보드</h1>
+        <div class="dash"><div class="dashemo">${dashEmoji()}</div><div class="dashbody"><div class="date">${dateStr}</div><h1 class="serif">담당자 대시보드</h1>
           <div class="stats">
             <div class="stat a"><b>${pending.length}</b><small>확인 대기</small></div>
             <div class="stat"><b>${confirmed.length}</b><small>제조 중</small></div>
             <div class="stat"><b>${list.length}</b><small>오늘 총 주문</small></div>
           </div>
-          <div style="margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,.25);font-size:12px;color:rgba(255,255,255,.85)">
-            ${ss.open?`<span style="color:#bbf7d0">● ${ss.session==="am"?"오전":"오후"} 주문 접수 중 (~${ss.endsAt})</span>`:`○ 주문 시간 외 · 다음: ${ss.next} ${ss.at}`}
+          <div class="dashfoot">
+            <span class="dfstatus">${ss.open?`<span style="color:#bbf7d0">● ${ss.session==="am"?"오전":"오후"} 주문 접수 중 (~${ss.endsAt})</span>`:`○ 주문 시간 외 · 다음: ${ss.next} ${ss.at}`}</span>
+            <button class="swt ${state.soundOn?'on':''}" data-act="toggleSound" aria-label="새 주문 알림 소리"><span class="swt-l">알림</span><span class="swt-t"></span></button>
           </div>
-        </div>
-
-        <button class="soundtoggle ${state.soundOn?'':'off'}" data-act="toggleSound">${state.soundOn?"🔔 새 주문 알림 소리 · 켜짐 (눌러서 끄기)":"🔕 새 주문 알림 소리 · 꺼짐 (눌러서 켜기)"}</button>
+        </div></div>
 
         ${Object.keys(counts).length?`<div class="batch"><div class="lbl">지금 만들어야 할 잔 수</div>
           <div class="grid">${state.menu.filter(m=>counts[m.id]).map(m=>`<div class="row"><span class="csq sm" style="background:${mColor(m)}"></span><span class="nm">${esc(m.name)}</span><b>${counts[m.id]}</b></div>`).join("")}</div></div>`:""}
@@ -824,11 +843,11 @@
         <div class="sub" style="font-size:14px;color:var(--sub);margin-bottom:16px">메뉴 이름·색상 수정, 추가·삭제 가능</div>
         <div id="el">${state.menu.map((m,i)=>`<div class="editcard">
           <div class="editcard-top">
-            <span class="cdot" style="width:16px;height:16px;border-radius:99px;background:${mColor(m)};flex:0 0 auto"></span>
+            <button class="cpick${state.menuPickOpen===m.id?' open':''}" data-mpick="${m.id}" style="background:${mColor(m)}" aria-label="색상 선택"></button>
             <input class="nm" data-nm="${i}" value="${esc(m.name)}"/>
             <button class="del" data-del="${i}">삭제</button>
           </div>
-          <div class="swatches">${swatches(mColor(m), "data-mcolor", i)}</div>
+          ${state.menuPickOpen===m.id?`<div class="swatches">${swatches(mColor(m), "data-mcolor", i)}</div>`:``}
         </div>`).join("")}</div>
         <button class="addbtn" data-act="addMenu">＋ 메뉴 추가</button>
         <button class="primary" style="margin-top:16px" data-act="saveMenu">저장하기</button>`;
@@ -887,7 +906,8 @@
       document.querySelectorAll("[data-editorder]").forEach(el=>el.onclick=()=>{ state.editOrderId=el.dataset.editorder; state.view="edit-order"; render(); });
       document.querySelectorAll("[data-delorder]").forEach(el=>el.onclick=()=>delOrder(el.dataset.delorder));
       document.querySelectorAll("[data-editpick]").forEach(el=>el.onclick=()=>editOrderDrink(el.dataset.editpick));
-      document.querySelectorAll("[data-mcolor]").forEach(el=>el.onclick=()=>{ const [i,c]=el.dataset.mcolor.split("|"); readMenuInputs(); if(state.menu[+i])state.menu[+i].color=c; render(); });
+      document.querySelectorAll("[data-mpick]").forEach(el=>el.onclick=()=>{ readMenuInputs(); const id=el.dataset.mpick; state.menuPickOpen = (state.menuPickOpen===id)?null:id; render(); });
+      document.querySelectorAll("[data-mcolor]").forEach(el=>el.onclick=()=>{ const [i,c]=el.dataset.mcolor.split("|"); readMenuInputs(); if(state.menu[+i])state.menu[+i].color=c; state.menuPickOpen=null; render(); });
       const an=document.getElementById("addName"); if(an) an.addEventListener("input",e=>state.addName=e.target.value);
     }
 
@@ -901,7 +921,7 @@
         case "back": state.view="home"; render(); break;
         case "backToList": state.view="team-list"; render(); break;
         case "disp": state.dispSession=sessionState().session||"am"; state.view="disp"; render(); break;
-        case "editMenu": state.view="menu-edit"; render(); break;
+        case "editMenu": state.menuPickOpen=null; state.view="menu-edit"; render(); break;
         case "editTeams": state.view="team-edit"; render(); break;
         case "editTime": state.view="time-edit"; render(); break;
         case "refresh": toast("최신 상태예요"); render(); break;
@@ -912,7 +932,7 @@
           render();
           if(state.soundOn){ playDing(); toast("새 주문 알림 소리 켜짐"); } else toast("새 주문 알림 소리 꺼짐");
           break;
-        case "addMenu": readMenuInputs(); state.menu.push({id:"m"+Date.now(),name:"새 메뉴",color:menuColorFor(state.menu.length)}); render(); break;
+        case "addMenu": { readMenuInputs(); const nm={id:"m"+Date.now(),name:"새 메뉴",color:menuColorFor(state.menu.length)}; state.menu.push(nm); state.menuPickOpen=nm.id; render(); break; }
         case "addTeam": readTeamInputs(); state.teams.push({id:"t"+Date.now(),name:"새 팀",color:colorFor(state.teams.length)}); render(); break;
         case "saveMenu": doSaveMenu(); break;
         case "saveTeams": doSaveTeams(); break;
