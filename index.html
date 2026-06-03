@@ -624,7 +624,7 @@
         </div>
         <div class="hero"><div class="bigcup">${heroEmoji()}</div><div class="rel">
           <div class="team">${myNo?`<span class="todayno">오늘 ${myNo}번</span> · `:""}${t.name} · ${ss.open?`${ss.session==="am"?"오전":"오후"} 주문 중`:"주문 시간 외"}</div>
-          <h1>${mine?(mine.status==="ready"?"음료가 준비됐어요":"오늘 주문 완료"):"Daily Drink Order"}</h1>
+          <h1>${mine?(mine.status==="ready"?"음료가 준비됐어요":"오늘 주문 완료"):"오늘의 한 잔"}</h1>
           <div class="sub">${ss.open?`지금 주문을 받고 있어요 (~${ss.endsAt})`:`${ss.next} 주문은 ${ss.at}부터예요`}</div>
         </div></div>
         ${windowBarHTML()}
