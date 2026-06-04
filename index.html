@@ -492,7 +492,7 @@
     }
     function myNotifs(){
       if(!state.user||state.user.team==="barista")return [];
-      return Object.entries(state.orders).filter(([_,o])=>isMyOrder(o)&&o.status==="ready").map(([id,o])=>({id,...o}));
+      return Object.entries(state.orders).filter(([id,o])=>isMyOrder(o)&&o.status==="ready"&&!state.seenReady.includes(id)).map(([id,o])=>({id,...o}));
     }
 
     // ---------- helpers ----------
