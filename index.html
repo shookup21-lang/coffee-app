@@ -99,6 +99,16 @@
 
     h2.sec{font-size:18px;margin:24px 4px 12px;font-weight:800;letter-spacing:-0.01em}
     .empty{background:#fff;border-radius:20px;padding:34px;text-align:center;color:#9aa6bd;font-size:14px;box-shadow:0 3px 12px rgba(80,90,160,.05)}
+    .brewing{background:#fff7ed;border:1px solid #fed7aa;border-radius:20px;padding:22px 20px;text-align:center;color:#9a3412;box-shadow:0 6px 18px rgba(80,90,160,.10)}
+    .brewing .ic{font-size:40px;line-height:1;margin-bottom:10px}
+    .brewing h3{margin:0 0 8px;font-size:17px;font-weight:800;letter-spacing:-.02em;color:#9a3412}
+    .brewing p{margin:0;font-size:13.5px;line-height:1.65}
+    .brewing .em{font-weight:800;color:#c2410c}
+    .brewing .dots{display:inline-flex;gap:5px;margin-top:12px;color:#c2410c}
+    .brewing .dots i{width:7px;height:7px;border-radius:99px;background:currentColor;opacity:.35;animation:brewbl 1.2s infinite}
+    .brewing .dots i:nth-child(2){animation-delay:.2s}
+    .brewing .dots i:nth-child(3){animation-delay:.4s}
+    @keyframes brewbl{0%,100%{opacity:.3;transform:translateY(0)}50%{opacity:1;transform:translateY(-3px)}}
 
     /* tiles (feature grid look) */
     .grid2{display:flex;flex-wrap:wrap;justify-content:space-between}
@@ -629,7 +639,7 @@
         </div></div>
         ${windowBarHTML()}
         ${mine ? myCupHTML(mine, ss, blocked)
-          : blocked ? `<div class="empty">☕ 우리 팀 음료를 제조 중이에요<br/><br/>제조가 끝나면 주문할 수 있어요</div>`
+          : blocked ? `<div class="brewing"><div class="ic">⏳</div><h3>현재 주문된 음료를 만들고 있어요</h3><p>잠시만 기다려 주세요.<br/><span class="em">제조가 끝나면 다시 주문할 수 있어요.</span></p><div class="dots"><i></i><i></i><i></i></div></div>`
           : ss.open ? `
           <button class="primary" data-act="goOrder">＋ 내 음료 주문하기</button>
           <button class="ghost" data-act="goAdd">👥 다른 사람 대신 주문하기</button>
