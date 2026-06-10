@@ -109,6 +109,7 @@
     .brewing .dots i:nth-child(2){animation-delay:.2s}
     .brewing .dots i:nth-child(3){animation-delay:.4s}
     @keyframes brewbl{0%,100%{opacity:.3;transform:translateY(0)}50%{opacity:1;transform:translateY(-3px)}}
+    .awakebtn.on{background:#eaf6ec;color:#15803d}
 
     /* tiles (feature grid look) */
     .grid2{display:flex;flex-wrap:wrap;justify-content:space-between}
@@ -269,6 +270,11 @@
     .footnote{font-size:12px;color:#9aa6bd;margin-top:24px;padding:0 4px;line-height:1.7}
     .footlist{font-size:12px;color:#9aa6bd;margin-top:24px;padding:0 4px 0 20px;line-height:1.7;list-style:disc}
     .footlist li{margin-bottom:3px}
+    .alertguide{margin-top:18px;background:#eef3fc;border:1px solid #dbe6f7;border-radius:14px;padding:13px 15px}
+    .alertguide .ag-t{font-size:13px;font-weight:800;color:#2563eb;margin-bottom:6px}
+    .alertguide ul{margin:0;padding-left:18px;list-style:disc}
+    .alertguide li{font-size:12px;color:#5b6b86;line-height:1.6;margin-bottom:3px}
+    .alertguide b{color:#3a4a66}
   </style>
 </head>
 <body>
@@ -351,6 +357,7 @@
       soundOn: JSON.parse(localStorage.getItem("ian_sound")||"true"),
       rotation: null,   // { base:[teamId...], baseDate:"YYYY-MM-DD" }
       menuPickOpen: null, // 색상 팔레트가 펼쳐진 메뉴 id
+      keepAwake: false, // 직원 화면 꺼짐 방지 토글 (세션)
       // add-person flow temp
       addTeam:null, addName:"", editOrderId:null,
       dispSession:"am",
@@ -383,11 +390,13 @@
     }
     // 첫 사용자 터치에 오디오 활성화 (브라우저 자동재생 정책)
     document.addEventListener("pointerdown", armAudio);
-    // 화면 꺼짐 방지 (담당자가 앱을 보고 있는 동안)
+    // 화면 꺼짐 방지 (담당자 자동 / 직원은 토글 켰을 때)
     async function maybeWake(){
+      const want = state.user && (state.user.team==="barista" || state.keepAwake);
+      if(!want){ if(_wakeLock){ try{await _wakeLock.release();}catch(e){} _wakeLock=null; } return; }
       try{
         if(_wakeLock) return;
-        if(state.user && state.user.team==="barista" && document.visibilityState==="visible" && "wakeLock" in navigator){
+        if(document.visibilityState==="visible" && "wakeLock" in navigator){
           _wakeLock=await navigator.wakeLock.request("screen");
           _wakeLock.addEventListener&&_wakeLock.addEventListener("release",()=>{_wakeLock=null;});
         }
@@ -651,6 +660,7 @@
         ` : `<div class="empty">지금은 주문 시간이 아니에요</div>
           <button class="ghost" data-act="goAdd" style="margin-top:12px">👥 다른 사람 대신 주문하기</button>`}
         <button class="ghost" data-act="goTeamList" style="margin-top:10px">📋 우리 팀 주문 목록 보기</button>
+        <button class="ghost awakebtn ${state.keepAwake?'on':''}" data-act="toggleAwake">${state.keepAwake?"🔆 화면 켜둠 · 대기 중 안 꺼져요 (눌러서 끄기)":"🌙 화면 꺼짐 방지 (음료 알림 받기)"}</button>
         <ul class="footlist">
           <li>팀 번호 상관없이 주문해 주세요.</li>
           <li>다만, 번호가 빠른 팀부터 순서대로 만들어 드려요.</li>
@@ -658,6 +668,15 @@
           <li>'다른 사람 대신 주문하기'로 대행 주문이 가능합니다.</li>
           <li>'우리 팀 주문 목록 보기'에서 주문을 확인할 수 있어요.</li>
         </ul>
+        <div class="alertguide">
+          <div class="ag-t">🔔 음료 준비 알림 안내</div>
+          <ul>
+            <li>음료가 준비되면 <b>알림 소리</b>가 울려요.</li>
+            <li>단, <b>앱이 켜져 있을 때만</b> 울려요. 화면이 꺼지거나 다른 앱을 보면 울리지 않아요.</li>
+            <li>위 <b>'화면 꺼짐 방지'</b>를 켜두면 대기 중 화면이 안 꺼져서 알림을 놓치지 않아요.</li>
+            <li>소리가 안 들리면 휴대폰 <b>무음/벨소리</b> 설정을 확인해 주세요.</li>
+          </ul>
+        </div>
       `;
     }
     function myCupHTML(o,ss,blocked){
@@ -950,6 +969,14 @@
           armAudio();
           render();
           if(state.soundOn){ playDing(); toast("새 주문 알림 소리 켜짐"); } else toast("새 주문 알림 소리 꺼짐");
+          break;
+        case "toggleAwake":
+          if(!("wakeLock" in navigator)){ toast("이 기기는 화면 유지를 지원하지 않아요"); break; }
+          state.keepAwake=!state.keepAwake;
+          armAudio();
+          maybeWake();
+          render();
+          toast(state.keepAwake?"화면이 꺼지지 않게 유지해요 🔆":"화면 유지를 껐어요");
           break;
         case "addMenu": { readMenuInputs(); const nm={id:"m"+Date.now(),name:"새 메뉴",color:menuColorFor(state.menu.length)}; state.menu.push(nm); state.menuPickOpen=nm.id; render(); break; }
         case "addTeam": readTeamInputs(); state.teams.push({id:"t"+Date.now(),name:"새 팀",color:colorFor(state.teams.length)}); render(); break;
