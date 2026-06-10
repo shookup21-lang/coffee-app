@@ -357,7 +357,7 @@
     };
 
     // ---------- 담당자 새 주문 알림 (소리·진동·화면 유지) ----------
-    let _audioCtx=null, _knownIds=null, _wakeLock=null;
+    let _audioCtx=null, _knownIds=null, _wakeLock=null, _myReadyIds=null;
     function armAudio(){
       try{
         if(!_audioCtx) _audioCtx=new (window.AudioContext||window.webkitAudioContext)();
@@ -464,12 +464,15 @@
       onSnapshot(doc(db,"daily",todayKey()),s=>{
         const d=s.exists()?s.data():{}; const orders=d.orders||{};
         const ids=Object.keys(orders);
-        if(_knownIds===null){ _knownIds=new Set(ids); }   // 첫 로드: 알림 없음
-        else {
-          const isBarista=state.user&&state.user.team==="barista";
-          const hasNew=ids.some(id=>!_knownIds.has(id));   // 새로 추가된 주문만
-          if(isBarista&&hasNew) playDing();
-          _knownIds=new Set(ids);
+        const isBarista=state.user&&state.user.team==="barista";
+        // 담당자: 새 주문이 들어오면 딩동
+        if(_knownIds!==null && isBarista && ids.some(id=>!_knownIds.has(id))) playDing();
+        _knownIds=new Set(ids);
+        // 직원: 내 음료가 새로 '준비됨'으로 바뀌면 딩동
+        if(state.user && !isBarista){
+          const myReady=ids.filter(id=>{const o=orders[id]; return o&&o.status==="ready"&&isMyOrder(o);});
+          if(_myReadyIds!==null && myReady.some(id=>!_myReadyIds.has(id))) playDing();
+          _myReadyIds=new Set(myReady);
         }
         state.orders=orders; checkNotif(); render();
       },e=>console.error(e));
@@ -494,8 +497,10 @@
       Object.entries(state.orders).forEach(([id,o])=>{
         if(isMyOrder(o) && o.status==="ready" && !state.seenReady.includes(id)){
           if("Notification" in window && Notification.permission==="granted"){
-            const who = (o.name!==state.user.name) ? `${o.name}님 ` : "";
-            new Notification("☕ 음료가 준비됐어요!",{body:`${who}음료가 완성됐어요. 1층에서 가져가세요.`,icon:"icon-192.png"});
+            try{
+              const who = (o.name!==state.user.name) ? `${o.name}님 ` : "";
+              new Notification("☕ 음료가 준비됐어요!",{body:`${who}음료가 완성됐어요. 1층에서 가져가세요.`,icon:"icon-192.png"});
+            }catch(e){}
           }
         }
       });
