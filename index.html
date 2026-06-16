@@ -110,6 +110,30 @@
     .brewing .dots i:nth-child(3){animation-delay:.4s}
     @keyframes brewbl{0%,100%{opacity:.3;transform:translateY(0)}50%{opacity:1;transform:translateY(-3px)}}
     .awakebtn.on{background:#eaf6ec;color:#15803d}
+    /* 집계 캘린더 */
+    .cal-wrap{background:#fff;border-radius:20px;padding:16px;margin-bottom:14px;box-shadow:0 3px 12px rgba(80,90,160,.07)}
+    .cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+    .cal-title{font-size:16px;font-weight:800;color:#16243f}
+    .cal-arr{width:36px;height:36px;border-radius:10px;background:#eef3fc;font-size:18px;color:#2563eb;display:flex;align-items:center;justify-content:center}
+    .cal-arr.disabled{color:#c4d4ef;background:#f3f6fb;pointer-events:none}
+    .cal-dow{display:grid;grid-template-columns:repeat(7,1fr);text-align:center;font-size:11px;font-weight:700;color:#9aa6bd;margin-bottom:6px}
+    .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+    .cal-cell{aspect-ratio:1;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:#16243f;cursor:pointer;background:#f5f8ff}
+    .cal-cell.empty{background:transparent;cursor:default}
+    .cal-cell.future{color:#c4d4ef;background:#f5f8ff;cursor:default}
+    .cal-cell:not(.empty):not(.future):active{background:#dde8f7}
+    .cal-cell.today{background:#dde8f7;color:#2563eb;font-weight:800}
+    .cal-cell.sel{background:#2563eb;color:#fff;font-weight:800}
+    /* 집계 상세 */
+    .stats-detail{background:#fff;border-radius:20px;padding:18px;box-shadow:0 3px 12px rgba(80,90,160,.07)}
+    .sd-head{font-size:15px;font-weight:800;color:#16243f;margin-bottom:14px}
+    .sd-section{margin-bottom:14px}
+    .sd-section:last-child{margin-bottom:0}
+    .sd-sub{font-size:12px;font-weight:800;color:#9aa6bd;margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em}
+    .stat-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #f0f4fb}
+    .stat-row:last-child{border-bottom:0}
+    .stat-row .sr-name{flex:1;font-size:14px;font-weight:600;color:#16243f}
+    .stat-row b{font-size:15px;font-weight:800;color:#2563eb}
 
     /* tiles (feature grid look) */
     .grid2{display:flex;flex-wrap:wrap;justify-content:space-between}
@@ -283,7 +307,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
-    import { getFirestore, doc, setDoc, deleteField, onSnapshot } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, setDoc, deleteField, onSnapshot } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
 
     // 🔻🔻🔻 여기를 본인 Firebase 설정값으로 교체 (가이드 1~2단계) 🔻🔻🔻
     const firebaseConfig = {
@@ -358,6 +382,9 @@
       rotation: null,   // { base:[teamId...], baseDate:"YYYY-MM-DD" }
       menuPickOpen: null, // 색상 팔레트가 펼쳐진 메뉴 id
       keepAwake: false, // 직원 화면 꺼짐 방지 토글 (세션)
+      statsMonth: null,  // "YYYY-MM" 집계 뷰 현재 달
+      statsDate: null,   // "YYYY-MM-DD" 선택된 날짜
+      statsData: null,   // 조회된 날짜의 orders 객체 (null=로딩중, {}=없음)
       // add-person flow temp
       addTeam:null, addName:"", editOrderId:null,
       dispSession:"am",
@@ -537,6 +564,7 @@
         else if(state.view==="team-edit") w.innerHTML=renderTeamEdit();
         else if(state.view==="time-edit") w.innerHTML=renderTimeEdit();
         else if(state.view==="disp") w.innerHTML=renderDispense();
+        else if(state.view==="stats") w.innerHTML=renderStats();
         else w.innerHTML=renderBarista();
       } else {
         if(state.view==="order") w.innerHTML=renderOrder();
@@ -785,6 +813,76 @@
         <div class="grid2">${state.menu.map(m=>`<button class="drink ${m.id===o.drinkId?'on':''}" data-editpick="${m.id}"><div class="em" style="background:${mColor(m)}"></div><div class="dn">${esc(m.name)}</div></button>`).join("")}</div>`;
     }
 
+    // ---- 집계 뷰 ----
+    function renderStats(){
+      const today = todayKey();
+      if(!state.statsMonth){
+        const t=new Date(); state.statsMonth=`${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,"0")}`;
+      }
+      const [yr,mo] = state.statsMonth.split("-").map(Number);
+      const firstDay = new Date(yr,mo-1,1).getDay(); // 0=일
+      const daysInMonth = new Date(yr,mo,0).getDate();
+      const prevMonth = mo===1?`${yr-1}-12`:`${yr}-${String(mo-1).padStart(2,"0")}`;
+      const nextMonth = mo===12?`${yr+1}-01`:`${yr}-${String(mo+1).padStart(2,"0")}`;
+      const todayYM = today.slice(0,7);
+
+      // 캘린더 HTML
+      let cells="";
+      for(let i=0;i<firstDay;i++) cells+=`<div class="cal-cell empty"></div>`;
+      for(let d=1;d<=daysInMonth;d++){
+        const key=`${state.statsMonth}-${String(d).padStart(2,"0")}`;
+        const isToday=key===today, isSel=key===state.statsDate, isFuture=key>today;
+        cells+=`<div class="cal-cell${isToday?" today":""}${isSel?" sel":""}${isFuture?" future":""}" ${!isFuture?`data-calday="${key}"`:""}>${d}</div>`;
+      }
+
+      // 선택된 날짜 상세
+      let detail="";
+      if(state.statsDate){
+        const orders = state.statsData;
+        if(orders===null){
+          detail=`<div class="stats-detail"><div class="empty">불러오는 중…</div></div>`;
+        } else {
+          const list=Object.values(orders);
+          if(list.length===0){
+            detail=`<div class="stats-detail"><div class="empty">해당 날짜에 주문 기록이 없어요</div></div>`;
+          } else {
+            // 메뉴별 집계
+            const menuCount={};
+            list.forEach(o=>{ menuCount[o.drinkId]=(menuCount[o.drinkId]||0)+1; });
+            const menuRows=Object.entries(menuCount).sort((a,b)=>b[1]-a[1]).map(([id,cnt])=>{
+              const m=menuById(id);
+              return `<div class="stat-row"><span class="csq sm" style="background:${m?mColor(m):"#ccc"}"></span><span class="sr-name">${m?esc(m.name):"알 수 없음"}</span><b>${cnt}잔</b></div>`;
+            }).join("");
+            // 팀별 집계
+            const teamCount={};
+            list.forEach(o=>{ teamCount[o.team]=(teamCount[o.team]||0)+1; });
+            const teamRows=Object.entries(teamCount).sort((a,b)=>b[1]-a[1]).map(([tid,cnt])=>{
+              const t=teamById(tid);
+              return `<div class="stat-row"><span class="csq sm" style="background:${t.color}"></span><span class="sr-name">${esc(t.name)}</span><b>${cnt}잔</b></div>`;
+            }).join("");
+            detail=`<div class="stats-detail">
+              <div class="sd-head">${state.statsDate} · 총 ${list.length}잔</div>
+              <div class="sd-section"><div class="sd-sub">메뉴별</div>${menuRows}</div>
+              <div class="sd-section"><div class="sd-sub">팀별</div>${teamRows}</div>
+            </div>`;
+          }
+        }
+      }
+
+      return `<button class="back" data-act="back">‹ 뒤로</button>
+        <h1 class="serif" style="font-size:26px;margin-bottom:16px">집계</h1>
+        <div class="cal-wrap">
+          <div class="cal-nav">
+            <button class="cal-arr" data-statsmonth="${prevMonth}">‹</button>
+            <span class="cal-title">${yr}년 ${mo}월</span>
+            <button class="cal-arr${state.statsMonth===todayYM?" disabled":""}" ${state.statsMonth===todayYM?"":`data-statsmonth="${nextMonth}"`}>›</button>
+          </div>
+          <div class="cal-dow"><span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span></div>
+          <div class="cal-grid">${cells}</div>
+        </div>
+        ${detail}`;
+    }
+
     // ---- barista main ----
     function renderBarista(){
       const list=Object.entries(state.orders).map(([id,o])=>({id,...o}));
@@ -825,6 +923,7 @@
           <button data-act="editMenu">메뉴 관리</button>
           <button data-act="editTeams">팀 관리</button>
           <button data-act="editTime">주문 시간 설정</button>
+          <button data-act="stats">📊 집계</button>
         </div>
       `;
     }
@@ -946,6 +1045,20 @@
       document.querySelectorAll("[data-editpick]").forEach(el=>el.onclick=()=>editOrderDrink(el.dataset.editpick));
       document.querySelectorAll("[data-mpick]").forEach(el=>el.onclick=()=>{ readMenuInputs(); const id=el.dataset.mpick; state.menuPickOpen = (state.menuPickOpen===id)?null:id; render(); });
       document.querySelectorAll("[data-mcolor]").forEach(el=>el.onclick=()=>{ const [i,c]=el.dataset.mcolor.split("|"); readMenuInputs(); if(state.menu[+i])state.menu[+i].color=c; state.menuPickOpen=null; render(); });
+      // 집계 캘린더 월 이동
+      document.querySelectorAll("[data-statsmonth]").forEach(el=>el.onclick=()=>{ state.statsMonth=el.dataset.statsmonth; state.statsDate=null; state.statsData=null; render(); });
+      // 집계 캘린더 날짜 선택 → Firestore 1회 조회
+      document.querySelectorAll("[data-calday]").forEach(el=>el.onclick=async()=>{
+        const key=el.dataset.calday;
+        if(state.statsDate===key){ state.statsDate=null; state.statsData=null; render(); return; }
+        state.statsDate=key; state.statsData=null; render();
+        if(key===todayKey()){ state.statsData=state.orders; render(); return; }
+        try{
+          const snap=await getDoc(doc(db,"daily",key));
+          state.statsData=snap.exists()?(snap.data().orders||{}):{};
+        }catch(e){ state.statsData={}; }
+        render();
+      });
       const an=document.getElementById("addName"); if(an) an.addEventListener("input",e=>state.addName=e.target.value);
     }
 
@@ -960,6 +1073,7 @@
         case "backToList": state.view="team-list"; render(); break;
         case "disp": state.dispSession=sessionState().session||"am"; state.view="disp"; render(); break;
         case "editMenu": state.menuPickOpen=null; state.view="menu-edit"; render(); break;
+        case "stats": state.view="stats"; state.statsDate=null; state.statsData=null; render(); break;
         case "editTeams": state.view="team-edit"; render(); break;
         case "editTime": state.view="time-edit"; render(); break;
         case "refresh": toast("최신 상태예요"); render(); break;
