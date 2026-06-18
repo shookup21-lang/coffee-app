@@ -233,7 +233,8 @@
     .listteam{font-size:16px;font-weight:800;margin:18px 4px 9px;display:flex;align-items:center;gap:8px}
     .listteam .cdot{width:10px;height:10px;border-radius:99px}
     .disprow{display:flex;align-items:center;gap:10px;background:#fff;border-radius:14px;padding:11px 12px 11px 16px;margin-bottom:7px;box-shadow:0 2px 8px rgba(80,90,160,.05)}
-    .disprow .who{font-weight:700;flex:0 0 auto}
+    .disprow .who{font-weight:700;flex:0 0 auto;display:inline-flex;align-items:center;gap:7px}
+    .disprow .seq{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:99px;background:#eef3fc;color:#5b6b86;font-size:11px;font-weight:800;flex:0 0 auto}
     .disprow .wd{color:var(--sub);font-size:14px;flex:1 1 auto;text-align:right;min-width:0;word-break:keep-all}
     .disprow .dispdel{flex:0 0 auto;width:32px;height:32px;border-radius:9px;background:#fef2f2;color:#ef4444;font-size:16px;font-weight:800;line-height:1}
     .disprow .dispdel:active{background:#fee2e2}
@@ -954,7 +955,7 @@
       const byTeam={}; list.forEach(o=>{(byTeam[o.team]=byTeam[o.team]||[]).push(o);});
       return `<button class="back" data-act="back">‹ 뒤로</button>
         <h1 class="serif" style="font-size:26px;margin-bottom:4px">주문 목록</h1>
-        <div class="sub" style="font-size:14px;color:var(--sub);margin-bottom:16px">음료를 나눠줄 때 보는 이름순 목록 · 잘못된 주문은 ✕로 삭제</div>
+        <div class="sub" style="font-size:14px;color:var(--sub);margin-bottom:16px">음료를 나눠줄 때 보는 주문순 목록 · 잘못된 주문은 ✕로 삭제</div>
         <div class="seg">
           <button class="${sess==="am"?'on':''}" data-disp="am">오전 (${Object.values(state.orders).filter(o=>o.session==="am").length})</button>
           <button class="${sess==="pm"?'on':''}" data-disp="pm">오후 (${Object.values(state.orders).filter(o=>o.session==="pm").length})</button>
@@ -962,9 +963,9 @@
         ${list.length===0?`<div class="empty">${sess==="am"?"오전":"오후"} 주문이 없어요</div>`:
           groupTeamIds(byTeam).map(tid=>{
             const t=teamById(tid), no=teamDayNo(tid);
-            const arr=byTeam[tid].sort((a,b)=>krSort(a.name,b.name));
+            const arr=byTeam[tid].sort((a,b)=>new Date(a.time)-new Date(b.time));
             return `<div class="listteam"><span class="cdot" style="background:${t.color}"></span>${no?`${no}번 · `:""}${esc(t.name)} · ${arr.length}잔</div>
-              ${arr.map(o=>{const m=menuById(o.drinkId);return `<div class="disprow"><span class="who">${esc(o.name)}${o.by&&o.by!==o.name?` <span class="bytag">대행:${esc(o.by)}</span>`:""}</span><span class="wd">${m?`<span class="csq sm" style="background:${mColor(m)}"></span> ${esc(m.name)}`:esc(o.drinkId)}</span><button class="dispdel" data-delorder="${o.id}" aria-label="삭제">✕</button></div>`;}).join("")}`;
+              ${arr.map((o,i)=>{const m=menuById(o.drinkId);return `<div class="disprow"><span class="who"><span class="seq">${i+1}</span>${esc(o.name)}${o.by&&o.by!==o.name?` <span class="bytag">대행:${esc(o.by)}</span>`:""}</span><span class="wd">${m?`<span class="csq sm" style="background:${mColor(m)}"></span> ${esc(m.name)}`:esc(o.drinkId)}</span><button class="dispdel" data-delorder="${o.id}" aria-label="삭제">✕</button></div>`;}).join("")}`;
           }).join("")}`;
     }
 
