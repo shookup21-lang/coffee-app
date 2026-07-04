@@ -79,10 +79,10 @@
     .greet .date{color:var(--sub);font-size:15px;margin-top:8px}
 
     /* window bar */
-    .windowbar{display:flex;gap:10px;margin-bottom:14px}
-    .wb{flex:1;border-radius:18px;padding:14px 12px;text-align:center;background:#eef1f6}
-    .wb .wlbl{font-size:12px;color:#9aa4b6;font-weight:700;display:flex;align-items:center;justify-content:center;gap:5px}
-    .wb .wtime{font-size:15px;font-weight:800;margin-top:4px;color:#aeb7c7}
+    .windowbar{display:flex;gap:8px;margin-bottom:14px}
+    .wb{flex:1 1 0;min-width:0;border-radius:18px;padding:14px 8px;text-align:center;background:#eef1f6;overflow:hidden}
+    .wb .wlbl{font-size:11px;color:#9aa4b6;font-weight:700;display:flex;align-items:center;justify-content:center;gap:4px;white-space:nowrap}
+    .wb .wtime{font-size:13px;font-weight:800;margin-top:4px;color:#aeb7c7;white-space:nowrap}
     .wb .live{display:none;width:7px;height:7px;border-radius:99px;background:#fff;animation:wbpulse 1.5s infinite}
     @keyframes wbpulse{0%{box-shadow:0 0 0 0 rgba(255,255,255,.65)}70%{box-shadow:0 0 0 6px rgba(255,255,255,0)}100%{box-shadow:0 0 0 0 rgba(255,255,255,0)}}
     .wb.open{background:linear-gradient(135deg,var(--p1),var(--p2));box-shadow:0 8px 20px rgba(37,99,235,.32)}
@@ -359,7 +359,8 @@
     ];
     const DEFAULT_HOURS = {
       amStart:"07:00", amEnd:"09:20",
-      pmStart:"11:00", pmEnd:"13:20",
+      lnStart:"11:30", lnEnd:"13:00",
+      pmStart:"14:00", pmEnd:"16:00",
     };
     // TEAMS is now dynamic: read from state.teams everywhere
     const colorFor = i => TEAM_COLORS[i%TEAM_COLORS.length];
@@ -479,12 +480,15 @@
     function sessionState(){
       const n=nowMin(), h=state.hours;
       if(n>=toMin(h.amStart) && n<=toMin(h.amEnd)) return {open:true, session:"am", endsAt:h.amEnd};
+      if(n>=toMin(h.lnStart||"99:99") && n<=toMin(h.lnEnd||"99:99")) return {open:true, session:"ln", endsAt:h.lnEnd};
       if(n>=toMin(h.pmStart) && n<=toMin(h.pmEnd)) return {open:true, session:"pm", endsAt:h.pmEnd};
       // closed: figure out next
       if(n<toMin(h.amStart)) return {open:false, next:"오전", at:h.amStart};
+      if(n<toMin(h.lnStart||"99:99")) return {open:false, next:"점심", at:h.lnStart};
       if(n<toMin(h.pmStart)) return {open:false, next:"오후", at:h.pmStart};
       return {open:false, next:"내일 오전", at:h.amStart};
     }
+    const sessName = s => s==="am"?"오전":s==="ln"?"점심":"오후";
     // has this user ordered today (any session)?
     function myTodayOrder(){
       if(!state.user) return null;
@@ -658,10 +662,11 @@
     // ---- window bar (shared) ----
     function windowBarHTML(){
       const ss=sessionState(), h=state.hours;
-      const amOpen=ss.open&&ss.session==="am", pmOpen=ss.open&&ss.session==="pm";
+      const amOpen=ss.open&&ss.session==="am", lnOpen=ss.open&&ss.session==="ln", pmOpen=ss.open&&ss.session==="pm";
       const dot='<span class="live"></span>';
       return `<div class="windowbar">
         <div class="wb ${amOpen?'open':'closed'}"><div class="wlbl">${amOpen?dot:''}오전 주문${amOpen?' 중':''}</div><div class="wtime">${h.amStart}~${h.amEnd}</div></div>
+        <div class="wb ${lnOpen?'open':'closed'}"><div class="wlbl">${lnOpen?dot:''}점심 주문${lnOpen?' 중':''}</div><div class="wtime">${h.lnStart||'--:--'}~${h.lnEnd||'--:--'}</div></div>
         <div class="wb ${pmOpen?'open':'closed'}"><div class="wlbl">${pmOpen?dot:''}오후 주문${pmOpen?' 중':''}</div><div class="wtime">${h.pmStart}~${h.pmEnd}</div></div>
       </div>`;
     }
@@ -676,7 +681,7 @@
           <div class="date">${new Date().toLocaleDateString("ko-KR",{month:"long",day:"numeric",weekday:"long"})}</div>
         </div>
         <div class="hero"><div class="bigcup">${heroEmoji()}</div><div class="rel">
-          <div class="team">${myNo?`<span class="todayno">오늘 ${myNo}번</span> · `:""}${t.name} · ${ss.open?`${ss.session==="am"?"오전":"오후"} 주문 중`:"주문 시간 외"}</div>
+          <div class="team">${myNo?`<span class="todayno">오늘 ${myNo}번</span> · `:""}${t.name} · ${ss.open?`${sessName(ss.session)} 주문 중`:"주문 시간 외"}</div>
           <h1>${mine?(mine.status==="ready"?"음료가 준비됐어요":"오늘 주문 완료"):"오늘의 한 잔"}</h1>
           <div class="sub">${ss.open?`지금 주문을 받고 있어요 (~${ss.endsAt})`:`${ss.next} 주문은 ${ss.at}부터예요`}</div>
         </div></div>
@@ -716,7 +721,7 @@
       return `<div class="mycup">
         <div class="mc" style="background:${mColor(m)}"></div>
         <div style="flex:1">
-          <div class="mlbl">${o.session==="am"?"오전 주문":"오후 주문"}${o.by&&o.by!==o.name?` · ${esc(o.by)}님이 대행 주문`:""}</div>
+          <div class="mlbl">${sessName(o.session)} 주문${o.by&&o.by!==o.name?` · ${esc(o.by)}님이 대행 주문`:""}</div>
           <div class="mname">${m?esc(m.name):esc(o.drinkId)}</div>
           <div class="mstat">${stat}</div>
           ${ss.open&&o.status==="pending"?`<span class="chg" data-act="goOrder">음료 변경하기</span>`:""}
@@ -774,6 +779,7 @@
       const editable = ss.open; // can only change while ordering window is open
       const all=Object.entries(state.orders).map(([id,o])=>({id,...o})).filter(o=>o.team===u.team);
       const amCount=all.filter(o=>o.session==="am").length;
+      const lnCount=all.filter(o=>o.session==="ln").length;
       const pmCount=all.filter(o=>o.session==="pm").length;
       const list=all.filter(o=>o.session===sess).sort((a,b)=>krSort(a.name,b.name));
       return `<button class="back" data-act="back">‹ 뒤로</button>
@@ -784,9 +790,10 @@
         <div class="sub" style="font-size:14px;color:var(--sub);margin-bottom:16px">완성된 음료를 받을 때 누구 것인지 확인하세요 (이름순)${editable?" · 수정·삭제 가능":""}</div>
         <div class="seg">
           <button class="${sess==="am"?'on':''}" data-disp="am">오전 (${amCount})</button>
+          <button class="${sess==="ln"?'on':''}" data-disp="ln">점심 (${lnCount})</button>
           <button class="${sess==="pm"?'on':''}" data-disp="pm">오후 (${pmCount})</button>
         </div>
-        ${list.length===0?`<div class="empty">${sess==="am"?"오전":"오후"} 주문이 없어요</div>`:
+        ${list.length===0?`<div class="empty">${sessName(sess)} 주문이 없어요</div>`:
           list.map(o=>{const m=menuById(o.drinkId);
             return `<div class="lrow">
               <div class="lrow-main">
@@ -908,7 +915,7 @@
             <div class="stat"><b>${list.length}</b><small>오늘 총 주문</small></div>
           </div>
           <div class="dashfoot">
-            <span class="dfstatus">${ss.open?`<span style="color:#bbf7d0">● ${ss.session==="am"?"오전":"오후"} 주문 접수 중 (~${ss.endsAt})</span>`:`○ 주문 시간 외 · 다음: ${ss.next} ${ss.at}`}</span>
+            <span class="dfstatus">${ss.open?`<span style="color:#bbf7d0">● ${sessName(ss.session)} 주문 접수 중 (~${ss.endsAt})</span>`:`○ 주문 시간 외 · 다음: ${ss.next} ${ss.at}`}</span>
             <button class="swt ${state.soundOn?'on':''}" data-act="toggleSound" aria-label="새 주문 알림 소리"><span class="swt-l">알림</span><span class="swt-t"></span></button>
           </div>
         </div></div>
@@ -951,6 +958,7 @@
     // ---- dispensing list (sorted, am/pm) ----
     function renderDispense(){
       const sess=state.dispSession;
+      const lnCount=Object.values(state.orders).filter(o=>o.session==="ln").length;
       const list=Object.entries(state.orders).map(([id,o])=>({id,...o})).filter(o=>o.session===sess);
       const byTeam={}; list.forEach(o=>{(byTeam[o.team]=byTeam[o.team]||[]).push(o);});
       return `<button class="back" data-act="back">‹ 뒤로</button>
@@ -958,9 +966,10 @@
         <div class="sub" style="font-size:14px;color:var(--sub);margin-bottom:16px">음료를 나눠줄 때 보는 주문순 목록 · 잘못된 주문은 ✕로 삭제</div>
         <div class="seg">
           <button class="${sess==="am"?'on':''}" data-disp="am">오전 (${Object.values(state.orders).filter(o=>o.session==="am").length})</button>
+          <button class="${sess==="ln"?'on':''}" data-disp="ln">점심 (${lnCount})</button>
           <button class="${sess==="pm"?'on':''}" data-disp="pm">오후 (${Object.values(state.orders).filter(o=>o.session==="pm").length})</button>
         </div>
-        ${list.length===0?`<div class="empty">${sess==="am"?"오전":"오후"} 주문이 없어요</div>`:
+        ${list.length===0?`<div class="empty">${sessName(sess)} 주문이 없어요</div>`:
           groupTeamIds(byTeam).map(tid=>{
             const t=teamById(tid), no=teamDayNo(tid);
             const arr=byTeam[tid].sort((a,b)=>new Date(a.time)-new Date(b.time));
@@ -1022,9 +1031,11 @@
       const h=state.hours;
       return `<button class="back" data-act="back">‹ 뒤로</button>
         <h1 class="serif" style="font-size:26px;margin-bottom:4px">주문 시간 설정</h1>
-        <div class="sub" style="font-size:14px;color:var(--sub);margin-bottom:16px">오전·오후 주문 시작/마감 시간을 조정하세요</div>
+        <div class="sub" style="font-size:14px;color:var(--sub);margin-bottom:16px">오전·점심·오후 주문 시작/마감 시간을 조정하세요</div>
         <div class="timefield"><div class="tcap">오전 주문</div>
           ${timeRow("시작", "amSh","amSm", h.amStart)}${timeRow("마감", "amEh","amEm", h.amEnd)}</div>
+        <div class="timefield"><div class="tcap">점심 주문</div>
+          ${timeRow("시작", "lnSh","lnSm", h.lnStart||"11:30")}${timeRow("마감", "lnEh","lnEm", h.lnEnd||"13:00")}</div>
         <div class="timefield"><div class="tcap">오후 주문</div>
           ${timeRow("시작", "pmSh","pmSm", h.pmStart)}${timeRow("마감", "pmEh","pmEm", h.pmEnd)}</div>
         <button class="primary" style="margin-top:8px" data-act="saveTime">저장하기</button>
@@ -1203,6 +1214,7 @@
       const g=id=>document.getElementById(id).value;
       const h={
         amStart:`${g("amSh")}:${g("amSm")}`, amEnd:`${g("amEh")}:${g("amEm")}`,
+        lnStart:`${g("lnSh")}:${g("lnSm")}`, lnEnd:`${g("lnEh")}:${g("lnEm")}`,
         pmStart:`${g("pmSh")}:${g("pmSm")}`, pmEnd:`${g("pmEh")}:${g("pmEm")}`
       };
       await saveHours(h); state.view="home"; render(); toast("주문 시간을 저장했어요");
