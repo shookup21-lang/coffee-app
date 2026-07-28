@@ -274,11 +274,23 @@
     .editcard-top .cpick{width:28px;height:28px;border-radius:9px;flex:0 0 auto;border:2px solid rgba(0,0,0,.08);box-shadow:0 1px 2px rgba(0,0,0,.08)}
     .editcard-top .cpick:active{transform:scale(.93)}
     .editcard-top .cpick.open{outline:2px solid #16243f;outline-offset:2px}
+    .editcard-sale{display:flex;align-items:center;justify-content:space-between;margin-top:10px;padding-top:10px;border-top:1px solid #f0f4fb}
+    .editcard-sale .sale-lbl{font-size:12.5px;font-weight:700;color:#9aa6bd}
+    .editcard-sale.off .sale-lbl{color:#dc2626}
+    .editcard.item-off{opacity:.6}
     .sw{width:30px;height:30px;border-radius:9px;flex:0 0 auto;border:3px solid transparent;box-sizing:border-box}
     .sw.on{border-color:#16243f}
     .addbtn{width:100%;border:2px dashed #c4d4ef;border-radius:16px;padding:14px;color:var(--sub);font-size:14px;font-weight:600;background:#fff}
     .timefield{background:#fff;border-radius:18px;padding:16px;margin-bottom:11px;box-shadow:0 2px 10px rgba(80,90,160,.05)}
     .timefield .tcap{font-size:14px;color:#16243f;font-weight:700;margin-bottom:12px}
+    .timefield .tcap-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+    .timefield .tcap-row .tcap{margin-bottom:0}
+    .swt2{width:42px;height:24px;border-radius:99px;background:#e2e8f5;position:relative;flex:0 0 auto}
+    .swt2 .swt2-t{position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:99px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.15);transition:transform .15s}
+    .swt2.on{background:#34d399}
+    .swt2.on .swt2-t{transform:translateX(18px)}
+    .timefield.sess-off{opacity:.75}
+    .sess-off-note{font-size:13px;color:#9aa6bd;padding:2px 0 2px}
     .trow{display:flex;align-items:center;gap:8px;margin-bottom:10px}
     .trow:last-child{margin-bottom:0}
     .trow .trl{flex:0 0 44px;font-size:14px;font-weight:600;color:var(--sub)}
@@ -362,9 +374,9 @@
       { id:"ice-toffeenut", name:"ICE 토피넛라떼", color:"#0d9488" },
     ];
     const DEFAULT_HOURS = {
-      amStart:"07:00", amEnd:"09:20",
-      lnStart:"11:30", lnEnd:"13:00",
-      pmStart:"14:00", pmEnd:"16:00",
+      amStart:"07:00", amEnd:"09:20", amOn:true,
+      lnStart:"11:30", lnEnd:"13:00", lnOn:true,
+      pmStart:"14:00", pmEnd:"16:00", pmOn:true,
     };
     // TEAMS is now dynamic: read from state.teams everywhere
     const colorFor = i => TEAM_COLORS[i%TEAM_COLORS.length];
@@ -392,6 +404,7 @@
       statsDate: null,   // "YYYY-MM-DD" 선택된 날짜
       statsData: null,   // 조회된 날짜의 orders 객체 (null=로딩중, {}=없음)
       notice: null,      // { text, updatedAt } 담당자 공지사항
+      hoursDraft: null,  // 주문 시간 설정 화면에서 편집 중인 임시 값 (on/off 포함)
       // add-person flow temp
       addTeam:null, addName:"", editOrderId:null,
       dispSession:"am",
@@ -484,14 +497,19 @@
     // ---------- which session is open now ----------
     function sessionState(){
       const n=nowMin(), h=state.hours;
-      if(n>=toMin(h.amStart) && n<=toMin(h.amEnd)) return {open:true, session:"am", endsAt:h.amEnd};
-      if(n>=toMin(h.lnStart||"99:99") && n<=toMin(h.lnEnd||"99:99")) return {open:true, session:"ln", endsAt:h.lnEnd};
-      if(n>=toMin(h.pmStart) && n<=toMin(h.pmEnd)) return {open:true, session:"pm", endsAt:h.pmEnd};
-      // closed: figure out next
-      if(n<toMin(h.amStart)) return {open:false, next:"오전", at:h.amStart};
-      if(n<toMin(h.lnStart||"99:99")) return {open:false, next:"점심", at:h.lnStart};
-      if(n<toMin(h.pmStart)) return {open:false, next:"오후", at:h.pmStart};
-      return {open:false, next:"내일 오전", at:h.amStart};
+      const sessions=[
+        {key:"am", start:h.amStart, end:h.amEnd, on:h.amOn!==false, label:"오전"},
+        {key:"ln", start:h.lnStart||"11:30", end:h.lnEnd||"13:00", on:h.lnOn!==false, label:"점심"},
+        {key:"pm", start:h.pmStart, end:h.pmEnd, on:h.pmOn!==false, label:"오후"},
+      ].filter(s=>s.on);
+      for(const s of sessions){
+        if(n>=toMin(s.start) && n<=toMin(s.end)) return {open:true, session:s.key, endsAt:s.end};
+      }
+      for(const s of sessions){
+        if(n<toMin(s.start)) return {open:false, next:s.label, at:s.start};
+      }
+      if(sessions.length) return {open:false, next:`내일 ${sessions[0].label}`, at:sessions[0].start};
+      return {open:false, next:"운영 안내", at:"-"};
     }
     const sessName = s => s==="am"?"오전":s==="ln"?"점심":"오후";
     // has this user ordered today (any session)?
@@ -677,11 +695,10 @@
       const ss=sessionState(), h=state.hours;
       const amOpen=ss.open&&ss.session==="am", lnOpen=ss.open&&ss.session==="ln", pmOpen=ss.open&&ss.session==="pm";
       const dot='<span class="live"></span>';
-      return `<div class="windowbar">
-        <div class="wb ${amOpen?'open':'closed'}"><div class="wlbl">${amOpen?dot:''}오전 주문${amOpen?' 중':''}</div><div class="wtime">${h.amStart}~${h.amEnd}</div></div>
-        <div class="wb ${lnOpen?'open':'closed'}"><div class="wlbl">${lnOpen?dot:''}점심 주문${lnOpen?' 중':''}</div><div class="wtime">${h.lnStart||'--:--'}~${h.lnEnd||'--:--'}</div></div>
-        <div class="wb ${pmOpen?'open':'closed'}"><div class="wlbl">${pmOpen?dot:''}오후 주문${pmOpen?' 중':''}</div><div class="wtime">${h.pmStart}~${h.pmEnd}</div></div>
-      </div>`;
+      const amCell = h.amOn!==false ? `<div class="wb ${amOpen?'open':'closed'}"><div class="wlbl">${amOpen?dot:''}오전 주문${amOpen?' 중':''}</div><div class="wtime">${h.amStart}~${h.amEnd}</div></div>` : ``;
+      const lnCell = h.lnOn!==false ? `<div class="wb ${lnOpen?'open':'closed'}"><div class="wlbl">${lnOpen?dot:''}점심 주문${lnOpen?' 중':''}</div><div class="wtime">${h.lnStart||'--:--'}~${h.lnEnd||'--:--'}</div></div>` : ``;
+      const pmCell = h.pmOn!==false ? `<div class="wb ${pmOpen?'open':'closed'}"><div class="wlbl">${pmOpen?dot:''}오후 주문${pmOpen?' 중':''}</div><div class="wtime">${h.pmStart}~${h.pmEnd}</div></div>` : ``;
+      return `<div class="windowbar">${amCell}${lnCell}${pmCell}</div>`;
     }
 
     // ---- employee home ----
@@ -750,7 +767,8 @@
         <div style="margin-bottom:16px"><div style="font-size:12px;font-weight:600;color:${t.color};margin-bottom:4px">${t.name} · ${esc(state.user.name)}</div>
         <h1 class="serif" style="font-size:26px">음료를 선택하세요</h1>
         <div class="sub" style="font-size:14px;color:var(--sub);margin-top:4px">하나만 고르면 바로 주문됩니다</div></div>
-        <div class="grid2">${state.menu.map(m=>`<button class="drink" data-pick="${m.id}"><div class="em" style="background:${mColor(m)}"></div><div class="dn">${esc(m.name)}</div></button>`).join("")}</div>`;
+        ${state.menu.filter(m=>m.active!==false).length===0?`<div class="empty">지금은 판매 중인 메뉴가 없어요</div>`:
+        `<div class="grid2">${state.menu.filter(m=>m.active!==false).map(m=>`<button class="drink" data-pick="${m.id}"><div class="em" style="background:${mColor(m)}"></div><div class="dn">${esc(m.name)}</div></button>`).join("")}</div>`}`;
     }
 
     // ---- add person (order for someone else) ----
@@ -768,7 +786,7 @@
         <div class="picklbl">1. 이름 입력</div>
         <input id="addName" value="${esc(state.addName)}" placeholder="동료 이름" autocomplete="off" style="width:100%;border:1px solid var(--line);border-radius:14px;padding:14px 16px;font-size:16px;outline:none;background:#f7faff"/>
         <div class="picklbl">2. 음료 선택</div>
-        <div class="grid2">${state.menu.map(m=>`<button class="drink" data-addpick="${m.id}"><div class="em" style="background:${mColor(m)}"></div><div class="dn">${esc(m.name)}</div></button>`).join("")}</div>
+        <div class="grid2">${state.menu.filter(m=>m.active!==false).map(m=>`<button class="drink" data-addpick="${m.id}"><div class="em" style="background:${mColor(m)}"></div><div class="dn">${esc(m.name)}</div></button>`).join("")}</div>
         <div class="footnote">이름을 입력하고 음료를 누르면 바로 주문됩니다. 대행 주문은 본인 팀(${myTeam?esc(myTeam.name):''})으로만 들어갑니다.</div>`;
     }
 
@@ -1012,15 +1030,19 @@
     function renderMenuEdit(){
       return `<button class="back" data-act="back">‹ 뒤로</button>
         <h1 class="serif" style="font-size:26px;margin-bottom:4px">메뉴 관리</h1>
-        <div class="sub" style="font-size:14px;color:var(--sub);margin-bottom:16px">메뉴 이름·색상 수정, 추가·삭제 가능</div>
-        <div id="el">${state.menu.map((m,i)=>`<div class="editcard">
+        <div class="sub" style="font-size:14px;color:var(--sub);margin-bottom:16px">메뉴 이름·색상 수정, 추가·삭제 가능 · 재료 소진 시 판매를 꺼두세요</div>
+        <div id="el">${state.menu.map((m,i)=>{const on=m.active!==false;return `<div class="editcard${on?'':' item-off'}">
           <div class="editcard-top">
             <button class="cpick${state.menuPickOpen===m.id?' open':''}" data-mpick="${m.id}" style="background:${mColor(m)}" aria-label="색상 선택"></button>
             <input class="nm" data-nm="${i}" value="${esc(m.name)}"/>
             <button class="del" data-del="${i}">삭제</button>
           </div>
           ${state.menuPickOpen===m.id?`<div class="swatches">${swatches(mColor(m), "data-mcolor", i)}</div>`:``}
-        </div>`).join("")}</div>
+          <div class="editcard-sale${on?'':' off'}">
+            <span class="sale-lbl">${on?"판매 중":"품절 (직원 화면에 안 보여요)"}</span>
+            <button class="swt2${on?' on':''}" data-mtoggle="${i}"><span class="swt2-t"></span></button>
+          </div>
+        </div>`;}).join("")}</div>
         <button class="addbtn" data-act="addMenu">＋ 메뉴 추가</button>
         <button class="primary" style="margin-top:16px" data-act="saveMenu">저장하기</button>`;
     }
@@ -1054,19 +1076,26 @@
         <select id="${idM}" class="tsel">${minOpts(mm)}</select>
       </div>`;
     }
+    function sessionBlock(key, title, prefix, hhmmStart, hhmmEnd, on){
+      return `<div class="timefield${on?'':' sess-off'}">
+        <div class="tcap-row">
+          <div class="tcap">${title}</div>
+          <button class="swt2 ${on?'on':''}" data-act="toggle${key}Session"><span class="swt2-t"></span></button>
+        </div>
+        ${on?`${timeRow("시작", prefix+"Sh",prefix+"Sm", hhmmStart)}${timeRow("마감", prefix+"Eh",prefix+"Em", hhmmEnd)}`
+            :`<div class="sess-off-note">이 시간대는 주문을 받지 않아요</div>`}
+      </div>`;
+    }
     function renderTimeEdit(){
-      const h=state.hours;
+      const h=state.hoursDraft||state.hours;
       return `<button class="back" data-act="back">‹ 뒤로</button>
         <h1 class="serif" style="font-size:26px;margin-bottom:4px">주문 시간 설정</h1>
-        <div class="sub" style="font-size:14px;color:var(--sub);margin-bottom:16px">오전·점심·오후 주문 시작/마감 시간을 조정하세요</div>
-        <div class="timefield"><div class="tcap">오전 주문</div>
-          ${timeRow("시작", "amSh","amSm", h.amStart)}${timeRow("마감", "amEh","amEm", h.amEnd)}</div>
-        <div class="timefield"><div class="tcap">점심 주문</div>
-          ${timeRow("시작", "lnSh","lnSm", h.lnStart||"11:30")}${timeRow("마감", "lnEh","lnEm", h.lnEnd||"13:00")}</div>
-        <div class="timefield"><div class="tcap">오후 주문</div>
-          ${timeRow("시작", "pmSh","pmSm", h.pmStart)}${timeRow("마감", "pmEh","pmEm", h.pmEnd)}</div>
+        <div class="sub" style="font-size:14px;color:var(--sub);margin-bottom:16px">오전·점심·오후 주문 시작/마감 시간을 조정하고, 필요 없는 시간대는 꺼두세요</div>
+        ${sessionBlock("Am","오전 주문","am", h.amStart, h.amEnd, h.amOn!==false)}
+        ${sessionBlock("Ln","점심 주문","ln", h.lnStart||"11:30", h.lnEnd||"13:00", h.lnOn!==false)}
+        ${sessionBlock("Pm","오후 주문","pm", h.pmStart, h.pmEnd, h.pmOn!==false)}
         <button class="primary" style="margin-top:8px" data-act="saveTime">저장하기</button>
-        <div class="footnote">마감 시간이 지나면 새 주문은 자동으로 차단됩니다. 이미 들어온 주문은 그대로 유지돼요.</div>`;
+        <div class="footnote">마감 시간이 지나면 새 주문은 자동으로 차단됩니다. 이미 들어온 주문은 그대로 유지돼요. 꺼둔 시간대는 직원 화면에서 보이지 않아요.</div>`;
     }
 
     // ============ EVENTS ============
@@ -1086,6 +1115,7 @@
       document.querySelectorAll("[data-editpick]").forEach(el=>el.onclick=()=>editOrderDrink(el.dataset.editpick));
       document.querySelectorAll("[data-mpick]").forEach(el=>el.onclick=()=>{ readMenuInputs(); const id=el.dataset.mpick; state.menuPickOpen = (state.menuPickOpen===id)?null:id; render(); });
       document.querySelectorAll("[data-mcolor]").forEach(el=>el.onclick=()=>{ const [i,c]=el.dataset.mcolor.split("|"); readMenuInputs(); if(state.menu[+i])state.menu[+i].color=c; state.menuPickOpen=null; render(); });
+      document.querySelectorAll("[data-mtoggle]").forEach(el=>el.onclick=()=>{ const i=+el.dataset.mtoggle; readMenuInputs(); if(state.menu[i]) state.menu[i].active = !(state.menu[i].active!==false); render(); });
       // 집계 캘린더 월 이동
       document.querySelectorAll("[data-statsmonth]").forEach(el=>el.onclick=()=>{ state.statsMonth=el.dataset.statsmonth; state.statsDate=null; state.statsData=null; render(); });
       // 집계 캘린더 날짜 선택 → Firestore 1회 조회
@@ -1122,7 +1152,10 @@
           saveNotice("").then(()=>{ state.view="home"; render(); toast("공지사항을 내렸어요"); });
           break;
         case "editTeams": state.view="team-edit"; render(); break;
-        case "editTime": state.view="time-edit"; render(); break;
+        case "editTime": state.hoursDraft={...state.hours}; state.view="time-edit"; render(); break;
+        case "toggleAmSession": readHoursDraft(); state.hoursDraft.amOn = !(state.hoursDraft.amOn!==false); render(); break;
+        case "toggleLnSession": readHoursDraft(); state.hoursDraft.lnOn = !(state.hoursDraft.lnOn!==false); render(); break;
+        case "togglePmSession": readHoursDraft(); state.hoursDraft.pmOn = !(state.hoursDraft.pmOn!==false); render(); break;
         case "refresh": toast("최신 상태예요"); render(); break;
         case "toggleSound":
           state.soundOn=!state.soundOn;
@@ -1248,14 +1281,18 @@
       await saveNotice(v);
       state.view="home"; render(); toast(v.trim()?"공지사항을 저장했어요":"공지사항이 비어 있어 표시되지 않아요");
     }
+    function readHoursDraft(){
+      // 화면에 존재하는 시간 select만 읽어서 draft에 반영 (꺼진 세션은 select가 없어 기존 draft 값 유지)
+      const g=id=>{const el=document.getElementById(id); return el?el.value:null;};
+      const d=state.hoursDraft; if(!d) return;
+      if(g("amSh")!==null){ d.amStart=`${g("amSh")}:${g("amSm")}`; d.amEnd=`${g("amEh")}:${g("amEm")}`; }
+      if(g("lnSh")!==null){ d.lnStart=`${g("lnSh")}:${g("lnSm")}`; d.lnEnd=`${g("lnEh")}:${g("lnEm")}`; }
+      if(g("pmSh")!==null){ d.pmStart=`${g("pmSh")}:${g("pmSm")}`; d.pmEnd=`${g("pmEh")}:${g("pmEm")}`; }
+    }
     async function doSaveTime(){
-      const g=id=>document.getElementById(id).value;
-      const h={
-        amStart:`${g("amSh")}:${g("amSm")}`, amEnd:`${g("amEh")}:${g("amEm")}`,
-        lnStart:`${g("lnSh")}:${g("lnSm")}`, lnEnd:`${g("lnEh")}:${g("lnEm")}`,
-        pmStart:`${g("pmSh")}:${g("pmSm")}`, pmEnd:`${g("pmEh")}:${g("pmEm")}`
-      };
-      await saveHours(h); state.view="home"; render(); toast("주문 시간을 저장했어요");
+      readHoursDraft();
+      const h={...state.hoursDraft};
+      await saveHours(h); state.hoursDraft=null; state.view="home"; render(); toast("주문 시간을 저장했어요");
     }
 
     // boot
