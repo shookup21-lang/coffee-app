@@ -411,14 +411,36 @@
     };
 
     // ---------- 담당자 새 주문 알림 (소리·진동·화면 유지) ----------
-    let _audioCtx=null, _knownIds=null, _wakeLock=null, _myReadyIds=null;
+    let _audioCtx=null, _knownIds=null, _wakeLock=null, _myReadyIds=null, _voices=[];
     function armAudio(){
       try{
         if(!_audioCtx) _audioCtx=new (window.AudioContext||window.webkitAudioContext)();
         if(_audioCtx.state==="suspended") _audioCtx.resume();
       }catch(e){}
+      try{
+        if("speechSynthesis" in window){
+          _voices=speechSynthesis.getVoices();
+          if(!_voices.length) speechSynthesis.onvoiceschanged=()=>{ _voices=speechSynthesis.getVoices(); };
+        }
+      }catch(e){}
     }
-    function playDing(){
+    function pickFemaleVoice(){
+      const ko=_voices.filter(v=>v.lang&&v.lang.toLowerCase().startsWith("ko"));
+      if(!ko.length) return null;
+      const female=ko.find(v=>/female|여성|Yuna|Sora|Female/i.test(v.name));
+      return female||ko[0];
+    }
+    function speak(text){
+      try{
+        if(!state.soundOn||!("speechSynthesis" in window)) return;
+        if(!_voices.length) _voices=speechSynthesis.getVoices();
+        const u=new SpeechSynthesisUtterance(text);
+        u.lang="ko-KR"; u.rate=1.0; u.pitch=1.08; u.volume=1;
+        const v=pickFemaleVoice(); if(v) u.voice=v;
+        speechSynthesis.cancel(); speechSynthesis.speak(u);
+      }catch(e){}
+    }
+    function playDing(speakMsg){
       if(!state.soundOn) return;
       try{
         if(!_audioCtx) return;
@@ -434,6 +456,7 @@
           o.start(start); o.stop(start+0.18);
         });
       }catch(e){}
+      if(speakMsg) setTimeout(()=>speak(speakMsg), 380);
     }
     // 첫 사용자 터치에 오디오 활성화 (브라우저 자동재생 정책)
     document.addEventListener("pointerdown", armAudio);
@@ -530,7 +553,7 @@
         const ids=Object.keys(orders);
         const isBarista=state.user&&state.user.team==="barista";
         // 담당자: 새 주문이 들어오면 딩동
-        if(_knownIds!==null && isBarista && ids.some(id=>!_knownIds.has(id))) playDing();
+        if(_knownIds!==null && isBarista && ids.some(id=>!_knownIds.has(id))) playDing("신규 음료 주문이요");
         _knownIds=new Set(ids);
         // 직원: 내 음료가 새로 '준비됨'으로 바뀌면 딩동
         if(state.user && !isBarista){
@@ -1162,7 +1185,7 @@
           localStorage.setItem("ian_sound", JSON.stringify(state.soundOn));
           armAudio();
           render();
-          if(state.soundOn){ playDing(); toast("새 주문 알림 소리 켜짐"); } else toast("새 주문 알림 소리 꺼짐");
+          if(state.soundOn){ playDing("신규 음료 주문이요"); toast("새 주문 알림 소리 켜짐"); } else toast("새 주문 알림 소리 꺼짐");
           break;
         case "toggleAwake":
           if(!("wakeLock" in navigator)){ toast("이 기기는 화면 유지를 지원하지 않아요"); break; }
