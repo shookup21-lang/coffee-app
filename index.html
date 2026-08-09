@@ -1057,14 +1057,12 @@
           <button class="${sess==="pm"?'on':''}" data-disp="pm">오후 (${Object.values(state.orders).filter(o=>o.session==="pm").length})</button>
         </div>
         ${list.length===0?`<div class="empty">${sessName(sess)} 주문이 없어요</div>`:
-          sess==="am"
-            ? groupTeamIds(byTeam).map(tid=>{
-                const t=teamById(tid), no=teamDayNo(tid);
-                const arr=byTeam[tid].sort((a,b)=>new Date(a.time)-new Date(b.time));
-                return `<div class="listteam"><span class="cdot" style="background:${t.color}"></span>${no?`${no}번 · `:""}${esc(t.name)} · ${arr.length}잔</div>
-                  ${arr.map(rowHTML).join("")}`;
-              }).join("")
-            : list.sort((a,b)=>new Date(a.time)-new Date(b.time)).map(rowHTML).join("")}`;
+          groupTeamIds(byTeam).map(tid=>{
+            const t=teamById(tid), no=teamDayNo(tid);
+            const arr=byTeam[tid].sort((a,b)=>new Date(a.time)-new Date(b.time));
+            return `<div class="listteam"><span class="cdot" style="background:${t.color}"></span>${no?`${no}번 · `:""}${esc(t.name)} · ${arr.length}잔</div>
+              ${arr.map(rowHTML).join("")}`;
+          }).join("")}`;
     }
 
     // ---- menu editor ----
