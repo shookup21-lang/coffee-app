@@ -476,7 +476,7 @@
         }
       }catch(e){}
     }
-    document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible") maybeWake(); });
+    document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible"){ maybeWake(); subscribeDaily(); } });
     // accessor so existing TEAMS.* code keeps working
     const TEAMS = { get list(){return state.teams;}, find(fn){return state.teams.find(fn);}, filter(fn){return state.teams.filter(fn);}, map(fn){return state.teams.map(fn);} };
     const teamById = id => state.teams.find(t=>t.id===id) || {id,name:id,color:"#64748b"};
@@ -563,12 +563,24 @@
     }
 
     // ---------- firestore ----------
-    function startSync(){
-      onSnapshot(doc(db,"daily",todayKey()),s=>{
+    // 입력 중인 화면(타이핑 내용이 저장 전까지 DOM에만 있는 화면)에서는 실시간 업데이트가 와도
+    // 화면을 다시 그리지 않음 — state는 항상 최신으로 갱신되고, 화면 반영만 편집이 끝난 뒤로 미룸
+    const EDIT_VIEWS=new Set(["team-edit","menu-edit","time-edit","notice-edit"]);
+    function safeRender(){ if(!EDIT_VIEWS.has(state.view)) render(); }
+
+    let _dailyUnsub=null, _dailyKey=null;
+    function subscribeDaily(){
+      const key=todayKey();
+      if(_dailyKey===key) return; // 이미 오늘 날짜에 연결돼 있음
+      if(_dailyUnsub){ _dailyUnsub(); _dailyUnsub=null; }
+      _dailyKey=key;
+      // 날짜가 바뀌면 어제 데이터 잔재가 남지 않도록 하루 단위 상태 초기화
+      _knownIds=null; _myReadyIds=null; state.orders={};
+      _dailyUnsub=onSnapshot(doc(db,"daily",key),s=>{
         const d=s.exists()?s.data():{}; const orders=d.orders||{};
         const ids=Object.keys(orders);
         const isBarista=state.user&&state.user.team==="barista";
-        // 담당자: 새 주문이 들어오면 딩동
+        // 담당자: 새 주문이 들어오면 딩동 (입력 중이어도 소리는 그대로 울림)
         if(_knownIds!==null && isBarista && ids.some(id=>!_knownIds.has(id))) playDing("신규 음료 주문이요");
         _knownIds=new Set(ids);
         // 직원: 내 음료가 새로 '준비됨'으로 바뀌면 딩동
@@ -577,13 +589,16 @@
           if(_myReadyIds!==null && myReady.some(id=>!_myReadyIds.has(id))) playDing();
           _myReadyIds=new Set(myReady);
         }
-        state.orders=orders; checkNotif(); render();
+        state.orders=orders; checkNotif(); safeRender();
       },e=>console.error(e));
-      onSnapshot(doc(db,"config","menu"),s=>{ if(s.exists()&&Array.isArray(s.data().items)&&s.data().items.length){ state.menu=s.data().items.map((m,i)=>({...m, color:m.color||menuColorFor(i)})); } else state.menu=DEFAULT_MENU; render(); },e=>console.error(e));
-      onSnapshot(doc(db,"config","teams"),s=>{ if(s.exists()&&Array.isArray(s.data().items)&&s.data().items.length) state.teams=s.data().items.map((t,i)=>({...t, color:colorFor(i)})); else state.teams=DEFAULT_TEAMS; render(); },e=>console.error(e));
-      onSnapshot(doc(db,"config","hours"),s=>{ if(s.exists()) state.hours={...DEFAULT_HOURS,...s.data()}; render(); },e=>console.error(e));
-      onSnapshot(doc(db,"config","rotation"),s=>{ state.rotation = s.exists()? s.data() : null; render(); },e=>console.error(e));
-      onSnapshot(doc(db,"config","notice"),s=>{ state.notice = (s.exists()&&s.data().text)? s.data() : null; render(); },e=>console.error(e));
+    }
+    function startSync(){
+      subscribeDaily();
+      onSnapshot(doc(db,"config","menu"),s=>{ if(s.exists()&&Array.isArray(s.data().items)&&s.data().items.length){ state.menu=s.data().items.map((m,i)=>({...m, color:m.color||menuColorFor(i)})); } else state.menu=DEFAULT_MENU; safeRender(); },e=>console.error(e));
+      onSnapshot(doc(db,"config","teams"),s=>{ if(s.exists()&&Array.isArray(s.data().items)&&s.data().items.length) state.teams=s.data().items.map((t,i)=>({...t, color:colorFor(i)})); else state.teams=DEFAULT_TEAMS; safeRender(); },e=>console.error(e));
+      onSnapshot(doc(db,"config","hours"),s=>{ if(s.exists()) state.hours={...DEFAULT_HOURS,...s.data()}; safeRender(); },e=>console.error(e));
+      onSnapshot(doc(db,"config","rotation"),s=>{ state.rotation = s.exists()? s.data() : null; safeRender(); },e=>console.error(e));
+      onSnapshot(doc(db,"config","notice"),s=>{ state.notice = (s.exists()&&s.data().text)? s.data() : null; safeRender(); },e=>console.error(e));
     }
     const saveOrders=async n=>{state.orders=n;await setDoc(doc(db,"daily",todayKey()),{orders:n},{merge:true});};
     const saveMenu=async i=>{state.menu=i;await setDoc(doc(db,"config","menu"),{items:i});};
@@ -1341,7 +1356,7 @@
 
     // boot
     startSync(); render();
-    setInterval(()=>{ if(state.user&&state.view==="home") render(); }, 60000); // refresh window state each minute
+    setInterval(()=>{ subscribeDaily(); if(state.user&&state.view==="home") render(); }, 60000); // 매분: 날짜가 바뀌었으면 자동 재연결 + 주문 시간 상태 갱신
   </script>
 </body>
 </html>
