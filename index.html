@@ -145,6 +145,12 @@
     .mycup .pickno{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#eef3fc;border-radius:14px;padding:8px 14px;min-width:52px}
     .mycup .pickno .pickno-lbl{font-size:10px;font-weight:700;color:#5b7bb8;white-space:nowrap}
     .mycup .pickno .pickno-n{font-size:22px;font-weight:800;color:#2563eb;line-height:1.2;margin-top:1px}
+    .mycup .pickno.orange{background:#fff2e8}
+    .mycup .pickno.orange .pickno-lbl{color:#c2632a}
+    .mycup .pickno.orange .pickno-n{color:#f97316}
+    .mycup .pickno.green{background:#e9f7ee}
+    .mycup .pickno.green .pickno-lbl{color:#227a45}
+    .mycup .pickno.green .pickno-n{color:#16a34a}
     .chg{font-size:13px;color:#2563eb;font-weight:600;margin-top:8px;display:inline-block}
 
     .back{display:inline-flex;align-items:center;gap:6px;font-size:16px;color:#2563eb;padding:12px 18px 12px 12px;margin-bottom:10px;font-weight:700;background:#fff;border-radius:14px;box-shadow:0 2px 8px rgba(80,90,160,.06)}
@@ -189,7 +195,6 @@
     .navtext button{flex:0 0 calc(50% - 4px);background:var(--tile);border-radius:14px;padding:14px;font-weight:700;font-size:15px;color:#16243f;box-shadow:0 2px 8px rgba(80,90,160,.05)}
     .navtext button:active{background:#dde8f7}
 
-    .batch{background:#fff;border-radius:22px;padding:20px;margin-bottom:16px;box-shadow:0 6px 18px rgba(80,90,160,.07)}
     .dash .dashfoot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:11px;padding-top:11px;border-top:1px solid rgba(255,255,255,.25)}
     .dash .dashfoot .dfstatus{font-size:12px;color:rgba(255,255,255,.85);min-width:0}
     .swt{display:inline-flex;align-items:center;gap:7px;flex:0 0 auto}
@@ -198,12 +203,6 @@
     .swt .swt-t::after{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:99px;background:#fff;transition:transform .15s}
     .swt.on .swt-t{background:#34d399}
     .swt.on .swt-t::after{transform:translateX(16px)}
-    .batch .lbl{font-size:12px;letter-spacing:.02em;color:var(--sub);margin-bottom:8px;font-weight:700}
-    .batch .grid{display:flex;flex-direction:column}
-    .batch .row{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
-    .batch .row:last-child{border-bottom:none}
-    .batch .row .nm{font-size:15px;font-weight:600;line-height:1.3;word-break:keep-all}
-    .batch .row b{font-size:22px;color:#2563eb;font-weight:800;justify-self:end;font-variant-numeric:tabular-nums}
 
     .sectlbl{font-size:13px;font-weight:700;color:var(--sub);margin:18px 4px 9px}
     .qrow{display:flex;align-items:center;gap:12px;background:#fff;border-radius:16px;padding:12px 14px;margin-bottom:8px;box-shadow:0 2px 10px rgba(80,90,160,.06)}
@@ -211,10 +210,18 @@
     .qrow.done{opacity:.5}
     .qno{flex:0 0 auto;width:34px;height:34px;border-radius:99px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:#fff}
     .qno.orange{background:#f97316}
+    .qno.green{background:#16a34a}
     .qno.blue{background:#2563eb}
     .qmain{flex:1 1 auto;min-width:0}
     .qwho{font-size:12px;font-weight:700;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .qdrink{display:flex;align-items:center;gap:6px;font-size:15px;font-weight:700;margin-top:2px;color:var(--ink)}
+    .qdrink{display:flex;align-items:center;gap:6px;font-size:15px;font-weight:700;margin-top:2px;color:var(--ink);min-width:0}
+    .qrow.mainq .qdrink{font-size:16.5px;gap:6px;margin-top:2px}
+    .qrow.mainq .qdrink .csq{width:15px;height:15px}
+    .qdname{white-space:nowrap;overflow:hidden;min-width:0;flex:1 1 auto}
+    .temptag{flex:0 0 auto;font-size:10px;font-weight:800;padding:2px 6px;border-radius:6px;letter-spacing:.02em}
+    .temptag.ice{background:#dbeafe;color:#1d4ed8}
+    .temptag.hot{background:#fee2e2;color:#b91c1c}
+    .moreq{text-align:center;font-size:13px;color:var(--sub);font-weight:600;padding:10px 0 4px}
     .qbtn{flex:0 0 auto;background:#eef3fc;color:#2563eb;font-weight:800;font-size:13px;padding:11px 16px;border-radius:12px;white-space:nowrap}
     .qbtn.making{background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff}
     .qbtn:active,.qdel:active{filter:brightness(.96)}
@@ -228,6 +235,7 @@
     .seg button.on{background:#fff;color:#2563eb;box-shadow:0 2px 8px rgba(80,90,160,.1)}
     .seq{display:inline-flex;align-items:center;justify-content:center;min-width:24px;height:24px;padding:0 5px;border-radius:99px;background:#2563eb;color:#fff;font-size:12px;font-weight:800;flex:0 0 auto}
     .seq.pending{background:#f97316}
+    .seq.green{background:#16a34a}
     /* list row with edit/delete (employee team list) */
     .lrow{background:#fff;border-radius:14px;padding:12px 14px;margin-bottom:8px;box-shadow:0 2px 8px rgba(80,90,160,.05)}
     .lrow-main{display:flex;justify-content:space-between;align-items:center}
@@ -267,6 +275,14 @@
     .sw{width:30px;height:30px;border-radius:9px;flex:0 0 auto;border:3px solid transparent;box-sizing:border-box}
     .sw.on{border-color:#16243f}
     .addbtn{width:100%;border:2px dashed #c4d4ef;border-radius:16px;padding:14px;color:var(--sub);font-size:14px;font-weight:600;background:#fff}
+    .addmenuform{background:#fff;border-radius:16px;padding:16px;box-shadow:0 2px 8px rgba(80,90,160,.05)}
+    .addmenuform .nm{width:100%;border:1px solid #e8eef8;background:#f7faff;border-radius:10px;font-size:15px;outline:none;font-weight:600;padding:12px;box-sizing:border-box}
+    .addmenuform .nm:focus{border-color:#3b82f6;background:#fff}
+    .tempchecks{display:flex;gap:18px;margin-top:12px}
+    .tempchecks .chk{display:flex;align-items:center;gap:7px;font-size:15px;font-weight:700;color:var(--ink)}
+    .tempchecks .chk input{width:19px;height:19px;accent-color:#2563eb}
+    .tchint{font-size:12px;color:var(--sub);line-height:1.5;margin-top:10px}
+    .addmenuform .primary{margin-top:14px}
     .timefield{background:#fff;border-radius:18px;padding:16px;margin-bottom:11px;box-shadow:0 2px 10px rgba(80,90,160,.05)}
     .timefield .tcap{font-size:14px;color:#16243f;font-weight:700;margin-bottom:12px}
     .timefield .tcap-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
@@ -384,6 +400,7 @@
       seenReady: JSON.parse(localStorage.getItem("ian_seen")||"[]"),
       soundOn: JSON.parse(localStorage.getItem("ian_sound")||"true"),
       menuPickOpen: null, // 색상 팔레트가 펼쳐진 메뉴 id
+      addMenuOpen: false, // 메뉴 추가 폼(이름+ICE/HOT 체크박스) 펼침 여부
       keepAwake: false, // 직원 화면 꺼짐 방지 토글 (세션)
       statsMonth: null,  // "YYYY-MM" 집계 뷰 현재 달
       statsDate: null,   // "YYYY-MM-DD" 선택된 날짜
@@ -415,6 +432,7 @@
       const female=ko.find(v=>/female|여성|Yuna|Sora|Female/i.test(v.name));
       return female||ko[0];
     }
+    let _utterAlive=[]; // 재생 중인 음성 객체를 참조로 붙잡아둠 — 브라우저가 도중에 정리해버려 말이 끊기는 걸 방지
     function speak(text){
       try{
         if(!state.soundOn||!("speechSynthesis" in window)) return;
@@ -422,7 +440,12 @@
         const u=new SpeechSynthesisUtterance(text);
         u.lang="ko-KR"; u.rate=1.0; u.pitch=1.08; u.volume=1;
         const v=pickFemaleVoice(); if(v) u.voice=v;
-        speechSynthesis.cancel(); speechSynthesis.speak(u);
+        // 이미 말하고 있을 때만 취소 (불필요한 cancel은 엔진 버벅임의 원인이 됨)
+        if(speechSynthesis.speaking||speechSynthesis.pending) speechSynthesis.cancel();
+        speechSynthesis.resume(); // 일부 브라우저가 자동으로 멈춰두는 버그 방지
+        _utterAlive.push(u);
+        u.onend=u.onerror=()=>{ _utterAlive=_utterAlive.filter(x=>x!==u); };
+        speechSynthesis.speak(u);
       }catch(e){}
     }
     function playDing(speakMsg){
@@ -616,6 +639,7 @@
         else w.innerHTML=renderHome();
       }
       bind();
+      fitQdrinkText();
     }
 
     // ----- hardware/browser back handling -----
@@ -751,6 +775,7 @@
       const stat = o.status==="ready" ? "✓ 1층에서 가져가세요"
                  : o.status==="confirmed" ? "담당자가 확인했어요 · 제조 중"
                  : "주문 접수됨 · 담당자 확인 대기";
+      const badge = o.status==="ready"?"blue":o.status==="confirmed"?"green":"orange";
       return `<div class="mycup">
         <div class="mc" style="background:${mColor(m)}"></div>
         <div style="flex:1">
@@ -759,7 +784,7 @@
           <div class="mstat">${stat}</div>
           ${ss.open&&o.status==="pending"?`<span class="chg" data-act="goOrder">음료 변경하기</span>`:""}
         </div>
-        <div class="pickno"><span class="pickno-lbl">수령 번호</span><span class="pickno-n">${pickNo(o)}</span></div>
+        <div class="pickno ${badge}"><span class="pickno-lbl">수령 번호</span><span class="pickno-n">${pickNo(o)}</span></div>
         </div>
         <button class="ghost" data-act="goAdd">👥 다른 사람 대신 주문하기</button>`;
     }
@@ -830,10 +855,10 @@
           <button class="${sess==="pm"?'on':''}" data-disp="pm">오후 (${pmCount})</button>
         </div>
         ${list.length===0?`<div class="empty">${sessName(sess)} 주문이 없어요</div>`:
-          list.map(o=>{const m=menuById(o.drinkId);
+          list.map(o=>{const m=menuById(o.drinkId); const badge=o.status==="ready"?"":o.status==="confirmed"?" green":" pending";
             return `<div class="lrow">
               <div class="lrow-main">
-                <span class="who"><span class="seq">${pickNo(o)}</span>${esc(o.name)}${o.by&&o.by!==o.name?` <span class="bytag">대행:${esc(o.by)}</span>`:""}</span>
+                <span class="who"><span class="seq${badge}">${pickNo(o)}</span>${esc(o.name)}${o.by&&o.by!==o.name?` <span class="bytag">대행:${esc(o.by)}</span>`:""}</span>
                 <span class="wd">${m?`<span class="csq sm" style="background:${mColor(m)}"></span> ${esc(m.name)}`:esc(o.drinkId)}</span>
               </div>
               ${editable?`<div class="lrow-act">
@@ -857,7 +882,6 @@
         <div class="grid2">${state.menu.map(m=>`<button class="drink ${m.id===o.drinkId?'on':''}" data-editpick="${m.id}"><div class="em" style="background:${mColor(m)}"></div><div class="dn">${esc(m.name)}</div></button>`).join("")}</div>`;
     }
 
-    // ---- 집계 뷰 ----
     // ---- 공지사항 편집 ----
     function renderNoticeEdit(){
       const cur = state.notice?state.notice.text:"";
@@ -870,6 +894,7 @@
       `;
     }
 
+    // ---- 집계 뷰 ----
     function renderStats(){
       const today = todayKey();
       if(!state.statsMonth){
@@ -948,11 +973,12 @@
       const confirmed=list.filter(o=>o.status==="confirmed");
       const ready=list.filter(o=>o.status==="ready");
       const ss=sessionState();
-      const counts={}; [...pending,...confirmed].forEach(o=>{counts[o.drinkId]=(counts[o.drinkId]||0)+1;});
       const dateStr=new Date().toLocaleDateString("ko-KR",{month:"long",day:"numeric",weekday:"long"});
 
-      // 지금 만들 차례: 대기+제조중 전체를, 팀 구분 없이 들어온 순서대로
-      const queue=[...pending,...confirmed].sort((a,b)=>new Date(a.time)-new Date(b.time));
+      // 지금 만들 차례: 대기+제조중 전체를, 팀 구분 없이 들어온 순서대로 — 최대 10개만 노출
+      const queueAll=[...pending,...confirmed].sort((a,b)=>new Date(a.time)-new Date(b.time));
+      const queue=queueAll.slice(0,10);
+      const moreCount=queueAll.length-queue.length;
       // 방금 완료: 최근 3건만 살짝 보여줌 (되돌리기 확인용)
       const doneRecent=ready.slice().sort((a,b)=>new Date(b.readyAt||b.time)-new Date(a.readyAt||a.time)).slice(0,3);
 
@@ -969,11 +995,9 @@
           </div>
         </div></div>
 
-        ${Object.keys(counts).length?`<div class="batch"><div class="lbl">지금 만들어야 할 잔 수</div>
-          <div class="grid">${state.menu.filter(m=>counts[m.id]).map(m=>`<div class="row"><span class="csq sm" style="background:${mColor(m)}"></span><span class="nm">${esc(m.name)}</span><b>${counts[m.id]}</b></div>`).join("")}</div></div>`:""}
-
         <div class="sechead"><h2 class="sec serif" style="margin:0">지금 만들 차례</h2><button class="refreshbtn" data-act="refresh">🔄 새로고침</button></div>
         ${queue.length===0?`<div class="empty">지금 만들 주문이 없어요</div>`:queue.map(qrowHTML).join("")}
+        ${moreCount>0?`<div class="moreq">+${moreCount}건 더 대기 중 · 10개 처리하면 이어서 나와요</div>`:``}
 
         ${doneRecent.length?`<div class="sectlbl">방금 완료</div>${doneRecent.map(doneRowHTML).join("")}`:""}
 
@@ -989,24 +1013,34 @@
       `;
     }
     // 공통 주문 카드: 수령번호 배지 + (팀명·이름·대행) + 음료명, 오른쪽에 지정한 액션 요소
+    // 메뉴 이름의 ICE/HOT을 분리 — 화면엔 작은 태그로, 나머지 이름만 크게 표시 (데이터는 그대로 둠, 앞/뒤 둘 다 인식)
+    function splitTemp(name){
+      const n=name||"";
+      let mt=/^(.*)\s+(ICE|HOT)$/i.exec(n);
+      if(mt) return {temp:mt[2].toUpperCase(), rest:mt[1]};
+      mt=/^(ICE|HOT)\s+(.*)$/i.exec(n);
+      if(mt) return {temp:mt[1].toUpperCase(), rest:mt[2]};
+      return {temp:null, rest:n};
+    }
     function orderCardHTML(o, rowClass, badgeClass, actionHTML){
       const t=teamById(o.team), m=menuById(o.drinkId);
+      const {temp,rest}=splitTemp(m?m.name:o.drinkId);
       return `<div class="qrow${rowClass?` ${rowClass}`:""}">
         <div class="qno ${badgeClass}">${pickNo(o)}</div>
         <div class="qmain">
           <div class="qwho">${esc(t.name)} · ${esc(o.name)}${o.by&&o.by!==o.name?` <span class="bytag">대행:${esc(o.by)}</span>`:""}</div>
-          <div class="qdrink"><span class="csq sm" style="background:${mColor(m)}"></span>${m?esc(m.name):esc(o.drinkId)}</div>
+          <div class="qdrink"><span class="csq sm" style="background:${mColor(m)}"></span><span class="qdname">${esc(rest)}</span>${temp?`<span class="temptag ${temp==='ICE'?'ice':'hot'}">${temp}</span>`:``}</div>
         </div>
         ${actionHTML}
       </div>`;
     }
     function qrowHTML(o){
       const making=o.status==="confirmed";
-      return orderCardHTML(o, making?"making":"", making?"blue":"orange",
+      return orderCardHTML(o, `mainq${making?' making':''}`, making?"green":"orange",
         `<button class="qbtn${making?' making':''}" data-qstep="${o.id}">${making?"완료":"시작"}</button>`);
     }
     function doneRowHTML(o){
-      return orderCardHTML(o, "done", "blue", `<span class="qdonelbl">완료</span>`);
+      return orderCardHTML(o, "mainq done", "blue", `<span class="qdonelbl">완료</span>`);
     }
 
     // ---- dispensing list (sorted, am/pm) ----
@@ -1015,8 +1049,8 @@
       const lnCount=Object.values(state.orders).filter(o=>o.session==="ln").length;
       const list=Object.entries(state.orders).map(([id,o])=>({id,...o})).filter(o=>o.session===sess).sort((a,b)=>new Date(a.time)-new Date(b.time));
       const rowHTML = o=>{
-        const done=o.status==="ready";
-        return orderCardHTML(o, "", done?"blue":"orange", `<button class="qdel" data-delorder="${o.id}" aria-label="삭제">✕</button>`);
+        const badge = o.status==="ready"?"blue":o.status==="confirmed"?"green":"orange";
+        return orderCardHTML(o, "", badge, `<button class="qdel" data-delorder="${o.id}" aria-label="삭제">✕</button>`);
       };
       return `<button class="back" data-act="back">‹ 뒤로</button>
         <h1 class="serif" style="font-size:26px;margin-bottom:4px">주문 목록</h1>
@@ -1049,7 +1083,16 @@
             <button class="swt2${on?' on':''}" data-mtoggle="${i}"><span class="swt2-t"></span></button>
           </div>
         </div>`;}).join("")}</div>
-        <button class="addbtn" data-act="addMenu">＋ 메뉴 추가</button>
+        ${state.addMenuOpen?`<div class="addmenuform">
+          <input class="nm" id="newMenuName" placeholder="음료 이름 (예: 아메리카노)" autofocus/>
+          <div class="tempchecks">
+            <label class="chk"><input type="checkbox" id="newMenuIce" checked/> ICE</label>
+            <label class="chk"><input type="checkbox" id="newMenuHot"/> HOT</label>
+          </div>
+          <div class="tchint">둘 다 체크하면 "아메리카노 ICE"·"아메리카노 HOT"가 따로 만들어져요. 둘 다 안 하면 이름 그대로 하나만 추가돼요.</div>
+          <button class="primary" data-act="confirmAddMenu">추가</button>
+          <button class="ghost" style="margin-top:8px" data-act="cancelAddMenu">취소</button>
+        </div>`:`<button class="addbtn" data-act="addMenu">＋ 메뉴 추가</button>`}
         <button class="primary" style="margin-top:16px" data-act="saveMenu">저장하기</button>`;
     }
 
@@ -1101,6 +1144,17 @@
     }
 
     // ============ EVENTS ============
+    // 음료명이 한 줄에 안 들어가면(두 줄로 안 넘어가고) 자동으로 글자 크기를 줄여서 맞춤
+    function fitQdrinkText(){
+      document.querySelectorAll(".qdname").forEach(el=>{
+        let size=parseFloat(getComputedStyle(el).fontSize);
+        const min=12;
+        let guard=0;
+        while(el.scrollWidth>el.clientWidth+1 && size>min && guard<24){
+          size-=0.5; el.style.fontSize=size+"px"; guard++;
+        }
+      });
+    }
     function bind(){
       document.querySelectorAll("[data-act]").forEach(el=>el.onclick=()=>handle(el.dataset.act,el));
       document.querySelectorAll("[data-pick]").forEach(el=>el.onclick=()=>placeOrder(el.dataset.pick));
@@ -1144,7 +1198,7 @@
         case "back": state.view="home"; render(); break;
         case "backToList": state.view="team-list"; render(); break;
         case "disp": state.dispSession=sessionState().session||"am"; state.view="disp"; render(); break;
-        case "editMenu": state.menuPickOpen=null; state.view="menu-edit"; render(); break;
+        case "editMenu": state.menuPickOpen=null; state.addMenuOpen=false; state.view="menu-edit"; render(); break;
         case "stats": state.view="stats"; state.statsDate=null; state.statsData=null; render(); break;
         case "editNotice": state.view="notice-edit"; render(); break;
         case "saveNotice": doSaveNotice(); break;
@@ -1173,7 +1227,24 @@
           render();
           toast(state.keepAwake?"화면이 꺼지지 않게 유지해요 🔆":"화면 유지를 껐어요");
           break;
-        case "addMenu": { readMenuInputs(); const nm={id:"m"+Date.now(),name:"새 메뉴",color:menuColorFor(state.menu.length)}; state.menu.push(nm); state.menuPickOpen=nm.id; render(); break; }
+        case "addMenu": readMenuInputs(); state.menuPickOpen=null; state.addMenuOpen=true; render(); break;
+        case "cancelAddMenu": state.addMenuOpen=false; render(); break;
+        case "confirmAddMenu": {
+          const nameEl=document.getElementById("newMenuName");
+          const base=(nameEl?nameEl.value:"").trim();
+          if(!base){ toast("음료 이름을 입력해 주세요"); break; }
+          const ice=document.getElementById("newMenuIce").checked;
+          const hot=document.getElementById("newMenuHot").checked;
+          readMenuInputs();
+          if(!ice && !hot){
+            state.menu.push({id:"m"+Date.now(), name:base, color:menuColorFor(state.menu.length)});
+          } else {
+            if(ice) state.menu.push({id:"m"+Date.now()+"i", name:`${base} ICE`, color:menuColorFor(state.menu.length)});
+            if(hot) state.menu.push({id:"m"+Date.now()+"h", name:`${base} HOT`, color:menuColorFor(state.menu.length)});
+          }
+          state.addMenuOpen=false; render(); toast(`${base} 추가했어요`);
+          break;
+        }
         case "addTeam": readTeamInputs(); state.teams.push({id:"t"+Date.now(),name:"새 팀",color:colorFor(state.teams.length)}); render(); break;
         case "saveMenu": doSaveMenu(); break;
         case "saveTeams": doSaveTeams(); break;
@@ -1288,6 +1359,7 @@
     }
 
     // boot
+    try{ if("speechSynthesis" in window){ _voices=speechSynthesis.getVoices(); speechSynthesis.onvoiceschanged=()=>{ _voices=speechSynthesis.getVoices(); }; } }catch(e){}
     startSync(); render();
     setInterval(()=>{ subscribeDaily(); if(state.user&&state.view==="home") render(); }, 60000); // 매분: 날짜가 바뀌었으면 자동 재연결 + 주문 시간 상태 갱신
   </script>
