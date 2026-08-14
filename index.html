@@ -780,7 +780,7 @@
         <div class="mc" style="background:${mColor(m)}"></div>
         <div style="flex:1">
           <div class="mlbl">${sessName(o.session)} 주문${o.by&&o.by!==o.name?` · ${esc(o.by)}님이 대행 주문`:""}</div>
-          <div class="mname">${m?esc(m.name):esc(o.drinkId)}</div>
+          <div class="mname">${m?drinkNameHTML(m.name):esc(o.drinkId)}</div>
           <div class="mstat">${stat}</div>
           ${ss.open&&o.status==="pending"?`<span class="chg" data-act="goOrder">음료 변경하기</span>`:""}
         </div>
@@ -797,7 +797,7 @@
         <h1 class="serif" style="font-size:26px">음료를 선택하세요</h1>
         <div class="sub" style="font-size:14px;color:var(--sub);margin-top:4px">하나만 고르면 바로 주문됩니다</div></div>
         ${state.menu.filter(m=>m.active!==false).length===0?`<div class="empty">지금은 판매 중인 메뉴가 없어요</div>`:
-        `<div class="grid2">${state.menu.filter(m=>m.active!==false).map(m=>`<button class="drink" data-pick="${m.id}"><div class="em" style="background:${mColor(m)}"></div><div class="dn">${esc(m.name)}</div></button>`).join("")}</div>`}`;
+        `<div class="grid2">${state.menu.filter(m=>m.active!==false).map(m=>`<button class="drink" data-pick="${m.id}"><div class="em" style="background:${mColor(m)}"></div><div class="dn">${drinkNameHTML(m.name)}</div></button>`).join("")}</div>`}`;
     }
 
     // ---- add person (order for someone else) ----
@@ -815,7 +815,7 @@
         <div class="picklbl">1. 이름 입력</div>
         <input id="addName" value="${esc(state.addName)}" placeholder="동료 이름" autocomplete="off" style="width:100%;border:1px solid var(--line);border-radius:14px;padding:14px 16px;font-size:16px;outline:none;background:#f7faff"/>
         <div class="picklbl">2. 음료 선택</div>
-        <div class="grid2">${state.menu.filter(m=>m.active!==false).map(m=>`<button class="drink" data-addpick="${m.id}"><div class="em" style="background:${mColor(m)}"></div><div class="dn">${esc(m.name)}</div></button>`).join("")}</div>
+        <div class="grid2">${state.menu.filter(m=>m.active!==false).map(m=>`<button class="drink" data-addpick="${m.id}"><div class="em" style="background:${mColor(m)}"></div><div class="dn">${drinkNameHTML(m.name)}</div></button>`).join("")}</div>
         <div class="footnote">이름을 입력하고 음료를 누르면 바로 주문됩니다. 대행 주문은 본인 팀(${myTeam?esc(myTeam.name):''})으로만 들어갑니다.</div>`;
     }
 
@@ -828,7 +828,7 @@
         ${list.length===0?`<div class="empty">🔔<br/><br/>새 알림이 없어요</div>`:
           list.map(n=>{const m=menuById(n.drinkId); const forSomeone = n.name!==state.user.name;
           return `<div class="notif"><h3>${forSomeone?esc(n.name)+"님 ":""}음료 준비 완료!</h3>
-            <div class="nsub">1층 커피샵에서 가져가세요 · ${m?`<span class="csq sm" style="background:${mColor(m)}"></span> ${esc(m.name)}`:""}${forSomeone?" · 대행 주문":""}</div>
+            <div class="nsub">1층 커피샵에서 가져가세요 · ${m?`<span class="csq sm" style="background:${mColor(m)}"></span> ${drinkNameHTML(m.name)}`:""}${forSomeone?" · 대행 주문":""}</div>
             <button class="nack" data-ack="${n.id}">확인 (가져갈게요)</button></div>`;}).join("")}`;
     }
 
@@ -859,7 +859,7 @@
             return `<div class="lrow">
               <div class="lrow-main">
                 <span class="who"><span class="seq${badge}">${pickNo(o)}</span>${esc(o.name)}${o.by&&o.by!==o.name?` <span class="bytag">대행:${esc(o.by)}</span>`:""}</span>
-                <span class="wd">${m?`<span class="csq sm" style="background:${mColor(m)}"></span> ${esc(m.name)}`:esc(o.drinkId)}</span>
+                <span class="wd">${m?`<span class="csq sm" style="background:${mColor(m)}"></span> ${drinkNameHTML(m.name)}`:esc(o.drinkId)}</span>
               </div>
               ${editable?`<div class="lrow-act">
                 <button class="mini edit" data-editorder="${o.id}">수정</button>
@@ -879,7 +879,7 @@
           <h1 class="serif" style="font-size:26px">음료 변경</h1>
           <div class="sub" style="font-size:14px;color:var(--sub);margin-top:4px">새 음료를 누르면 바로 변경됩니다</div>
         </div>
-        <div class="grid2">${state.menu.map(m=>`<button class="drink ${m.id===o.drinkId?'on':''}" data-editpick="${m.id}"><div class="em" style="background:${mColor(m)}"></div><div class="dn">${esc(m.name)}</div></button>`).join("")}</div>`;
+        <div class="grid2">${state.menu.map(m=>`<button class="drink ${m.id===o.drinkId?'on':''}" data-editpick="${m.id}"><div class="em" style="background:${mColor(m)}"></div><div class="dn">${drinkNameHTML(m.name)}</div></button>`).join("")}</div>`;
     }
 
     // ---- 공지사항 편집 ----
@@ -932,7 +932,7 @@
             list.forEach(o=>{ menuCount[o.drinkId]=(menuCount[o.drinkId]||0)+1; });
             const menuRows=Object.entries(menuCount).sort((a,b)=>b[1]-a[1]).map(([id,cnt])=>{
               const m=menuById(id);
-              return `<div class="stat-row"><span class="csq sm" style="background:${m?mColor(m):"#ccc"}"></span><span class="sr-name">${m?esc(m.name):"알 수 없음"}</span><b>${cnt}잔</b></div>`;
+              return `<div class="stat-row"><span class="csq sm" style="background:${m?mColor(m):"#ccc"}"></span><span class="sr-name">${m?drinkNameHTML(m.name):"알 수 없음"}</span><b>${cnt}잔</b></div>`;
             }).join("");
             // 팀별 집계
             const teamCount={};
@@ -1021,6 +1021,11 @@
       mt=/^(ICE|HOT)\s+(.*)$/i.exec(n);
       if(mt) return {temp:mt[1].toUpperCase(), rest:mt[2]};
       return {temp:null, rest:n};
+    }
+    // 어디서든 재사용: 이름 + (있으면) ICE/HOT 작은 태그
+    function drinkNameHTML(name){
+      const {temp,rest}=splitTemp(name);
+      return `${esc(rest)}${temp?` <span class="temptag ${temp==='ICE'?'ice':'hot'}">${temp}</span>`:``}`;
     }
     function orderCardHTML(o, rowClass, badgeClass, actionHTML){
       const t=teamById(o.team), m=menuById(o.drinkId);
