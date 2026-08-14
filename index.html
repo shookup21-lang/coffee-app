@@ -213,7 +213,10 @@
     .qno.green{background:#16a34a}
     .qno.blue{background:#2563eb}
     .qmain{flex:1 1 auto;min-width:0}
-    .qwho{font-size:12px;font-weight:700;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .qwho{font-weight:700;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .qwho .qteam{font-size:10px}
+    .qwho .qsep{font-size:10px;margin:0 3px}
+    .qwho .qpname{font-size:14px;color:var(--ink)}
     .qdrink{display:flex;align-items:center;gap:6px;font-size:15px;font-weight:700;margin-top:2px;color:var(--ink);min-width:0}
     .qrow.mainq .qdrink{font-size:18px;gap:6px;margin-top:2px}
     .qrow.mainq .qdrink .csq{width:15px;height:15px}
@@ -237,11 +240,12 @@
     .seq.pending{background:#f97316}
     .seq.green{background:#16a34a}
     /* list row with edit/delete (employee team list) */
-    .lrow{background:#fff;border-radius:14px;padding:12px 14px;margin-bottom:8px;box-shadow:0 2px 8px rgba(80,90,160,.05)}
-    .lrow-main{display:flex;justify-content:space-between;align-items:center}
-    .lrow-main .who{font-weight:700;display:inline-flex;align-items:center;gap:7px}
-    .lrow-main .wd{color:var(--sub);font-size:14px}
-    .bytag{font-size:11px;color:#2563eb;background:#eef4fc;border-radius:99px;padding:2px 7px;font-weight:700;margin-left:4px}
+    .lrow{background:#fff;border-radius:14px;padding:14px;margin-bottom:8px;box-shadow:0 2px 8px rgba(80,90,160,.05)}
+    .lrow-main{display:flex;flex-direction:column;gap:8px}
+    .lr-who{display:flex;align-items:center;flex-wrap:wrap;gap:7px}
+    .lr-who .lr-nm{font-weight:800;font-size:15.5px;color:var(--ink)}
+    .lr-drink{display:flex;align-items:center;flex-wrap:wrap;gap:7px;color:var(--sub);font-size:14px;font-weight:600}
+    .bytag{font-size:13px;color:#2563eb;background:#eef4fc;border-radius:99px;padding:3px 8px;font-weight:700;white-space:nowrap}
     .lrow-act{display:flex;gap:8px;margin-top:10px}
     .lrow-act .mini{flex:1;border-radius:10px;padding:10px;font-size:13px;font-weight:700}
     .mini.edit{background:#eef4fc;color:#2563eb}
@@ -858,8 +862,8 @@
           list.map(o=>{const m=menuById(o.drinkId); const badge=o.status==="ready"?"":o.status==="confirmed"?" green":" pending";
             return `<div class="lrow">
               <div class="lrow-main">
-                <span class="who"><span class="seq${badge}">${pickNo(o)}</span>${esc(o.name)}${o.by&&o.by!==o.name?` <span class="bytag">대행:${esc(o.by)}</span>`:""}</span>
-                <span class="wd">${m?`<span class="csq sm" style="background:${mColor(m)}"></span> ${drinkNameHTML(m.name)}`:esc(o.drinkId)}</span>
+                <div class="lr-who"><span class="seq${badge}">${pickNo(o)}</span><span class="lr-nm">${esc(o.name)}</span>${o.by&&o.by!==o.name?`<span class="bytag">대행:${esc(o.by)}</span>`:""}</div>
+                <div class="lr-drink">${m?`<span class="csq sm" style="background:${mColor(m)}"></span>${drinkNameHTML(m.name)}`:esc(o.drinkId)}</div>
               </div>
               ${editable?`<div class="lrow-act">
                 <button class="mini edit" data-editorder="${o.id}">수정</button>
@@ -1033,7 +1037,7 @@
       return `<div class="qrow${rowClass?` ${rowClass}`:""}">
         <div class="qno ${badgeClass}">${pickNo(o)}</div>
         <div class="qmain">
-          <div class="qwho">${esc(t.name)} · ${esc(o.name)}${o.by&&o.by!==o.name?` <span class="bytag">대행:${esc(o.by)}</span>`:""}</div>
+          <div class="qwho"><span class="qteam">${esc(t.name)}</span><span class="qsep">·</span><span class="qpname">${esc(o.name)}</span>${o.by&&o.by!==o.name?` <span class="bytag">대행:${esc(o.by)}</span>`:""}</div>
           <div class="qdrink"><span class="csq sm" style="background:${mColor(m)}"></span><span class="qdname">${esc(rest)}</span>${temp?`<span class="temptag ${temp==='ICE'?'ice':'hot'}">${temp}</span>`:``}</div>
         </div>
         ${actionHTML}
