@@ -330,7 +330,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
-    import { getFirestore, doc, getDoc, setDoc, deleteField, onSnapshot } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, setDoc, deleteField, onSnapshot, runTransaction } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
 
     // 🔻🔻🔻 여기를 본인 Firebase 설정값으로 교체 (가이드 1~2단계) 🔻🔻🔻
     const firebaseConfig = {
@@ -528,10 +528,16 @@
       const e=Object.entries(state.orders).find(([_,o])=>o.team===state.user.team && o.name===state.user.name);
       return e?{id:e[0],...e[1]}:null;
     }
-    // 오늘 하루 리셋되는 수령 번호 (컵에 적어서 찾아가는 용도) — 신규 주문마다 +1
-    function nextPickupNo(){
-      const nums=Object.values(state.orders).map(o=>o.no||0);
-      return (nums.length?Math.max(...nums):0)+1;
+    // 오늘 하루 리셋되는 수령 번호 (컵에 적어서 찾아가는 용도) — 서버 트랜잭션으로 원자적 발급 (동시 주문에도 안 겹침)
+    async function reservePickupNo(){
+      const ref=doc(db,"daily",todayKey());
+      return await runTransaction(db, async tx=>{
+        const snap=await tx.get(ref);
+        const cur=snap.exists()?(snap.data().nextNo||0):0;
+        const next=cur+1;
+        tx.set(ref,{nextNo:next},{merge:true});
+        return next;
+      });
     }
     // 표시용 수령 번호: 저장된 번호가 있으면 그대로, 없으면(기능 적용 이전 주문) 오늘 전체 시간순 순위로 대체 — 항상 팀 구분 없는 전체 고유 번호
     function pickNo(o){
@@ -744,7 +750,7 @@
           <div class="date">${new Date().toLocaleDateString("ko-KR",{month:"long",day:"numeric",weekday:"long"})}</div>
         </div>
         <div class="hero"><div class="bigcup">${heroEmoji()}</div><div class="rel">
-          <div class="team">${t.name} · ${ss.open?`${sessName(ss.session)} 주문 중`:"주문 시간 외"}</div>
+          <div class="team">${esc(t.name)} · ${ss.open?`${sessName(ss.session)} 주문 중`:"주문 시간 외"}</div>
           <h1>${mine?(mine.status==="ready"?"음료가 준비됐어요":"오늘 주문 완료"):"오늘의 한 잔"}</h1>
           <div class="sub">${ss.open?`지금 주문을 받고 있어요 (~${ss.endsAt})`:`${ss.next} 주문은 ${ss.at}부터예요`}</div>
         </div></div>
@@ -797,7 +803,7 @@
     function renderOrder(){
       const t=TEAMS.find(x=>x.id===state.user.team);
       return `<button class="back" data-act="back">‹ 뒤로</button>
-        <div style="margin-bottom:16px"><div style="font-size:12px;font-weight:600;color:${t.color};margin-bottom:4px">${t.name} · ${esc(state.user.name)}</div>
+        <div style="margin-bottom:16px"><div style="font-size:12px;font-weight:600;color:${t.color};margin-bottom:4px">${esc(t.name)} · ${esc(state.user.name)}</div>
         <h1 class="serif" style="font-size:26px">음료를 선택하세요</h1>
         <div class="sub" style="font-size:14px;color:var(--sub);margin-top:4px">하나만 고르면 바로 주문됩니다</div></div>
         ${state.menu.filter(m=>m.active!==false).length===0?`<div class="empty">지금은 판매 중인 메뉴가 없어요</div>`:
@@ -850,7 +856,7 @@
       return `<button class="back" data-act="back">‹ 뒤로</button>
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
           <span class="cdot" style="width:11px;height:11px;border-radius:99px;background:${t.color};display:inline-block"></span>
-          <h1 class="serif" style="font-size:26px">${t.name} 주문 목록</h1>
+          <h1 class="serif" style="font-size:26px">${esc(t.name)} 주문 목록</h1>
         </div>
         <div class="sub" style="font-size:14px;color:var(--sub);margin-bottom:16px">완성된 음료를 받을 때 누구 것인지 확인하세요 (이름순)${editable?" · 수정·삭제 가능":""}</div>
         <div class="seg">
@@ -1266,7 +1272,7 @@
       if(!ss.open){ toast("지금은 주문 시간이 아니에요"); state.view="home"; render(); return; }
       const mine=myTodayOrder();
       const id = mine? mine.id : "o-"+Date.now();
-      const no = mine? (mine.no||nextPickupNo()) : nextPickupNo();
+      const no = mine? (mine.no||await reservePickupNo()) : await reservePickupNo();
       await saveOrders({...state.orders,[id]:{
         team:state.user.team, name:state.user.name, drinkId, no,
         session:ss.session, status:"pending", time:new Date().toISOString(), by:state.user.name
@@ -1283,7 +1289,7 @@
       // prevent dup: same team+name today
       const dup=Object.entries(state.orders).find(([_,o])=>o.team===team&&o.name===name);
       const id=dup?dup[0]:"o-"+Date.now();
-      const no=dup? (dup[1].no||nextPickupNo()) : nextPickupNo();
+      const no=dup? (dup[1].no||await reservePickupNo()) : await reservePickupNo();
       await saveOrders({...state.orders,[id]:{
         team, name, drinkId, no,
         session:ss.session, status:"pending", time:new Date().toISOString(), by:state.user.name
