@@ -709,6 +709,7 @@
         <div class="field"><label>이름</label><input id="ni" placeholder="이름 입력" autocomplete="off"/></div>
         <button class="start" id="sb" disabled>시작하기</button>
         <button class="blink" id="bb">담당자로 로그인 →</button>
+        <div style="text-align:center;color:rgba(255,255,255,.4);font-size:11px;margin-top:14px">버전 ${APP_BUILD}</div>
       </div>`;
       let name="",team="";
       const ni=document.getElementById("ni"),sb=document.getElementById("sb"),tb=[...document.querySelectorAll("#ts button")];
@@ -780,6 +781,7 @@
             <li>소리가 안 들리면 휴대폰 <b>무음/벨소리</b> 설정을 확인해 주세요.</li>
           </ul>
         </div>
+        <div style="text-align:center;color:#c4cede;font-size:11px;margin-top:16px">버전 ${APP_BUILD}</div>
       `;
     }
     function myCupHTML(o,ss){
@@ -1022,6 +1024,7 @@
           <button data-act="stats">📊 집계</button>
           <button data-act="editNotice">📢 공지사항</button>
         </div>
+        <div style="text-align:center;color:#c4cede;font-size:11px;margin-top:16px">버전 ${APP_BUILD}</div>
       `;
     }
     // 공통 주문 카드: 수령번호 배지 + (팀명·이름·대행) + 음료명, 오른쪽에 지정한 액션 요소
