@@ -390,7 +390,7 @@
     const mColor = m => (m && m.color) ? m.color : "#94a3b8";
 
     // 배포할 때마다 이 값을 바꿔주세요 — 값이 바뀌면 모든 기기가 자동으로 최신 버전을 받아옵니다
-    const APP_BUILD = "2026-08-20-01";
+    const APP_BUILD = "2026-08-20-02";
     const todayKey = () => { const d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; };
     const toMin = hhmm => { const [h,m]=hhmm.split(":").map(Number); return h*60+m; };
     const nowMin = () => { const d=new Date(); return d.getHours()*60+d.getMinutes(); };
@@ -531,15 +531,20 @@
       return e?{id:e[0],...e[1]}:null;
     }
     // 오늘 하루 리셋되는 수령 번호 (컵에 적어서 찾아가는 용도) — 서버 트랜잭션으로 원자적 발급 (동시 주문에도 안 겹침)
-    async function reservePickupNo(){
+    // 신규 주문 생성: 번호 예약 + 주문 저장을 하나의 트랜잭션으로 묶어서, 중간에 실패해도 번호만 소모되고 주문이 안 남는 일이 없게 함
+    async function commitNewOrder(fields){
       const ref=doc(db,"daily",todayKey());
-      return await runTransaction(db, async tx=>{
+      const no=await runTransaction(db, async tx=>{
         const snap=await tx.get(ref);
-        const cur=snap.exists()?(snap.data().nextNo||0):0;
-        const next=cur+1;
-        tx.set(ref,{nextNo:next},{merge:true});
+        const data=snap.exists()?snap.data():{};
+        const next=(data.nextNo||0)+1;
+        const orders={...(data.orders||{})};
+        orders[fields.id]={...fields, no:next};
+        tx.set(ref,{orders, nextNo:next},{merge:true});
         return next;
       });
+      state.orders={...state.orders,[fields.id]:{...fields, no}};
+      return no;
     }
     // 표시용 수령 번호: 저장된 번호가 있으면 그대로, 없으면(기능 적용 이전 주문) 오늘 전체 시간순 순위로 대체 — 항상 팀 구분 없는 전체 고유 번호
     function pickNo(o){
@@ -1276,12 +1281,15 @@
       const ss=sessionState();
       if(!ss.open){ toast("지금은 주문 시간이 아니에요"); state.view="home"; render(); return; }
       const mine=myTodayOrder();
-      const id = mine? mine.id : "o-"+Date.now();
-      const no = mine? (mine.no||await reservePickupNo()) : await reservePickupNo();
-      await saveOrders({...state.orders,[id]:{
-        team:state.user.team, name:state.user.name, drinkId, no,
+      const fields={
+        team:state.user.team, name:state.user.name, drinkId,
         session:ss.session, status:"pending", time:new Date().toISOString(), by:state.user.name
-      }});
+      };
+      if(mine){
+        await saveOrders({...state.orders,[mine.id]:{...mine, ...fields, no:mine.no}});
+      } else {
+        await commitNewOrder({...fields, id:"o-"+Date.now()});
+      }
       state.view="home"; render(); toast(mine?"음료를 변경했어요 ☕":"주문했어요 ☕");
     }
 
@@ -1293,12 +1301,12 @@
       const team=state.user.team; // 대행 주문은 항상 본인 팀으로 고정
       // prevent dup: same team+name today
       const dup=Object.entries(state.orders).find(([_,o])=>o.team===team&&o.name===name);
-      const id=dup?dup[0]:"o-"+Date.now();
-      const no=dup? (dup[1].no||await reservePickupNo()) : await reservePickupNo();
-      await saveOrders({...state.orders,[id]:{
-        team, name, drinkId, no,
-        session:ss.session, status:"pending", time:new Date().toISOString(), by:state.user.name
-      }});
+      const fields={team, name, drinkId, session:ss.session, status:"pending", time:new Date().toISOString(), by:state.user.name};
+      if(dup){
+        await saveOrders({...state.orders,[dup[0]]:{...dup[1], ...fields, no:dup[1].no}});
+      } else {
+        await commitNewOrder({...fields, id:"o-"+Date.now()});
+      }
       toast(`${name}님 주문을 ${dup?"변경":"추가"}했어요`);
       state.addName=""; state.view="home"; render();
     }
