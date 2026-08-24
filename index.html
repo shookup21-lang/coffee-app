@@ -390,7 +390,7 @@
     const mColor = m => (m && m.color) ? m.color : "#94a3b8";
 
     // 배포할 때마다 이 값을 바꿔주세요 — 값이 바뀌면 모든 기기가 자동으로 최신 버전을 받아옵니다
-    const APP_BUILD = "2026-08-20-02";
+    const APP_BUILD = "2026-08-20-03";
     const todayKey = () => { const d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; };
     const toMin = hhmm => { const [h,m]=hhmm.split(":").map(Number); return h*60+m; };
     const nowMin = () => { const d=new Date(); return d.getHours()*60+d.getMinutes(); };
@@ -1277,38 +1277,47 @@
       }
     }
 
+    let _orderInFlight=false; // 연속 탭 방지: 처리 중일 땐 같은 요청을 무시
     async function placeOrder(drinkId){
-      const ss=sessionState();
-      if(!ss.open){ toast("지금은 주문 시간이 아니에요"); state.view="home"; render(); return; }
-      const mine=myTodayOrder();
-      const fields={
-        team:state.user.team, name:state.user.name, drinkId,
-        session:ss.session, status:"pending", time:new Date().toISOString(), by:state.user.name
-      };
-      if(mine){
-        await saveOrders({...state.orders,[mine.id]:{...mine, ...fields, no:mine.no}});
-      } else {
-        await commitNewOrder({...fields, id:"o-"+Date.now()});
-      }
-      state.view="home"; render(); toast(mine?"음료를 변경했어요 ☕":"주문했어요 ☕");
+      if(_orderInFlight) return;
+      _orderInFlight=true;
+      try{
+        const ss=sessionState();
+        if(!ss.open){ toast("지금은 주문 시간이 아니에요"); state.view="home"; render(); return; }
+        const mine=myTodayOrder();
+        const fields={
+          team:state.user.team, name:state.user.name, drinkId,
+          session:ss.session, status:"pending", time:new Date().toISOString(), by:state.user.name
+        };
+        if(mine){
+          await saveOrders({...state.orders,[mine.id]:{...mine, ...fields, no:mine.no}});
+        } else {
+          await commitNewOrder({...fields, id:"o-"+Date.now()});
+        }
+        state.view="home"; render(); toast(mine?"음료를 변경했어요 ☕":"주문했어요 ☕");
+      } finally { _orderInFlight=false; }
     }
 
     async function addPersonOrder(drinkId){
-      const ss=sessionState();
-      if(!ss.open){ toast("지금은 주문 시간이 아니에요"); return; }
-      const name=(state.addName||"").trim();
-      if(!name){ toast("이름을 입력하세요"); return; }
-      const team=state.user.team; // 대행 주문은 항상 본인 팀으로 고정
-      // prevent dup: same team+name today
-      const dup=Object.entries(state.orders).find(([_,o])=>o.team===team&&o.name===name);
-      const fields={team, name, drinkId, session:ss.session, status:"pending", time:new Date().toISOString(), by:state.user.name};
-      if(dup){
-        await saveOrders({...state.orders,[dup[0]]:{...dup[1], ...fields, no:dup[1].no}});
-      } else {
-        await commitNewOrder({...fields, id:"o-"+Date.now()});
-      }
-      toast(`${name}님 주문을 ${dup?"변경":"추가"}했어요`);
-      state.addName=""; state.view="home"; render();
+      if(_orderInFlight) return;
+      _orderInFlight=true;
+      try{
+        const ss=sessionState();
+        if(!ss.open){ toast("지금은 주문 시간이 아니에요"); return; }
+        const name=(state.addName||"").trim();
+        if(!name){ toast("이름을 입력하세요"); return; }
+        const team=state.user.team; // 대행 주문은 항상 본인 팀으로 고정
+        // prevent dup: same team+name today
+        const dup=Object.entries(state.orders).find(([_,o])=>o.team===team&&o.name===name);
+        const fields={team, name, drinkId, session:ss.session, status:"pending", time:new Date().toISOString(), by:state.user.name};
+        if(dup){
+          await saveOrders({...state.orders,[dup[0]]:{...dup[1], ...fields, no:dup[1].no}});
+        } else {
+          await commitNewOrder({...fields, id:"o-"+Date.now()});
+        }
+        toast(`${name}님 주문을 ${dup?"변경":"추가"}했어요`);
+        state.addName=""; state.view="home"; render();
+      } finally { _orderInFlight=false; }
     }
 
     async function ackNotif(id){
