@@ -10,6 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@700&display=swap" rel="stylesheet" />
   <style>
     :root{
       --bg:#eaf1fb;--card:#ffffff;--ink:#16243f;--sub:#7e8aa6;--line:#e8eef8;
@@ -144,7 +145,7 @@
     .mycup .mstat{font-size:13px;color:var(--sub);margin-top:6px}
     .mycup .pickno{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#eef3fc;border-radius:14px;padding:8px 14px;min-width:52px}
     .mycup .pickno .pickno-lbl{font-size:10px;font-weight:700;color:#5b7bb8;white-space:nowrap}
-    .mycup .pickno .pickno-n{font-size:22px;font-weight:800;color:#2563eb;line-height:1.2;margin-top:1px}
+    .mycup .pickno .pickno-n{font-size:22px;font-weight:700;color:#2563eb;line-height:1.2;margin-top:1px;font-family:'Roboto Mono',monospace}
     .mycup .pickno.orange{background:#fff2e8}
     .mycup .pickno.orange .pickno-lbl{color:#c2632a}
     .mycup .pickno.orange .pickno-n{color:#f97316}
@@ -208,7 +209,7 @@
     .qrow{display:flex;align-items:center;gap:12px;background:#fff;border-radius:16px;padding:12px 14px;margin-bottom:8px;box-shadow:0 2px 10px rgba(80,90,160,.06)}
     .qrow.making{outline:2px solid #2563eb;outline-offset:-2px}
     .qrow.done{opacity:.5}
-    .qno{flex:0 0 auto;width:34px;height:34px;border-radius:99px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:#fff}
+    .qno{flex:0 0 auto;width:34px;height:34px;border-radius:99px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:#fff;font-family:'Roboto Mono',monospace}
     .qno.orange{background:#f97316}
     .qno.green{background:#16a34a}
     .qno.blue{background:#2563eb}
@@ -236,7 +237,7 @@
     .seg{display:flex;gap:8px;margin-bottom:16px;background:#dde8f7;padding:5px;border-radius:16px}
     .seg button{flex:1;padding:11px;border-radius:12px;font-size:14px;font-weight:700;background:transparent;color:var(--sub)}
     .seg button.on{background:#fff;color:#2563eb;box-shadow:0 2px 8px rgba(80,90,160,.1)}
-    .seq{display:inline-flex;align-items:center;justify-content:center;min-width:24px;height:24px;padding:0 5px;border-radius:99px;background:#2563eb;color:#fff;font-size:12px;font-weight:800;flex:0 0 auto}
+    .seq{display:inline-flex;align-items:center;justify-content:center;min-width:24px;height:24px;padding:0 5px;border-radius:99px;background:#2563eb;color:#fff;font-size:12px;font-weight:700;flex:0 0 auto;font-family:'Roboto Mono',monospace}
     .seq.pending{background:#f97316}
     .seq.green{background:#16a34a}
     /* list row with edit/delete (employee team list) */
@@ -369,7 +370,7 @@
     const TEAM_COLORS = ["#e0555b","#e8803c","#caa12b","#7faa3e","#46a866","#23ab9a","#2a9fcf","#4a82ed","#6c6fe0","#9760d0","#c258ac","#dd6196"];
     const DEFAULT_TEAM_NAMES = ["관리팀","B-후반영","UPW","CHEMICAL","전기","진공","BULK","S-GAS","B-CAD","MEP/OBJ","기타A","기타B"];
     const DEFAULT_TEAMS = DEFAULT_TEAM_NAMES.map((nm,i)=>({ id:"team"+(i+1), name:nm, color:TEAM_COLORS[i%TEAM_COLORS.length] }));
-    const MENU_COLORS = ["#e0555b","#e8803c","#caa12b","#7faa3e","#46a866","#23ab9a","#2a9fcf","#4a82ed","#6c6fe0","#9760d0","#c258ac","#dd6196"];
+    const MENU_COLORS = ["#d44949","#6cd449","#498fd4","#d449b2","#b1b12f","#29ae8c","#8f49d4","#d46c49","#49d449","#496cd4","#d4498f","#91b12f","#29aeae","#b249d4","#d48f49","#49d46c","#4949d4","#d4496c","#70b12f","#298cae","#d449d4","#b1912f","#29ae6b","#6c49d4"];
     const DEFAULT_MENU = [
       { id:"hot-americano", name:"HOT 아메리카노", color:"#2563eb" },
       { id:"ice-americano", name:"ICE 아메리카노", color:"#0891b2" },
@@ -390,7 +391,7 @@
     const mColor = m => (m && m.color) ? m.color : "#94a3b8";
 
     // 배포할 때마다 이 값을 바꿔주세요 — 값이 바뀌면 모든 기기가 자동으로 최신 버전을 받아옵니다
-    const APP_BUILD = "2026-08-20-03";
+    const APP_BUILD = "2026-08-20-05";
     const todayKey = () => { const d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; };
     const toMin = hhmm => { const [h,m]=hhmm.split(":").map(Number); return h*60+m; };
     const nowMin = () => { const d=new Date(); return d.getHours()*60+d.getMinutes(); };
