@@ -80,6 +80,22 @@
 
     /* window bar */
     .windowbar{display:flex;gap:8px;margin-bottom:14px}
+    .holnote{background:#fef2f2;border:1px solid #fecaca;color:#b91c1c;border-radius:14px;padding:11px 14px;font-size:13.5px;font-weight:600;margin-bottom:14px}
+    .windowbar.holiday .wb{opacity:.55}
+    .wb.soon{background:linear-gradient(135deg,#f97316,#ea580c)!important;box-shadow:0 8px 20px rgba(234,88,12,.32)!important}
+    .hero .sub .soon{color:#fde68a;font-weight:800}
+    .soonbar{background:#fff4e5;color:#c2410c;border-radius:14px;padding:11px 14px;font-size:14px;font-weight:700;margin-bottom:14px}
+    .hcell.hol{background:#fee2e2;color:#b91c1c}
+    .hcell.hol .cal-n{color:#dc2626}
+    .hcell.wkoff{background:#fdf2f2;color:#d97777}
+    .hcell.wkoff .cal-n{color:#e8a0a0}
+    .holrow{display:flex;align-items:center;gap:8px;background:#fff;border-radius:14px;padding:10px 12px;margin-bottom:8px;box-shadow:0 2px 8px rgba(80,90,160,.05)}
+    .holrow .hr-d{flex:0 0 auto;font-size:14px;font-weight:800;color:#b91c1c;min-width:74px}
+    .holrow input{flex:1;min-width:0;border:1px solid #e8eef8;background:#f7faff;border-radius:10px;font-size:14px;outline:none;font-weight:600;padding:9px 10px}
+    .holrow input:focus{border-color:#3b82f6;background:#fff}
+    .wkrow{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .wkrow .wl{font-size:15px;font-weight:800}
+    .wkrow .ws{font-size:12px;color:var(--sub);margin-top:3px}
     .noticebox{display:flex;gap:9px;align-items:flex-start;background:#fffbeb;border:1px solid #fde68a;border-radius:16px;padding:13px 15px;margin-bottom:14px}
     .noticebox .ic{font-size:16px;line-height:1.5;flex:0 0 auto}
     .noticebox .tx{font-size:13.5px;line-height:1.55;color:#92700a;font-weight:600;word-break:keep-all}
@@ -126,7 +142,18 @@
     .sd-sub{font-size:12px;font-weight:800;color:#9aa6bd;margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em}
     .stat-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #f0f4fb}
     .stat-row:last-child{border-bottom:0}
-    .stat-row .sr-name{flex:1;font-size:14px;font-weight:600;color:#16243f}
+    .stat-row .sr-name{flex:1;font-size:14px;font-weight:600;color:#16243f;min-width:0}
+    .sr-rank{flex:0 0 18px;font-size:12px;font-weight:800;color:#9aa6bd;text-align:center}
+    .sr-bar{display:block;height:5px;background:#f0f4fb;border-radius:99px;margin-top:5px;overflow:hidden}
+    .sr-bar i{display:block;height:100%;border-radius:99px;opacity:.75}
+    .msum{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-bottom:16px}
+    .msum div{background:#f5f8ff;border-radius:12px;padding:10px 4px;text-align:center}
+    .msum b{display:block;font-size:18px;font-weight:800;color:#2563eb}
+    .msum small{font-size:11px;color:var(--sub);font-weight:600}
+    .cal-cell{flex-direction:column;line-height:1.05}
+    .cal-n{font-size:9.5px;font-weight:800;color:#2563eb;margin-top:1px}
+    .cal-cell.sel .cal-n{color:#dbeafe}
+    .sd-back{float:right;font-size:12px;font-weight:700;color:#2563eb;cursor:pointer}
     .stat-row b{font-size:15px;font-weight:800;color:#2563eb}
 
     /* tiles (flat color-bar look) */
@@ -145,7 +172,7 @@
     .mycup .mstat{font-size:13px;color:var(--sub);margin-top:6px}
     .mycup .pickno{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#eef3fc;border-radius:14px;padding:8px 14px;min-width:52px}
     .mycup .pickno .pickno-lbl{font-size:10px;font-weight:700;color:#5b7bb8;white-space:nowrap}
-    .mycup .pickno .pickno-n{font-size:22px;font-weight:700;color:#2563eb;line-height:1.2;margin-top:1px;font-family:'Roboto Mono',monospace}
+    .mycup .pickno .pickno-n{font-size:24.2px;font-weight:700;color:#2563eb;line-height:1.2;margin-top:1px;font-family:'Roboto Mono',monospace;-webkit-text-stroke:0.3px currentColor}
     .mycup .pickno.orange{background:#fff2e8}
     .mycup .pickno.orange .pickno-lbl{color:#c2632a}
     .mycup .pickno.orange .pickno-n{color:#f97316}
@@ -177,7 +204,7 @@
     .dash .dashemo{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:72px;line-height:1;opacity:.92;user-select:none;pointer-events:none}
     .dash .date{font-size:13px;color:rgba(255,255,255,.85);margin-bottom:3px;font-weight:600}
     .dash h1{font-size:22px;font-weight:800;letter-spacing:-0.02em}
-    .dash .stats{display:flex;gap:26px;margin-top:12px}
+    .dash .stats{display:flex;gap:20px;margin-top:12px;flex-wrap:wrap}
     .dash .stat b{font-size:26px;display:block;font-weight:800}
     .dash .stat.a b{color:#ffe8a3}
     .dash .stat small{font-size:12px;color:rgba(255,255,255,.85)}
@@ -209,7 +236,7 @@
     .qrow{display:flex;align-items:center;gap:12px;background:#fff;border-radius:16px;padding:12px 14px;margin-bottom:8px;box-shadow:0 2px 10px rgba(80,90,160,.06)}
     .qrow.making{outline:2px solid #2563eb;outline-offset:-2px}
     .qrow.done{opacity:.5}
-    .qno{flex:0 0 auto;width:34px;height:34px;border-radius:99px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:#fff;font-family:'Roboto Mono',monospace}
+    .qno{flex:0 0 auto;width:36px;height:36px;border-radius:99px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15.5px;color:#fff;font-family:'Roboto Mono',monospace;-webkit-text-stroke:0.3px currentColor}
     .qno.orange{background:#f97316}
     .qno.green{background:#16a34a}
     .qno.blue{background:#2563eb}
@@ -231,13 +258,69 @@
     .qbtn:active,.qdel:active{filter:brightness(.96)}
     .qdel{flex:0 0 auto;width:32px;height:32px;border-radius:9px;background:#fef2f2;color:#ef4444;font-size:16px;font-weight:800;line-height:1}
     .qdel:active{background:#fee2e2}
+    /* 담당자: 음료 묶어보기 */
+    .drinksum{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 6px}
+    .dchip{display:inline-flex;align-items:center;gap:6px;background:#fff;border-radius:99px;padding:8px 12px;font-size:14px;font-weight:700;color:var(--ink);box-shadow:0 2px 8px rgba(80,90,160,.06);border:2px solid transparent}
+    .dchip b{color:#2563eb;font-size:15px}
+    .dchip.on{border-color:#2563eb;background:#eef4ff}
+    .dchip .temptag{font-size:10px;padding:2px 5px}
+    .dshint{font-size:11.5px;color:var(--sub);margin:0 4px 10px;line-height:1.5}
+    .batchbar{background:#eef4ff;border-radius:16px;padding:12px 14px;margin-bottom:10px}
+    .batchbar .bb-t{font-size:14px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+    .batchbar .bb-t b{color:#2563eb}
+    .bb-btns{display:flex;gap:6px;flex-wrap:wrap}
+    .bbtn{flex:1 1 auto;background:#fff;color:#2563eb;font-weight:800;font-size:13px;padding:11px 12px;border-radius:12px;white-space:nowrap}
+    .bbtn.making{background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff}
+    .bbtn.ghostb{flex:0 0 auto;color:var(--sub)}
+    .bbtn:active{filter:brightness(.96)}
+    /* 담당자: 완료·가져가기 전 */
+    .qrow.waitpick{background:#f7faff}
+    .qacts{flex:0 0 auto;display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+    .qago{font-size:11px;font-weight:700;color:var(--sub);white-space:nowrap}
+    .qago.late{color:#dc2626}
+    .qact-btns{display:flex;gap:5px}
+    .qundo,.qpick{font-size:12px;font-weight:800;padding:8px 10px;border-radius:10px;white-space:nowrap}
+    .qundo{background:#fff4e5;color:#c2410c}
+    .qpick{background:#e9f7ee;color:#15803d}
+    .qundo:active,.qpick:active{filter:brightness(.95)}
+    .secn{display:inline-block;font-size:13px;background:#dbeafe;color:#2563eb;border-radius:99px;padding:2px 8px;vertical-align:middle;margin-left:4px}
+    .empty.small{padding:20px;font-size:13px}
+    /* 태블릿/PC 넓은 화면, 또는 가로로 돌린 폰: 담당자 메인 2단 */
+    @media (min-width:900px), (orientation:landscape) and (min-width:640px){
+      body.wide{max-width:1180px}
+      body.wide .bgrid{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:24px;align-items:start}
+      body.wide .dash{margin-bottom:4px}
+    }
+    /* 가로 모드(화면 높이가 낮을 때): 대시보드를 한 줄짜리 얇은 막대로 줄이고 화면 맨 위에 고정.
+       머리글(로고·이름)은 스크롤하면 올라가게 해서 주문 목록이 보일 자리를 최대한 확보 */
+    @media (orientation:landscape) and (max-height:900px){
+      body.wide header{position:static;padding:8px 16px 4px}
+      body.wide .wrap{padding-top:0}
+      body.wide .dash{position:sticky;top:0;z-index:15;padding:8px 14px;border-radius:14px;margin-bottom:6px;box-shadow:0 6px 16px rgba(37,99,235,.25)}
+      body.wide .dash .dashemo, body.wide .dash .date, body.wide .dash h1{display:none}
+      body.wide .dash .dashbody{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+      body.wide .dash .stats{margin-top:0;gap:14px;flex-wrap:nowrap}
+      body.wide .dash .stat{display:flex;align-items:baseline;gap:4px;white-space:nowrap}
+      body.wide .dash .stat b{display:inline;font-size:19px}
+      body.wide .dash .stat small{font-size:11.5px}
+      body.wide .dash .dashfoot{flex:1 1 auto;justify-content:flex-end;margin:0;padding:0;border:0;min-width:0;gap:12px}
+      body.wide .dash .dashfoot .dfstatus{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+      body.wide .sechead{margin:10px 4px 8px}
+      body.wide .sechead h2{font-size:16px}
+      body.wide .drinksum{margin-bottom:8px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+      body.wide .drinksum::-webkit-scrollbar{display:none}
+      body.wide .dchip{flex:0 0 auto;padding:6px 10px}
+      body.wide .dshint{display:none}
+      body.wide .qrow{padding:9px 12px;margin-bottom:6px}
+      body.wide .qrow.waitpick .qdrink{font-size:15px}
+    }
     .qdonelbl{flex:0 0 auto;font-size:12px;font-weight:700;color:#15803d;background:#eaf6ec;padding:8px 12px;border-radius:99px;white-space:nowrap}
 
     /* segmented + dispense */
     .seg{display:flex;gap:8px;margin-bottom:16px;background:#dde8f7;padding:5px;border-radius:16px}
     .seg button{flex:1;padding:11px;border-radius:12px;font-size:14px;font-weight:700;background:transparent;color:var(--sub)}
     .seg button.on{background:#fff;color:#2563eb;box-shadow:0 2px 8px rgba(80,90,160,.1)}
-    .seq{display:inline-flex;align-items:center;justify-content:center;min-width:24px;height:24px;padding:0 5px;border-radius:99px;background:#2563eb;color:#fff;font-size:12px;font-weight:700;flex:0 0 auto;font-family:'Roboto Mono',monospace}
+    .seq{display:inline-flex;align-items:center;justify-content:center;min-width:26px;height:26px;padding:0 5px;border-radius:99px;background:#2563eb;color:#fff;font-size:13.2px;font-weight:700;flex:0 0 auto;font-family:'Roboto Mono',monospace;-webkit-text-stroke:0.3px currentColor}
     .seq.pending{background:#f97316}
     .seq.green{background:#16a34a}
     /* list row with edit/delete (employee team list) */
@@ -248,6 +331,7 @@
     .lr-drink{display:flex;align-items:center;flex-wrap:wrap;gap:7px;color:var(--sub);font-size:14px;font-weight:600}
     .bytag{font-size:13px;color:#2563eb;background:#eef4fc;border-radius:99px;padding:3px 8px;font-weight:700;white-space:nowrap}
     .lrow-act{display:flex;gap:8px;margin-top:10px}
+    .lr-lock{margin-top:8px;font-size:12px;color:var(--sub)}
     .lrow-act .mini{flex:1;border-radius:10px;padding:10px;font-size:13px;font-weight:700}
     .mini.edit{background:#eef4fc;color:#2563eb}
     .mini.edit:active{background:#dde8f7}
@@ -264,6 +348,38 @@
     .editrow .del:active{background:#dc2626}
     /* menu editor card with color picker */
     .editcard{background:#fff;border-radius:16px;padding:14px;margin-bottom:10px;box-shadow:0 2px 8px rgba(80,90,160,.05)}
+    /* 메뉴 관리 (한 줄 목록) */
+    .msum{display:flex;gap:6px;margin-bottom:6px;flex-wrap:wrap}
+    .mpill{font-size:13px;font-weight:700;padding:7px 12px;border-radius:99px;background:#fff;color:var(--sub);box-shadow:0 1px 4px rgba(80,90,160,.06)}
+    .mpill.on{background:#16243f;color:#fff}
+    .mpill.off{color:#dc2626}
+    .mpill.off.on{background:#dc2626;color:#fff}
+    .mgh{font-size:13px;font-weight:800;margin:16px 4px 8px;display:flex;align-items:center;gap:6px}
+    .mgh.ice{color:#1d4ed8} .mgh.hot{color:#b91c1c}
+    .mgh span{font-size:12px;color:var(--sub);font-weight:700}
+    .mempty{font-size:13px;color:var(--sub);padding:8px 4px}
+    .mlist{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(80,90,160,.05)}
+    .mrow{display:flex;align-items:center;gap:10px;padding:0 12px 0 0;min-height:48px;border-top:1px solid #f0f4fb}
+    .mlist>.mrow:first-child{border-top:0}
+    .mrow.open{background:#f5f8ff}
+    .mr-main{flex:1;min-width:0;display:flex;align-items:center;gap:8px;padding:12px 0 12px 14px;cursor:pointer}
+    .mr-dot{width:16px;height:16px;border-radius:5px;flex:0 0 auto}
+    .mr-nm{font-size:15px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+    .mrow.off .mr-nm{color:#9aa6bd;text-decoration:line-through}
+    .mr-off{flex:0 0 auto;font-size:11px;font-weight:800;color:#dc2626;background:#fef2f2;padding:2px 6px;border-radius:6px}
+    .mr-chev{flex:0 0 auto;width:26px;text-align:center;color:#9aa6bd;font-size:14px;cursor:pointer;padding:12px 0}
+    .mexp{background:#f5f8ff;padding:4px 14px 14px;border-top:1px dashed #dbe6f7}
+    .mx-lbl{font-size:12px;font-weight:700;color:var(--sub);margin:10px 0 6px}
+    .mexp .nm{width:100%;border:1px solid #e8eef8;background:#fff;border-radius:10px;font-size:15px;outline:none;font-weight:600;padding:10px 12px}
+    .mexp .nm:focus{border-color:#3b82f6}
+    .mx-acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+    .mx-b{flex:1 1 auto;background:#fff;border:1px solid #dbe6f7;color:#2563eb;font-weight:700;font-size:13px;padding:9px 10px;border-radius:10px;white-space:nowrap}
+    .mx-b:disabled{color:#c4cede;border-color:#eef1f6}
+    .mx-b.del{color:#dc2626;border-color:#fecaca;flex:0 0 auto}
+    .msave{position:sticky;bottom:0;padding:12px 0 14px;background:linear-gradient(to top,var(--bg) 70%,rgba(234,241,251,0));margin-top:8px;z-index:5}
+    .dgh{font-size:13px;font-weight:800;margin:6px 2px 8px}
+    .dgh.ice{color:#1d4ed8} .dgh.hot{color:#b91c1c;margin-top:10px}
+    .drink .dn{min-height:76px}
     .editcard-top{display:flex;align-items:center;gap:10px}
     .editcard-top .nm{flex:1 1 auto;min-width:0;border:1px solid #e8eef8;background:#f7faff;border-radius:10px;font-size:15px;outline:none;font-weight:600;padding:10px 12px}
     .editcard-top .nm:focus{border-color:#3b82f6;background:#fff}
@@ -278,7 +394,11 @@
     .editcard-sale.off .sale-lbl{color:#dc2626}
     .editcard.item-off{opacity:.6}
     .sw{width:30px;height:30px;border-radius:9px;flex:0 0 auto;border:3px solid transparent;box-sizing:border-box}
-    .sw.on{border-color:#16243f}
+    .sw.on{border-color:#16243f;position:relative}
+    .sw.on::after{content:"✓";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;font-weight:800;text-shadow:0 0 3px rgba(0,0,0,.6)}
+    .sw.free{border:2px solid #fff;box-shadow:0 0 0 2px #16243f}
+    .sw.used{opacity:.45}
+    .swlegend{font-size:11.5px;color:var(--sub);margin-top:8px;line-height:1.5}
     .addbtn{width:100%;border:2px dashed #c4d4ef;border-radius:16px;padding:14px;color:var(--sub);font-size:14px;font-weight:600;background:#fff}
     .addmenuform{background:#fff;border-radius:16px;padding:16px;box-shadow:0 2px 8px rgba(80,90,160,.05)}
     .addmenuform .nm{width:100%;border:1px solid #e8eef8;background:#f7faff;border-radius:10px;font-size:15px;outline:none;font-weight:600;padding:12px;box-sizing:border-box}
@@ -316,6 +436,24 @@
     .toast.show{opacity:1}
     .loading{text-align:center;padding:60px;color:var(--sub)}
     .footnote{font-size:12px;color:#9aa6bd;margin-top:24px;padding:0 4px;line-height:1.7}
+    .guide{margin-top:22px}
+    .guide summary{cursor:pointer;font-size:13px;font-weight:700;color:var(--sub);padding:10px 4px;list-style:none}
+    .guide summary::-webkit-details-marker{display:none}
+    .guide summary::after{content:" ▾";font-size:11px}
+    .guide[open] summary::after{content:" ▴"}
+    .guide .footlist{margin-top:6px}
+    .usual{width:100%;display:flex;align-items:center;gap:12px;background:#fff;border:2px solid #2563eb;border-radius:18px;padding:14px 16px;margin-bottom:10px;text-align:left;box-shadow:0 6px 16px rgba(37,99,235,.12)}
+    .usual:active{background:#f3f7ff}
+    .usual .u-c{width:26px;height:26px;border-radius:8px;flex:0 0 auto}
+    .usual .u-body{flex:1;min-width:0;display:flex;flex-direction:column}
+    .usual small{font-size:12px;font-weight:700;color:#2563eb}
+    .usual b{font-size:18px;font-weight:800;color:var(--ink);margin-top:2px;display:flex;align-items:center;gap:6px}
+    .usual .u-go{flex:0 0 auto;font-size:13px;font-weight:800;color:#2563eb}
+    .ahead{color:#f97316}
+    .undobar{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);width:calc(100% - 32px);max-width:520px;background:#16243f;color:#fff;border-radius:16px;padding:10px 10px 10px 18px;display:flex;align-items:center;gap:12px;z-index:60;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;box-shadow:0 10px 28px rgba(20,30,70,.35)}
+    .undobar.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+    .undobar .ub-t{flex:1;font-size:14px;font-weight:600}
+    .undobar .ub-b{flex:0 0 auto;background:#fff;color:#16243f;font-weight:800;font-size:14px;padding:10px 16px;border-radius:12px}
     .footlist{font-size:12px;color:#9aa6bd;margin-top:24px;padding:0 4px 0 20px;line-height:1.7;list-style:disc}
     .footlist li{margin-bottom:3px}
     .alertguide{margin-top:18px;background:#eef3fc;border:1px solid #dbe6f7;border-radius:14px;padding:13px 15px}
@@ -328,10 +466,11 @@
 <body>
   <div id="app"><div class="loading">불러오는 중…</div></div>
   <div id="toast" class="toast"></div>
+  <div id="undobar" class="undobar"><span class="ub-t"></span><button class="ub-b" id="undoBtn">취소</button></div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
-    import { getFirestore, doc, getDoc, setDoc, deleteField, onSnapshot, runTransaction } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, getDocs, setDoc, deleteField, onSnapshot, runTransaction, FieldPath, collection, query, where, documentId } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
 
     // 🔻🔻🔻 여기를 본인 Firebase 설정값으로 교체 (가이드 1~2단계) 🔻🔻🔻
     const firebaseConfig = {
@@ -370,7 +509,9 @@
     const TEAM_COLORS = ["#e0555b","#e8803c","#caa12b","#7faa3e","#46a866","#23ab9a","#2a9fcf","#4a82ed","#6c6fe0","#9760d0","#c258ac","#dd6196"];
     const DEFAULT_TEAM_NAMES = ["관리팀","B-후반영","UPW","CHEMICAL","전기","진공","BULK","S-GAS","B-CAD","MEP/OBJ","기타A","기타B"];
     const DEFAULT_TEAMS = DEFAULT_TEAM_NAMES.map((nm,i)=>({ id:"team"+(i+1), name:nm, color:TEAM_COLORS[i%TEAM_COLORS.length] }));
-    const MENU_COLORS = ["#d44949","#6cd449","#498fd4","#d449b2","#b1b12f","#29ae8c","#8f49d4","#d46c49","#49d449","#496cd4","#d4498f","#91b12f","#29aeae","#b249d4","#d48f49","#49d46c","#4949d4","#d4496c","#70b12f","#298cae","#d449d4","#b1912f","#29ae6b","#6c49d4"];
+    // 계열별 24색: 빨강계열(빨강,주황,다홍,연주황,밤색,분홍) · 노랑계열(노랑,연두,귤색,개나리색) ·
+    // 초록계열(초록,청록,풀색,올리브색,카키색) · 파랑계열(파랑,남색,하늘색,바다색) · 보라계열(보라,자주,바이올렛) · 갈색계열(갈색,고동색)
+    const MENU_COLORS = ["#e53935","#f4511e","#ef4136","#ffab40","#7a3b2e","#f06292","#ffd400","#aed581","#ffa000","#f4c430","#43a047","#00897b","#8bc34a","#808000","#a3a06a","#1e88e5","#1a237e","#4fc3f7","#0077a3","#8e24aa","#ad1457","#673ab7","#795548","#4e342e"];
     const DEFAULT_MENU = [
       { id:"hot-americano", name:"HOT 아메리카노", color:"#2563eb" },
       { id:"ice-americano", name:"ICE 아메리카노", color:"#0891b2" },
@@ -389,16 +530,55 @@
     const colorFor = i => TEAM_COLORS[i%TEAM_COLORS.length];
     const menuColorFor = i => MENU_COLORS[i%MENU_COLORS.length];
     const mColor = m => (m && m.color) ? m.color : "#94a3b8";
+    // ---- ICE / HOT 그룹 ----
+    // 메뉴마다 temp("ice"|"hot")를 저장. 없으면 이름에 HOT이 붙은 것만 hot, 나머지(에이드 등 포함)는 ice.
+    // 주문의 80~90%가 ICE라서 어디서든 ICE 그룹을 먼저 보여줌. 그룹 안의 순서는 메뉴 목록 순서 그대로.
+    const menuTemp = m => (m && (m.temp==="hot"||m.temp==="ice")) ? m.temp : (/(^|\s)HOT(\s|$)/i.test((m&&m.name)||"") ? "hot" : "ice");
+    const TEMP_LABEL = {ice:"🧊 ICE", hot:"🔥 HOT"};
+    // 직원 화면용: ICE 먼저, HOT 다음으로 제목을 붙여 음료 버튼을 그림 (HOT이 없으면 제목 없이)
+    function drinkGroupsHTML(list, btn){
+      const ice=list.filter(m=>menuTemp(m)==="ice"), hot=list.filter(m=>menuTemp(m)==="hot");
+      if(!ice.length || !hot.length) return `<div class="grid2">${list.map(btn).join("")}</div>`;
+      return `<div class="dgh ice">${TEMP_LABEL.ice}</div><div class="grid2">${ice.map(btn).join("")}</div>
+        <div class="dgh hot">${TEMP_LABEL.hot}</div><div class="grid2">${hot.map(btn).join("")}</div>`;
+    }
+    // 메뉴 색상은 1메뉴 1색: 다른 메뉴가 이미 쓰는 색은 배정하지 않음
+    const _lc = c => String(c||"").toLowerCase();
+    function freeMenuColor(menu, skipIdx){
+      const used = new Set(menu.filter((m,i)=>i!==skipIdx && m && m.color).map(m=>_lc(m.color)));
+      return MENU_COLORS.find(c=>!used.has(_lc(c))) || null; // 24색을 다 쓰면 null
+    }
+    // 색이 없거나 앞 메뉴와 겹치는 메뉴에 남는 색을 배정 (먼저 있던 메뉴가 원래 색 유지)
+    function dedupeMenuColors(items){
+      const used = new Set();
+      return items.map((m,i)=>{
+        let c = m.color;
+        if(!c || used.has(_lc(c))){
+          c = MENU_COLORS.find(x=>!used.has(_lc(x)) && !items.some((o,j)=>j>i && _lc(o.color)===_lc(x))) 
+              || MENU_COLORS.find(x=>!used.has(_lc(x))) || c || menuColorFor(i);
+        }
+        used.add(_lc(c));
+        return (c===m.color) ? m : {...m, color:c};
+      });
+    }
 
     // 배포할 때마다 이 값을 바꿔주세요 — 값이 바뀌면 모든 기기가 자동으로 최신 버전을 받아옵니다
-    const APP_BUILD = "2026-08-20-05";
+    // 버전 규칙: "수정한 날짜-그날의 순번" (예: 2026-09-18-01 → 같은 날 또 수정하면 -02)
+    // 날짜가 바뀌면 순번은 01부터 다시 시작. 코드 수정 시 반드시 이 값을 바꿔야 자동 업데이트가 동작함.
+    const APP_BUILD = "2026-09-19-01";
+    // 이름은 띄어쓰기 없이 사용 ("김철수"와 "김 철수"가 다른 사람이 되는 문제 방지)
+    const nm = s => String(s||"").replace(/\s+/g,"");
+    const sameName = (a,b) => nm(a)===nm(b);
     const todayKey = () => { const d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; };
     const toMin = hhmm => { const [h,m]=hhmm.split(":").map(Number); return h*60+m; };
     const nowMin = () => { const d=new Date(); return d.getHours()*60+d.getMinutes(); };
 
     // ---------- state ----------
     let state = {
-      user: JSON.parse(localStorage.getItem("ian_user")||"null"),
+      user: (()=>{ const u=JSON.parse(localStorage.getItem("ian_user")||"null");
+        if(u && /\s/.test(u.name||"")){ u.name=nm(u.name); localStorage.setItem("ian_user",JSON.stringify(u)); } // 예전에 띄어쓰기로 로그인한 사람 정리
+        return u; })(),
+      guideOpen: !localStorage.getItem("ian_guide"), // 이용 안내: 처음 한 번만 펼쳐서 보여줌
       view: "home",
       orders: {},          // { orderId: {team, name, drinkId, session, status, time, by} }
       menu: DEFAULT_MENU,
@@ -406,7 +586,9 @@
       hours: DEFAULT_HOURS,
       seenReady: JSON.parse(localStorage.getItem("ian_seen")||"[]"),
       soundOn: JSON.parse(localStorage.getItem("ian_sound")||"true"),
-      menuPickOpen: null, // 색상 팔레트가 펼쳐진 메뉴 id
+      menuPickOpen: null, // (예전) 색상 팔레트가 펼쳐진 메뉴 id
+      menuOpen: null,     // 메뉴 관리: 펼쳐서 수정 중인 메뉴 id (한 번에 하나)
+      menuFilter: "all",  // 메뉴 관리: "all" | "off"(품절만 보기)
       addMenuOpen: false, // 메뉴 추가 폼(이름+ICE/HOT 체크박스) 펼침 여부
       keepAwake: false, // 직원 화면 꺼짐 방지 토글 (세션)
       statsMonth: null,  // "YYYY-MM" 집계 뷰 현재 달
@@ -417,6 +599,10 @@
       // add-person flow temp
       addTeam:null, addName:"", editOrderId:null,
       dispSession:"am",
+      holidays: {days:{}}, // 휴무일: days={"YYYY-MM-DD":"사유"} (토·일은 항상 휴무라 따로 저장 안 함)
+      holDraft: null, holMonth: null,        // 휴무일 설정 화면 편집 중 값 / 보고 있는 달
+      qFilter: null,        // 담당자: 음료 묶어보기에서 선택한 음료 id (그 음료 주문만 보기)
+      statsMonthData: null, // 집계: {ym, byDay:{날짜:orders}} (null=불러오는 중)
     };
 
     // ---------- 담당자 새 주문 알림 (소리·진동·화면 유지) ----------
@@ -505,60 +691,169 @@
     // 주문이 들어온 모든 팀 id를 정렬: 현재 팀(순서 유지) + 사라진 팀(주문은 있는데 목록엔 없는 경우)
     const app=document.getElementById("app"), toastEl=document.getElementById("toast");
     let tTimer=null;
+    document.getElementById("undoBtn").onclick=()=>runUndo();
+    // 어떤 이유로든 저장이 실패했는데 처리가 안 된 경우, 조용히 넘어가지 않고 사용자에게 알림
+    window.addEventListener("unhandledrejection", ev=>{ console.error(ev.reason); try{ toast("저장하지 못했어요. 인터넷 연결을 확인하고 다시 눌러 주세요"); }catch(e){} });
     const toast=m=>{toastEl.textContent=m;toastEl.classList.add("show");clearTimeout(tTimer);tTimer=setTimeout(()=>toastEl.classList.remove("show"),2200);};
 
     // ---------- which session is open now ----------
+    // ---------- 휴무일 ----------
+    const dateKey = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+    const keyToDate = k => { const [y,m,d]=k.split("-").map(Number); return new Date(y,m-1,d); };
+    const DOW="일월화수목금토";
+    const dayLabel = k => { const d=keyToDate(k); return `${d.getMonth()+1}/${d.getDate()}(${DOW[d.getDay()]})`; };
+    // 토·일은 무조건 휴무 (사용자 결정: 주말은 항상 쉬므로 켜고 끄는 스위치 없음)
+    const isWeekend = k => { const w=keyToDate(k).getDay(); return w===0||w===6; };
+    function isHoliday(k){
+      if(isWeekend(k)) return true;
+      const h=state.holidays||{};
+      return !!(h.days && Object.prototype.hasOwnProperty.call(h.days,k));
+    }
+    const holidayReason = k => ((state.holidays||{}).days||{})[k] || (isWeekend(k) ? "주말" : "");
+
+    // ---------- which session is open now ----------
+    // 반환: 열림 {open:true, session, endsAt, left(남은 분), soon(10분 이하)}
+    //       닫힘 {open:false, next, at, holiday(오늘 휴무), reason}
     function sessionState(){
-      const n=nowMin(), h=state.hours;
+      const n=nowMin(), h=state.hours, tk=todayKey();
       const sessions=[
         {key:"am", start:h.amStart, end:h.amEnd, on:h.amOn!==false, label:"오전"},
         {key:"ln", start:h.lnStart||"11:30", end:h.lnEnd||"13:00", on:h.lnOn!==false, label:"점심"},
         {key:"pm", start:h.pmStart, end:h.pmEnd, on:h.pmOn!==false, label:"오후"},
       ].filter(s=>s.on);
-      for(const s of sessions){
-        if(n>=toMin(s.start) && n<=toMin(s.end)) return {open:true, session:s.key, endsAt:s.end};
+      if(!sessions.length) return {open:false, next:"운영 안내", at:"-"};
+      const holiday=isHoliday(tk);
+      if(!holiday){
+        for(const s of sessions){
+          if(n>=toMin(s.start) && n<=toMin(s.end)){ const left=toMin(s.end)-n; return {open:true, session:s.key, endsAt:s.end, left, soon:left<=10}; }
+        }
+        for(const s of sessions){
+          if(n<toMin(s.start)) return {open:false, next:s.label, at:s.start};
+        }
       }
-      for(const s of sessions){
-        if(n<toMin(s.start)) return {open:false, next:s.label, at:s.start};
+      // 오늘은 끝났거나 휴무 → 휴무가 아닌 다음 날의 첫 세션
+      const base={open:false, holiday, reason:holiday?holidayReason(tk):""};
+      for(let i=1;i<=120;i++){
+        const d=new Date(); d.setDate(d.getDate()+i); const k=dateKey(d);
+        if(!isHoliday(k)) return {...base, next:`${i===1?"내일":dayLabel(k)} ${sessions[0].label}`, at:sessions[0].start};
       }
-      if(sessions.length) return {open:false, next:`내일 ${sessions[0].label}`, at:sessions[0].start};
-      return {open:false, next:"운영 안내", at:"-"};
+      return {...base, next:"운영 안내", at:"-"};
     }
     const sessName = s => s==="am"?"오전":s==="ln"?"점심":"오후";
     // has this user ordered today (any session)?
     function myTodayOrder(){
       if(!state.user) return null;
-      const e=Object.entries(state.orders).find(([_,o])=>o.team===state.user.team && o.name===state.user.name);
+      const e=Object.entries(state.orders).find(([_,o])=>o.team===state.user.team && sameName(o.name,state.user.name));
       return e?{id:e[0],...e[1]}:null;
     }
     // 오늘 하루 리셋되는 수령 번호 (컵에 적어서 찾아가는 용도) — 서버 트랜잭션으로 원자적 발급 (동시 주문에도 안 겹침)
     // 신규 주문 생성: 번호 예약 + 주문 저장을 하나의 트랜잭션으로 묶어서, 중간에 실패해도 번호만 소모되고 주문이 안 남는 일이 없게 함
+    // ※ 주문이 한꺼번에 몰리면(예: 주문 시작 시각에 30명 동시) 같은 문서를 두고 트랜잭션이 서로 충돌해 실패할 수
+    //   있음(시뮬레이션으로 확인). 그래서 트랜잭션을 몇 번 시도해도 안 되면, 번호 없이 주문부터 확실히 저장하고
+    //   (충돌이 없는 일반 쓰기) 번호는 잠시 뒤 따로 발급함(ensureMyNumber + 담당자 기기 repairPickupNos).
+    //   → 주문이 사라지는 일은 없고, 번호만 1~2초 늦게 나올 수 있음.
     async function commitNewOrder(fields){
       const ref=doc(db,"daily",todayKey());
-      const no=await runTransaction(db, async tx=>{
-        const snap=await tx.get(ref);
-        const data=snap.exists()?snap.data():{};
-        const next=(data.nextNo||0)+1;
-        const orders={...(data.orders||{})};
-        orders[fields.id]={...fields, no:next};
-        tx.set(ref,{orders, nextNo:next},{merge:true});
-        return next;
+      fields={...fields, build:APP_BUILD}; // 어느 버전 앱이 만든 주문인지 기록 (번호 문제 추적용)
+      try{
+        const no=await runTransaction(db, async tx=>{
+          const snap=await tx.get(ref);
+          const data=snap.exists()?snap.data():{};
+          const already=(data.orders||{})[fields.id];
+          if(already && already.no) return already.no; // 앞선 시도가 이미 저장됐으면 그대로 (중복 방지)
+          const next=nextPickupNo(data);
+          tx.set(ref,{orders:{[fields.id]:{...fields, no:next}}, nextNo:next},{merge:true});
+          return next;
+        }, {maxAttempts:3});
+        state.orders={...state.orders,[fields.id]:{...fields, no}};
+        return no;
+      }catch(e){
+        console.warn("번호 발급 트랜잭션 실패 → 주문만 먼저 저장", e);
+        await setDoc(ref,{orders:{[fields.id]:fields}},{merge:true}); // 충돌 없는 일반 쓰기 (merge라 혹시 저장된 번호가 있어도 안 지워짐)
+        state.orders={...state.orders,[fields.id]:{...(state.orders[fields.id]||{}), ...fields}};
+        ensureMyNumber(fields.id);
+        return null;
+      }
+    }
+    // 번호 없이 저장된 내 주문에 번호 붙이기 (몰림이 풀릴 때까지 간격을 두고 재시도, 담당자 기기가 먼저 붙이면 종료)
+    async function ensureMyNumber(id){
+      for(let i=0;i<10;i++){
+        await new Promise(r=>setTimeout(r, 800+Math.random()*1500*(1+i*0.5)));
+        const cur=state.orders[id];
+        if(!cur || Number(cur.no)>0) return;
+        try{
+          await runTransaction(db, async tx=>{
+            const ref=doc(db,"daily",todayKey());
+            const snap=await tx.get(ref); if(!snap.exists()) return;
+            const data=snap.data(), o=(data.orders||{})[id];
+            if(!o || Number(o.no)>0) return;
+            const next=nextPickupNo(data);
+            tx.update(ref, new FieldPath("orders",id,"no"), next, "nextNo", next);
+          }, {maxAttempts:2});
+        }catch(e){ /* 다음 회차에 다시 */ }
+      }
+    }
+    // 트랜잭션이 몰림으로 실패하면 잠깐 쉬었다가 다시 (담당자 버튼·변경·취소 등 기존 주문 수정용)
+    async function txRun(fn){
+      for(let i=0;;i++){
+        try{ return await runTransaction(db, fn); }
+        catch(e){ if(i>=2 || (e&&e.code==="permission-denied")) throw e; await new Promise(r=>setTimeout(r, 400+Math.random()*900)); }
+      }
+    }
+    // 다음 수령 번호 = (카운터, 오늘 이미 쓰인 가장 큰 번호) 중 큰 것 + 1
+    // → 옛날 버전 앱이 카운터를 안 올리거나 낮은 값으로 덮어써도, 이미 나간 번호와 겹치지 않음
+    function nextPickupNo(data){
+      let mx=Number(data.nextNo)||0;
+      Object.values(data.orders||{}).forEach(o=>{ const n=Number(o&&o.no); if(n>mx) mx=n; });
+      return mx+1;
+    }
+    // 안전망: 그래도 번호가 겹치거나 빠진 "대기" 주문이 보이면 담당자 기기가 자동으로 새 번호를 다시 발급.
+    // 먼저 들어온 주문이 원래 번호를 유지하고, 나중 주문만 바뀜. 제조를 시작한 주문(컵에 번호를 적었을 수
+    // 있음)은 절대 바꾸지 않음. 원인이 무엇이든(옛날 버전 폰, 알 수 없는 오류) 번호 중복을 잡기 위한 장치.
+    function pickupNoProblems(orders){
+      const fixed=new Set(), bad=[];
+      const list=Object.entries(orders||{}).sort((a,b)=>new Date(a[1].time)-new Date(b[1].time));
+      list.forEach(([id,o])=>{ if(o.status!=="pending" && Number(o.no)>0) fixed.add(Number(o.no)); });
+      list.forEach(([id,o])=>{
+        const n=Number(o.no);
+        if(o.status!=="pending"){ if(!(n>0)) bad.push(id); return; } // 번호가 아예 없는 주문은 상태와 관계없이 발급
+        if(n>0 && !fixed.has(n)) fixed.add(n); else bad.push(id);
       });
-      state.orders={...state.orders,[fields.id]:{...fields, no}};
-      return no;
+      return bad; // 새 번호가 필요한 주문 id (시간순)
+    }
+    let _repairingNos=false;
+    async function repairPickupNos(){
+      if(_repairingNos) return;
+      _repairingNos=true;
+      try{
+        const ref=doc(db,"daily",todayKey());
+        const changed=await txRun(async tx=>{
+          const snap=await tx.get(ref);
+          if(!snap.exists()) return [];
+          const data=snap.data(), orders=data.orders||{};
+          const bad=pickupNoProblems(orders);
+          if(!bad.length) return [];
+          let next=nextPickupNo(data)-1;
+          const args=[], log=[];
+          bad.forEach(id=>{ next++; args.push(new FieldPath("orders",id,"no"), next); if(Number(orders[id].no)>0) log.push(`${orders[id].no}→${next}`); }); // 안내는 "겹친 번호"만 (번호 없던 주문은 조용히 발급)
+          args.push("nextNo", next);
+          tx.update(ref, ...args);
+          return log;
+        });
+        if(changed.length) toast(`겹친 수령 번호를 자동으로 고쳤어요 (${changed.join(", ")})`);
+      }catch(e){ console.error(e); }
+      finally{ _repairingNos=false; }
     }
     // 표시용 수령 번호: 저장된 번호가 있으면 그대로, 없으면(기능 적용 이전 주문) 오늘 전체 시간순 순위로 대체 — 항상 팀 구분 없는 전체 고유 번호
     function pickNo(o){
-      if(o.no) return o.no;
-      const all=Object.values(state.orders).slice().sort((a,b)=>new Date(a.time)-new Date(b.time));
-      const idx=all.findIndex(x=>x.time===o.time && x.name===o.name && x.team===o.team);
-      return idx>=0 ? idx+1 : "-";
+      // 번호가 아직 없으면(주문이 몰려 발급 대기 중) "…" — 예전처럼 임시 순위를 보여주면 다른 사람 번호와 겹쳐 보일 수 있음
+      return Number(o.no)>0 ? o.no : "…";
     }
 
     // ---------- firestore ----------
     // 입력 중인 화면(타이핑 내용이 저장 전까지 DOM에만 있는 화면)에서는 실시간 업데이트가 와도
     // 화면을 다시 그리지 않음 — state는 항상 최신으로 갱신되고, 화면 반영만 편집이 끝난 뒤로 미룸
-    const EDIT_VIEWS=new Set(["team-edit","menu-edit","time-edit","notice-edit"]);
+    const EDIT_VIEWS=new Set(["team-edit","menu-edit","time-edit","notice-edit","hol-edit"]);
     function safeRender(){ if(!EDIT_VIEWS.has(state.view)) render(); }
 
     let _dailyUnsub=null, _dailyKey=null;
@@ -584,16 +879,62 @@
           _myReadyIds=new Set(myReady);
         }
         state.orders=orders; checkNotif(); safeRender();
+        if(isBarista && pickupNoProblems(orders).length) repairPickupNos();
       },e=>console.error(e));
     }
     function startSync(){
       subscribeDaily();
-      onSnapshot(doc(db,"config","menu"),s=>{ if(s.exists()&&Array.isArray(s.data().items)&&s.data().items.length){ state.menu=s.data().items.map((m,i)=>({...m, color:m.color||menuColorFor(i)})); } else state.menu=DEFAULT_MENU; safeRender(); },e=>console.error(e));
+      onSnapshot(doc(db,"config","menu"),s=>{ if(s.exists()&&Array.isArray(s.data().items)&&s.data().items.length){ state.menu=dedupeMenuColors(s.data().items); } else state.menu=DEFAULT_MENU; safeRender(); },e=>console.error(e));
       onSnapshot(doc(db,"config","teams"),s=>{ if(s.exists()&&Array.isArray(s.data().items)&&s.data().items.length) state.teams=s.data().items.map((t,i)=>({...t, color:colorFor(i)})); else state.teams=DEFAULT_TEAMS; safeRender(); },e=>console.error(e));
       onSnapshot(doc(db,"config","hours"),s=>{ if(s.exists()) state.hours={...DEFAULT_HOURS,...s.data()}; safeRender(); },e=>console.error(e));
+      onSnapshot(doc(db,"config","holidays"),s=>{ const d=s.exists()?s.data():{}; state.holidays={days:d.days||{}}; safeRender(); },e=>console.error(e));
       onSnapshot(doc(db,"config","notice"),s=>{ state.notice = (s.exists()&&s.data().text)? s.data() : null; safeRender(); },e=>console.error(e));
     }
-    const saveOrders=async n=>{state.orders=n;await setDoc(doc(db,"daily",todayKey()),{orders:n},{merge:true});};
+    // 기존 주문 수정: 전체 주문 목록을 덮어쓰지 않고, 서버의 "그 주문 하나"만 트랜잭션으로 읽고 고침.
+    // (예전 saveOrders는 내 폰에 있던 전체 목록을 통째로 저장해서, 동시에 다른 사람이 바꾼 주문 상태·음료가
+    //  옛날 값으로 되돌아가거나 삭제된 주문이 되살아날 위험이 있었음)
+    // mutate(cur) → 바꾼 주문 객체를 반환하면 저장, 문자열을 반환하면 저장하지 않고 그 사유를 돌려줌
+    async function updateOrder(id, mutate){
+      const ref=doc(db,"daily",todayKey());
+      const res=await txRun(async tx=>{
+        const snap=await tx.get(ref);
+        const cur=snap.exists() ? (snap.data().orders||{})[id] : null;
+        if(!cur) return {err:"gone"};
+        const next=mutate(cur);
+        if(typeof next==="string") return {err:next, cur};
+        tx.update(ref, new FieldPath("orders", id), next);
+        return {ok:next};
+      });
+      if(res.ok) state.orders={...state.orders,[id]:res.ok};
+      return res;
+    }
+    // 여러 주문을 한 번에 수정 (묶어서 시작/완료, 전체 수령 등). mutate가 문자열을 돌려준 주문은 건너뜀.
+    async function updateOrders(ids, mutate){
+      const ref=doc(db,"daily",todayKey());
+      const done=await txRun(async tx=>{
+        const snap=await tx.get(ref);
+        const orders=snap.exists() ? (snap.data().orders||{}) : {};
+        const args=[], ok={};
+        ids.forEach(id=>{
+          const cur=orders[id]; if(!cur) return;
+          const next=mutate(cur); if(!next || typeof next==="string") return;
+          args.push(new FieldPath("orders", id), next); ok[id]=next;
+        });
+        if(args.length) tx.update(ref, ...args);
+        return ok;
+      });
+      state.orders={...state.orders, ...done};
+      return Object.keys(done).length;
+    }
+    // 수정 실패 사유를 사용자에게 안내 (true=실패해서 안내함)
+    function orderFailToast(res){
+      if(res.ok) return false;
+      if(res.err==="gone") toast("이미 삭제된 주문이에요");
+      else if(res.err==="started") toast("이미 제조가 시작돼서 바꿀 수 없어요");
+      else if(res.err==="stale") toast("다른 기기에서 이미 처리됐어요");
+      else if(res.err==="changed") toast("방금 음료가 바뀌었어요. 확인하고 다시 눌러 주세요");
+      render(); return true;
+    }
     const saveMenu=async i=>{state.menu=i;await setDoc(doc(db,"config","menu"),{items:i});};
     const saveTeams=async i=>{state.teams=i;await setDoc(doc(db,"config","teams"),{items:i});};
     const saveHours=async h=>{state.hours=h;await setDoc(doc(db,"config","hours"),h);};
@@ -607,7 +948,7 @@
     // ---------- notifications ----------
     function isMyOrder(o){
       // an order "belongs" to this user if they placed it (their own, or one they ordered on behalf of someone)
-      return o.by===state.user.name || (o.name===state.user.name && (!o.by));
+      return sameName(o.by,state.user.name) || (sameName(o.name,state.user.name) && (!o.by));
     }
     function checkNotif(){
       if(!state.user||state.user.team==="barista")return;
@@ -615,7 +956,7 @@
         if(isMyOrder(o) && o.status==="ready" && !state.seenReady.includes(id)){
           if("Notification" in window && Notification.permission==="granted"){
             try{
-              const who = (o.name!==state.user.name) ? `${o.name}님 ` : "";
+              const who = !sameName(o.name,state.user.name) ? `${o.name}님 ` : "";
               new Notification("☕ 음료가 준비됐어요!",{body:`${who}음료가 완성됐어요. 1층에서 가져가세요.`,icon:"icon-192.png"});
             }catch(e){}
           }
@@ -635,6 +976,8 @@
 
     // ============ RENDER ============
     function render(){
+      // 태블릿/PC처럼 넓은 화면에서 담당자 메인은 2단으로 넓게 (CSS의 body.wide 참고)
+      document.body.classList.toggle("wide", !!(state.user && state.user.team==="barista" && !["menu-edit","team-edit","time-edit","notice-edit","hol-edit","disp","stats"].includes(state.view)));
       if(!state.user) return renderLogin();
       maybeWake();
       syncHistory();
@@ -647,6 +990,7 @@
         else if(state.view==="disp") w.innerHTML=renderDispense();
         else if(state.view==="stats") w.innerHTML=renderStats();
         else if(state.view==="notice-edit") w.innerHTML=renderNoticeEdit();
+        else if(state.view==="hol-edit") w.innerHTML=renderHolEdit();
         else w.innerHTML=renderBarista();
       } else {
         if(state.view==="order") w.innerHTML=renderOrder();
@@ -712,7 +1056,7 @@
         <p>팀을 선택하고 이름을 입력하세요</p>
         <div class="field"><label>팀 선택</label>
           <div class="teamgrid" id="ts">${TEAMS.map(t=>`<button data-team="${t.id}">${esc(t.name)}</button>`).join("")}</div></div>
-        <div class="field"><label>이름</label><input id="ni" placeholder="이름 입력" autocomplete="off"/></div>
+        <div class="field"><label>이름</label><input id="ni" placeholder="이름 입력 (띄어쓰기 없이)" autocomplete="off"/></div>
         <button class="start" id="sb" disabled>시작하기</button>
         <button class="blink" id="bb">담당자로 로그인 →</button>
         <div style="text-align:center;color:rgba(255,255,255,.4);font-size:11px;margin-top:14px">버전 ${APP_BUILD}</div>
@@ -720,17 +1064,26 @@
       let name="",team="";
       const ni=document.getElementById("ni"),sb=document.getElementById("sb"),tb=[...document.querySelectorAll("#ts button")];
       const rf=()=>sb.disabled=!(name.trim()&&team);
-      ni.addEventListener("input",e=>{name=e.target.value;rf();});
+      ni.addEventListener("input",e=>{ noSpaceInput(e); name=e.target.value; rf(); });
       tb.forEach(b=>b.addEventListener("click",()=>{tb.forEach(x=>x.classList.remove("on"));b.classList.add("on");team=b.dataset.team;rf();}));
       sb.addEventListener("click",()=>doLogin(name.trim(),team));
       document.getElementById("bb").addEventListener("click",()=>{
         const pin=prompt("담당자 비밀번호를 입력하세요");
         if(pin===null) return;
         if(pin.trim()!=="0825"){ toast("비밀번호가 틀렸어요"); return; }
-        doLogin((ni.value||"담당자").trim(),"barista");
+        doLogin(nm(ni.value)||"담당자","barista");
       });
     }
+    // 이름 입력칸: 띄어쓰기를 치면 바로 지우고 한 번 안내
+    let _spaceWarned=false;
+    function noSpaceInput(e){
+      const el=e.target; if(e.isComposing || !/\s/.test(el.value)) return;
+      const pos=el.selectionStart, before=el.value.slice(0,pos).replace(/\s+/g,"").length;
+      el.value=nm(el.value); try{ el.setSelectionRange(before,before); }catch(_){}
+      if(!_spaceWarned){ _spaceWarned=true; toast("이름은 띄어쓰기 없이 입력해 주세요"); }
+    }
     function doLogin(name,team){
+      name=nm(name);
       state.user={name,team};
       localStorage.setItem("ian_user",JSON.stringify(state.user));
       state.view="home";
@@ -739,19 +1092,31 @@
     }
 
     // ---- window bar (shared) ----
+    // 다가오는 휴무 안내 (내일~3일 안, 담당자가 직접 지정한 휴무일만. 주말 자동 휴무는 안내 안 함)
+    function upcomingHolidayHTML(){
+      const days=(state.holidays||{}).days||{};
+      for(let i=1;i<=3;i++){
+        const d=new Date(); d.setDate(d.getDate()+i); const k=dateKey(d);
+        if(Object.prototype.hasOwnProperty.call(days,k)){
+          return `<div class="holnote">📅 <b>${i===1?"내일 · ":""}${dayLabel(k)}</b>은 휴무예요${days[k]?` · ${esc(days[k])}`:""}</div>`;
+        }
+      }
+      return "";
+    }
     function windowBarHTML(){
       const ss=sessionState(), h=state.hours;
       const amOpen=ss.open&&ss.session==="am", lnOpen=ss.open&&ss.session==="ln", pmOpen=ss.open&&ss.session==="pm";
       const dot='<span class="live"></span>';
-      const amCell = h.amOn!==false ? `<div class="wb ${amOpen?'open':'closed'}"><div class="wlbl">${amOpen?dot:''}오전 주문${amOpen?' 중':''}</div><div class="wtime">${h.amStart}~${h.amEnd}</div></div>` : ``;
-      const lnCell = h.lnOn!==false ? `<div class="wb ${lnOpen?'open':'closed'}"><div class="wlbl">${lnOpen?dot:''}점심 주문${lnOpen?' 중':''}</div><div class="wtime">${h.lnStart||'--:--'}~${h.lnEnd||'--:--'}</div></div>` : ``;
-      const pmCell = h.pmOn!==false ? `<div class="wb ${pmOpen?'open':'closed'}"><div class="wlbl">${pmOpen?dot:''}오후 주문${pmOpen?' 중':''}</div><div class="wtime">${h.pmStart}~${h.pmEnd}</div></div>` : ``;
-      return `<div class="windowbar">${amCell}${lnCell}${pmCell}</div>`;
+      const amCell = h.amOn!==false ? `<div class="wb ${amOpen?'open':'closed'}${amOpen&&ss.soon?' soon':''}"><div class="wlbl">${amOpen?dot:''}${amOpen&&ss.soon?`마감 ${ss.left}분 전`:`오전 주문${amOpen?' 중':''}`}</div><div class="wtime">${h.amStart}~${h.amEnd}</div></div>` : ``;
+      const lnCell = h.lnOn!==false ? `<div class="wb ${lnOpen?'open':'closed'}${lnOpen&&ss.soon?' soon':''}"><div class="wlbl">${lnOpen?dot:''}${lnOpen&&ss.soon?`마감 ${ss.left}분 전`:`점심 주문${lnOpen?' 중':''}`}</div><div class="wtime">${h.lnStart||'--:--'}~${h.lnEnd||'--:--'}</div></div>` : ``;
+      const pmCell = h.pmOn!==false ? `<div class="wb ${pmOpen?'open':'closed'}${pmOpen&&ss.soon?' soon':''}"><div class="wlbl">${pmOpen?dot:''}${pmOpen&&ss.soon?`마감 ${ss.left}분 전`:`오후 주문${pmOpen?' 중':''}`}</div><div class="wtime">${h.pmStart}~${h.pmEnd}</div></div>` : ``;
+      return `<div class="windowbar${ss.holiday?' holiday':''}">${amCell}${lnCell}${pmCell}</div>`;
     }
 
     // ---- employee home ----
     function renderHome(){
-      const u=state.user, t=TEAMS.find(x=>x.id===u.team);
+      if(state.guideOpen && !localStorage.getItem("ian_guide")) { try{ localStorage.setItem("ian_guide","1"); }catch(e){} } // 다음부터는 접힌 채로
+      const u=state.user, t=teamById(u.team); // 팀 목록 불러오기 전에도 오류 없이
       const ss=sessionState(), mine=myTodayOrder();
       return `
         <div class="greet">
@@ -759,20 +1124,24 @@
           <div class="date">${new Date().toLocaleDateString("ko-KR",{month:"long",day:"numeric",weekday:"long"})}</div>
         </div>
         <div class="hero"><div class="bigcup">${heroEmoji()}</div><div class="rel">
-          <div class="team">${esc(t.name)} · ${ss.open?`${sessName(ss.session)} 주문 중`:"주문 시간 외"}</div>
-          <h1>${mine?(mine.status==="ready"?"음료가 준비됐어요":"오늘 주문 완료"):"오늘의 한 잔"}</h1>
-          <div class="sub">${ss.open?`지금 주문을 받고 있어요 (~${ss.endsAt})`:`${ss.next} 주문은 ${ss.at}부터예요`}</div>
+          <div class="team">${esc(t.name)} · ${ss.open?`${sessName(ss.session)} 주문 중`:ss.holiday?"오늘 휴무":"주문 시간 외"}</div>
+          <h1>${mine?(mine.status==="ready"?"음료가 준비됐어요":"오늘 주문 완료"):ss.holiday?"오늘은 휴무예요":"오늘의 한 잔"}</h1>
+          <div class="sub">${ss.open?(ss.soon?`<b class="soon">⏰ 곧 마감돼요 · ${ss.left}분 남았어요</b>`:`지금 주문을 받고 있어요 (~${ss.endsAt})`):`${ss.holiday&&ss.reason?esc(ss.reason)+" · ":""}${ss.next} 주문은 ${ss.at}부터예요`}</div>
         </div></div>
         ${state.notice?`<div class="noticebox"><span class="ic">📢</span><span class="tx">${esc(state.notice.text).replace(/\n/g,"<br/>")}</span></div>`:``}
+        ${upcomingHolidayHTML()}
         ${windowBarHTML()}
         ${mine ? myCupHTML(mine, ss)
           : ss.open ? `
-          <button class="primary" data-act="goOrder">＋ 내 음료 주문하기</button>
+          ${usualBtnHTML()}
+          <button class="primary" data-act="goOrder">＋ ${lastDrinkId()?"다른 음료 고르기":"내 음료 주문하기"}</button>
           <button class="ghost" data-act="goAdd">👥 다른 사람 대신 주문하기</button>
-        ` : `<div class="empty">지금은 주문 시간이 아니에요</div>
+        ` : `<div class="empty">${ss.holiday?"📅 오늘은 휴무라 주문을 받지 않아요":"지금은 주문 시간이 아니에요"}</div>
           <button class="ghost" data-act="goAdd" style="margin-top:12px">👥 다른 사람 대신 주문하기</button>`}
         <button class="ghost" data-act="goTeamList" style="margin-top:10px">📋 우리 팀 주문 목록 보기</button>
         <button class="ghost awakebtn ${state.keepAwake?'on':''}" data-act="toggleAwake">${state.keepAwake?"🔆 화면 켜둠 · 대기 중 안 꺼져요 (눌러서 끄기)":"🌙 화면 꺼짐 방지 (음료 알림 받기)"}</button>
+        <details class="guide" id="guide" ${state.guideOpen?"open":""}>
+        <summary>ℹ️ 이용 안내 · 알림 안내</summary>
         <ul class="footlist">
           <li>하루 1잔, 무료로 제공됩니다.</li>
           <li>'다른 사람 대신 주문하기'로 대행 주문이 가능합니다.</li>
@@ -787,14 +1156,29 @@
             <li>소리가 안 들리면 휴대폰 <b>무음/벨소리</b> 설정을 확인해 주세요.</li>
           </ul>
         </div>
+        </details>
         <div style="text-align:center;color:#c4cede;font-size:11px;margin-top:16px">버전 ${APP_BUILD}</div>
       `;
+    }
+    // "늘 마시던 걸로" — 마지막으로 주문한 음료가 지금 판매 중이면 한 번에 주문
+    function usualBtnHTML(){
+      const id=lastDrinkId(); if(!id) return "";
+      const m=menuById(id); if(!m || m.active===false) return "";
+      return `<button class="usual" data-pick="${esc(m.id)}">
+        <span class="u-c" style="background:${mColor(m)}"></span>
+        <span class="u-body"><small>늘 마시던 걸로</small><b>${drinkNameHTML(m.name)}</b></span>
+        <span class="u-go">바로 주문 ›</span></button>`;
+    }
+    // 내 주문보다 먼저 들어와서 아직 안 끝난 주문 수 (담당자는 들어온 순서대로 만듦)
+    function aheadCount(o){
+      const t=new Date(o.time);
+      return Object.values(state.orders).filter(x=>(x.status==="pending"||x.status==="confirmed") && new Date(x.time)<t).length;
     }
     function myCupHTML(o,ss){
       const m=menuById(o.drinkId);
       const stat = o.status==="ready" ? "✓ 1층에서 가져가세요"
                  : o.status==="confirmed" ? "담당자가 확인했어요 · 제조 중"
-                 : "주문 접수됨 · 담당자 확인 대기";
+                 : (()=>{ const n=aheadCount(o); return n>0 ? `주문 접수됨 · <b class="ahead">내 앞에 ${n}잔</b>` : `주문 접수됨 · <b class="ahead">곧 만들어요</b>`; })();
       const badge = o.status==="ready"?"blue":o.status==="confirmed"?"green":"orange";
       return `<div class="mycup">
         <div class="mc" style="background:${mColor(m)}"></div>
@@ -811,13 +1195,14 @@
 
     // ---- order (pick 1 drink) ----
     function renderOrder(){
-      const t=TEAMS.find(x=>x.id===state.user.team);
+      const t=teamById(state.user.team);
       return `<button class="back" data-act="back">‹ 뒤로</button>
         <div style="margin-bottom:16px"><div style="font-size:12px;font-weight:600;color:${t.color};margin-bottom:4px">${esc(t.name)} · ${esc(state.user.name)}</div>
         <h1 class="serif" style="font-size:26px">음료를 선택하세요</h1>
         <div class="sub" style="font-size:14px;color:var(--sub);margin-top:4px">하나만 고르면 바로 주문됩니다</div></div>
+        ${(()=>{ const ss=sessionState(); return ss.open&&ss.soon?`<div class="soonbar">⏰ ${ss.left}분 뒤 주문이 마감돼요</div>`:""; })()}
         ${state.menu.filter(m=>m.active!==false).length===0?`<div class="empty">지금은 판매 중인 메뉴가 없어요</div>`:
-        `<div class="grid2">${state.menu.filter(m=>m.active!==false).map(m=>`<button class="drink" data-pick="${m.id}"><div class="em" style="background:${mColor(m)}"></div><div class="dn">${drinkNameHTML(m.name)}</div></button>`).join("")}</div>`}`;
+        drinkGroupsHTML(state.menu.filter(m=>m.active!==false), m=>`<button class="drink" data-pick="${m.id}"><div class="em" style="background:${mColor(m)}"></div><div class="dn">${drinkNameHTML(m.name)}</div></button>`)}`;
     }
 
     // ---- add person (order for someone else) ----
@@ -833,9 +1218,9 @@
         </div>
 
         <div class="picklbl">1. 이름 입력</div>
-        <input id="addName" value="${esc(state.addName)}" placeholder="동료 이름" autocomplete="off" style="width:100%;border:1px solid var(--line);border-radius:14px;padding:14px 16px;font-size:16px;outline:none;background:#f7faff"/>
+        <input id="addName" value="${esc(state.addName)}" placeholder="동료 이름 (띄어쓰기 없이)" autocomplete="off" style="width:100%;border:1px solid var(--line);border-radius:14px;padding:14px 16px;font-size:16px;outline:none;background:#f7faff"/>
         <div class="picklbl">2. 음료 선택</div>
-        <div class="grid2">${state.menu.filter(m=>m.active!==false).map(m=>`<button class="drink" data-addpick="${m.id}"><div class="em" style="background:${mColor(m)}"></div><div class="dn">${drinkNameHTML(m.name)}</div></button>`).join("")}</div>
+        ${drinkGroupsHTML(state.menu.filter(m=>m.active!==false), m=>`<button class="drink" data-addpick="${m.id}"><div class="em" style="background:${mColor(m)}"></div><div class="dn">${drinkNameHTML(m.name)}</div></button>`)}
         <div class="footnote">이름을 입력하고 음료를 누르면 바로 주문됩니다. 대행 주문은 본인 팀(${myTeam?esc(myTeam.name):''})으로만 들어갑니다.</div>`;
     }
 
@@ -846,15 +1231,15 @@
         <h1 class="serif" style="font-size:26px;margin-bottom:4px">알림</h1>
         <div class="sub" style="font-size:14px;color:var(--sub);margin-bottom:16px">담당자가 보낸 메시지</div>
         ${list.length===0?`<div class="empty">🔔<br/><br/>새 알림이 없어요</div>`:
-          list.map(n=>{const m=menuById(n.drinkId); const forSomeone = n.name!==state.user.name;
+          list.map(n=>{const m=menuById(n.drinkId); const forSomeone = !sameName(n.name,state.user.name);
           return `<div class="notif"><h3>${forSomeone?esc(n.name)+"님 ":""}음료 준비 완료!</h3>
             <div class="nsub">1층 커피샵에서 가져가세요 · ${m?`<span class="csq sm" style="background:${mColor(m)}"></span> ${drinkNameHTML(m.name)}`:""}${forSomeone?" · 대행 주문":""}</div>
-            <button class="nack" data-ack="${n.id}">확인 (가져갈게요)</button></div>`;}).join("")}`;
+            <button class="nack" data-ack="${n.id}">확인</button></div>`;}).join("")}`;
     }
 
     // ---- employee: own team order list (am/pm, name-sorted) ----
     function renderTeamList(){
-      const u=state.user, t=TEAMS.find(x=>x.id===u.team);
+      const u=state.user, t=teamById(u.team); // 팀 목록 불러오기 전에도 오류 없이
       const sess=state.dispSession||"am";
       const ss=sessionState();
       const editable = ss.open; // can only change while ordering window is open
@@ -868,7 +1253,7 @@
           <span class="cdot" style="width:11px;height:11px;border-radius:99px;background:${t.color};display:inline-block"></span>
           <h1 class="serif" style="font-size:26px">${esc(t.name)} 주문 목록</h1>
         </div>
-        <div class="sub" style="font-size:14px;color:var(--sub);margin-bottom:16px">완성된 음료를 받을 때 누구 것인지 확인하세요 (이름순)${editable?" · 수정·삭제 가능":""}</div>
+        <div class="sub" style="font-size:14px;color:var(--sub);margin-bottom:16px">완성된 음료를 받을 때 누구 것인지 확인하세요 (이름순)${editable?" · 대기 중인 주문만 수정·삭제 가능":""}</div>
         <div class="seg">
           <button class="${sess==="am"?'on':''}" data-disp="am">오전 (${amCount})</button>
           <button class="${sess==="ln"?'on':''}" data-disp="ln">점심 (${lnCount})</button>
@@ -881,25 +1266,25 @@
                 <div class="lr-who"><span class="seq${badge}">${pickNo(o)}</span><span class="lr-nm">${esc(o.name)}</span>${o.by&&o.by!==o.name?`<span class="bytag">대행:${esc(o.by)}</span>`:""}</div>
                 <div class="lr-drink">${m?`<span class="csq sm" style="background:${mColor(m)}"></span>${drinkNameHTML(m.name)}`:esc(o.drinkId)}</div>
               </div>
-              ${editable?`<div class="lrow-act">
+              ${editable && o.status==="pending"?`<div class="lrow-act">
                 <button class="mini edit" data-editorder="${o.id}">수정</button>
                 <button class="mini del" data-delorder="${o.id}">삭제</button>
-              </div>`:""}
+              </div>`: editable ? `<div class="lr-lock">${o.status==="ready"?"완료된 주문이라 수정할 수 없어요":"제조 중이라 수정할 수 없어요"}</div>` : ""}
             </div>`;}).join("")}`;
     }
 
     // ---- edit one order's drink ----
     function renderEditOrder(){
       const o=state.orders[state.editOrderId];
-      if(!o){ state.view="team-list"; return renderTeamList(); }
+      if(!o || o.status!=="pending"){ state.view="team-list"; return renderTeamList(); } // 수정 중 제조가 시작되면 목록으로
       const t=TEAMS.find(x=>x.id===o.team);
       return `<button class="back" data-act="backToList">‹ 뒤로</button>
         <div style="margin-bottom:16px">
-          <div style="font-size:12px;font-weight:600;color:${t?t.color:'#2563eb'};margin-bottom:4px">${t?t.name:''} · ${esc(o.name)}</div>
+          <div style="font-size:12px;font-weight:600;color:${t?t.color:'#2563eb'};margin-bottom:4px">${t?esc(t.name):''} · ${esc(o.name)}</div>
           <h1 class="serif" style="font-size:26px">음료 변경</h1>
           <div class="sub" style="font-size:14px;color:var(--sub);margin-top:4px">새 음료를 누르면 바로 변경됩니다</div>
         </div>
-        <div class="grid2">${state.menu.map(m=>`<button class="drink ${m.id===o.drinkId?'on':''}" data-editpick="${m.id}"><div class="em" style="background:${mColor(m)}"></div><div class="dn">${drinkNameHTML(m.name)}</div></button>`).join("")}</div>`;
+        ${drinkGroupsHTML(state.menu.filter(m=>m.active!==false || m.id===o.drinkId), m=>`<button class="drink ${m.id===o.drinkId?'on':''}" data-editpick="${m.id}"><div class="em" style="background:${mColor(m)}"></div><div class="dn">${drinkNameHTML(m.name)}</div></button>`)}`;
     }
 
     // ---- 공지사항 편집 ----
@@ -915,6 +1300,72 @@
     }
 
     // ---- 집계 뷰 ----
+    // ---- 집계: 한 달치 불러오기 ----
+    let _statsLoadingYM=null;
+    async function loadStatsMonth(ym){
+      if(_statsLoadingYM===ym) return;
+      _statsLoadingYM=ym;
+      const [yr,mo]=ym.split("-").map(Number), days=new Date(yr,mo,0).getDate();
+      let byDay={};
+      try{
+        // 한 번의 조회로 그 달 문서 전부 (문서 id가 날짜라 범위 조회 가능)
+        const qs=await getDocs(query(collection(db,"daily"), where(documentId(),">=",`${ym}-01`), where(documentId(),"<=",`${ym}-31`)));
+        qs.forEach(d=>{ byDay[d.id]=d.data().orders||{}; });
+      }catch(e){
+        // 보안 규칙상 범위 조회가 막혀 있으면 하루씩 조회
+        console.warn("month query failed, fallback per day", e);
+        const keys=[]; for(let d=1; d<=days; d++){ const k=`${ym}-${String(d).padStart(2,"0")}`; if(k<=todayKey()) keys.push(k); }
+        const snaps=await Promise.all(keys.map(k=>getDoc(doc(db,"daily",k)).catch(()=>null)));
+        snaps.forEach((sn,i)=>{ if(sn && sn.exists()) byDay[keys[i]]=sn.data().orders||{}; });
+      }
+      _statsLoadingYM=null;
+      if(state.statsMonth===ym){ state.statsMonthData={ym, byDay}; if(state.view==="stats") render(); }
+    }
+    function statsByDay(){
+      const md=state.statsMonthData; if(!md || md.ym!==state.statsMonth) return null;
+      const byDay={...md.byDay};
+      if(todayKey().startsWith(state.statsMonth)) byDay[todayKey()]=state.orders; // 오늘은 실시간 데이터로
+      return byDay;
+    }
+    // 메뉴별·팀별 순위 HTML (하루/한 달 공용)
+    function rankRowsHTML(list){
+      const total=list.length||1;
+      const menuCount={}, teamCount={};
+      list.forEach(o=>{ menuCount[o.drinkId]=(menuCount[o.drinkId]||0)+1; teamCount[o.team]=(teamCount[o.team]||0)+1; });
+      const bar=(cnt,color)=>`<span class="sr-bar"><i style="width:${Math.round(cnt/total*100)}%;background:${color}"></i></span>`;
+      const menuRows=Object.entries(menuCount).sort((a,b)=>b[1]-a[1]).map(([id,cnt],i)=>{
+        const m=menuById(id), c=m?mColor(m):"#ccc";
+        return `<div class="stat-row"><span class="sr-rank">${i+1}</span><span class="csq sm" style="background:${c}"></span><span class="sr-name">${m?drinkNameHTML(m.name):"알 수 없음"}${bar(cnt,c)}</span><b>${cnt}잔</b></div>`;
+      }).join("");
+      const teamRows=Object.entries(teamCount).sort((a,b)=>b[1]-a[1]).map(([tid,cnt],i)=>{
+        const t=teamById(tid);
+        return `<div class="stat-row"><span class="sr-rank">${i+1}</span><span class="csq sm" style="background:${t.color}"></span><span class="sr-name">${esc(t.name)}${bar(cnt,t.color)}</span><b>${cnt}잔</b></div>`;
+      }).join("");
+      return `<div class="sd-section"><div class="sd-sub">메뉴별</div>${menuRows}</div>
+              <div class="sd-section"><div class="sd-sub">팀별</div>${teamRows}</div>`;
+    }
+    // 한 달 주문을 CSV(엑셀에서 열림)로 내려받기
+    function downloadMonthCSV(){
+      const byDay=statsByDay();
+      if(!byDay){ toast("아직 불러오는 중이에요"); return; }
+      const hm=t=>{ if(!t) return ""; const d=new Date(t); return isNaN(d)?"":`${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")}`; };
+      const st={pending:"대기",confirmed:"제조 중",ready:"완료"};
+      const rows=[["날짜","수령번호","시간대","팀","이름","대행 주문자","음료","상태","주문 시각","완료 시각"]];
+      Object.keys(byDay).sort().forEach(day=>{
+        Object.values(byDay[day]||{}).sort((a,b)=>(Number(a.no)||0)-(Number(b.no)||0) || new Date(a.time)-new Date(b.time)).forEach(o=>{
+          const m=menuById(o.drinkId);
+          rows.push([day, o.no||"", sessName(o.session), teamById(o.team).name, o.name||"", (o.by&&o.by!==o.name)?o.by:"",
+            m?m.name:o.drinkId, st[o.status]||o.status||"", hm(o.time), hm(o.readyAt)]);
+        });
+      });
+      if(rows.length===1){ toast("이 달에는 주문 기록이 없어요"); return; }
+      const csv="\ufeff"+rows.map(r=>r.map(v=>{ const x=String(v??""); return /[",\n]/.test(x)?`"${x.replace(/"/g,'""')}"`:x; }).join(",")).join("\r\n");
+      const url=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));
+      const a=document.createElement("a"); a.href=url; a.download=`이안음료_${state.statsMonth}.csv`;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(()=>URL.revokeObjectURL(url), 5000);
+      toast(`${rows.length-1}건을 내려받았어요`);
+    }
     function renderStats(){
       const today = todayKey();
       if(!state.statsMonth){
@@ -926,48 +1377,52 @@
       const prevMonth = mo===1?`${yr-1}-12`:`${yr}-${String(mo-1).padStart(2,"0")}`;
       const nextMonth = mo===12?`${yr+1}-01`:`${yr}-${String(mo+1).padStart(2,"0")}`;
       const todayYM = today.slice(0,7);
+      const byDay=statsByDay();
+      if(!byDay) setTimeout(()=>loadStatsMonth(state.statsMonth),0);
+      const dayCnt=k=>byDay&&byDay[k]?Object.keys(byDay[k]).length:0;
 
-      // 캘린더 HTML
+      // 캘린더 HTML (날짜 아래에 그날 잔 수)
       let cells="";
       for(let i=0;i<firstDay;i++) cells+=`<div class="cal-cell empty"></div>`;
       for(let d=1;d<=daysInMonth;d++){
         const key=`${state.statsMonth}-${String(d).padStart(2,"0")}`;
-        const isToday=key===today, isSel=key===state.statsDate, isFuture=key>today;
-        cells+=`<div class="cal-cell${isToday?" today":""}${isSel?" sel":""}${isFuture?" future":""}" ${!isFuture?`data-calday="${key}"`:""}>${d}</div>`;
+        const isToday=key===today, isSel=key===state.statsDate, isFuture=key>today, c=dayCnt(key);
+        cells+=`<div class="cal-cell${isToday?" today":""}${isSel?" sel":""}${isFuture?" future":""}" ${!isFuture?`data-calday="${key}"`:""}><span>${d}</span>${c?`<small class="cal-n">${c}</small>`:""}</div>`;
       }
 
-      // 선택된 날짜 상세
       let detail="";
       if(state.statsDate){
-        const orders = state.statsData;
-        if(orders===null){
+        // 선택한 날짜 상세
+        const orders = byDay ? (byDay[state.statsDate]||{}) : state.statsData;
+        if(orders==null){
           detail=`<div class="stats-detail"><div class="empty">불러오는 중…</div></div>`;
         } else {
           const list=Object.values(orders);
-          if(list.length===0){
-            detail=`<div class="stats-detail"><div class="empty">해당 날짜에 주문 기록이 없어요</div></div>`;
-          } else {
-            // 메뉴별 집계
-            const menuCount={};
-            list.forEach(o=>{ menuCount[o.drinkId]=(menuCount[o.drinkId]||0)+1; });
-            const menuRows=Object.entries(menuCount).sort((a,b)=>b[1]-a[1]).map(([id,cnt])=>{
-              const m=menuById(id);
-              return `<div class="stat-row"><span class="csq sm" style="background:${m?mColor(m):"#ccc"}"></span><span class="sr-name">${m?drinkNameHTML(m.name):"알 수 없음"}</span><b>${cnt}잔</b></div>`;
-            }).join("");
-            // 팀별 집계
-            const teamCount={};
-            list.forEach(o=>{ teamCount[o.team]=(teamCount[o.team]||0)+1; });
-            const teamRows=Object.entries(teamCount).sort((a,b)=>b[1]-a[1]).map(([tid,cnt])=>{
-              const t=teamById(tid);
-              return `<div class="stat-row"><span class="csq sm" style="background:${t.color}"></span><span class="sr-name">${esc(t.name)}</span><b>${cnt}잔</b></div>`;
-            }).join("");
-            detail=`<div class="stats-detail">
-              <div class="sd-head">${state.statsDate} · 총 ${list.length}잔</div>
-              <div class="sd-section"><div class="sd-sub">메뉴별</div>${menuRows}</div>
-              <div class="sd-section"><div class="sd-sub">팀별</div>${teamRows}</div>
-            </div>`;
-          }
+          detail = list.length===0
+            ? `<div class="stats-detail"><div class="empty">해당 날짜에 주문 기록이 없어요</div></div>`
+            : `<div class="stats-detail"><div class="sd-head">${state.statsDate} · 총 ${list.length}잔 <span class="sd-back" data-calday="${state.statsDate}">월 요약 보기 ›</span></div>${rankRowsHTML(list)}</div>`;
         }
+      } else if(!byDay){
+        detail=`<div class="stats-detail"><div class="empty">${mo}월 기록을 불러오는 중…</div></div>`;
+      } else {
+        // 월 요약
+        const days=Object.keys(byDay).filter(k=>dayCnt(k)>0);
+        const list=days.flatMap(k=>Object.values(byDay[k]));
+        const best=days.slice().sort((a,b)=>dayCnt(b)-dayCnt(a))[0];
+        detail = list.length===0
+          ? `<div class="stats-detail"><div class="empty">${mo}월에는 주문 기록이 없어요</div></div>`
+          : `<div class="stats-detail">
+              <div class="sd-head">${yr}년 ${mo}월 요약</div>
+              <div class="msum">
+                <div><b>${list.length}</b><small>총 잔 수</small></div>
+                <div><b>${days.length}</b><small>운영일</small></div>
+                <div><b>${(list.length/days.length).toFixed(1)}</b><small>하루 평균</small></div>
+                <div><b>${best?Number(best.slice(8)):"-"}일</b><small>최다 (${best?dayCnt(best):0}잔)</small></div>
+              </div>
+              ${rankRowsHTML(list)}
+              <button class="primary" style="margin-top:14px" data-act="csv">📥 ${mo}월 주문 내역 엑셀(CSV) 받기</button>
+              <div class="dshint" style="margin-top:8px;text-align:center">날짜를 누르면 그날 상세를 볼 수 있어요</div>
+            </div>`;
       }
 
       return `<button class="back" data-act="back">‹ 뒤로</button>
@@ -986,51 +1441,141 @@
         ${detail}`;
     }
 
+    // ---- 휴무일 설정 (담당자) ----
+    function readHolInputs(){
+      if(!state.holDraft) return;
+      document.querySelectorAll("[data-holreason]").forEach(inp=>{ const k=inp.dataset.holreason; if(k in state.holDraft.days) state.holDraft.days[k]=inp.value; });
+    }
+    function renderHolEdit(){
+      const dr=state.holDraft, today=todayKey();
+      if(!state.holMonth) state.holMonth=today.slice(0,7);
+      const [yr,mo]=state.holMonth.split("-").map(Number);
+      const firstDay=new Date(yr,mo-1,1).getDay(), dim=new Date(yr,mo,0).getDate();
+      const prevM = mo===1?`${yr-1}-12`:`${yr}-${String(mo-1).padStart(2,"0")}`;
+      const nextM = mo===12?`${yr+1}-01`:`${yr}-${String(mo+1).padStart(2,"0")}`;
+      const canPrev = prevM >= today.slice(0,7);
+      let cells="";
+      for(let i=0;i<firstDay;i++) cells+=`<div class="cal-cell empty"></div>`;
+      for(let d=1; d<=dim; d++){
+        const k=`${state.holMonth}-${String(d).padStart(2,"0")}`, w=keyToDate(k).getDay();
+        const wk=(w===0||w===6), past=k<today, set=!wk && (k in dr.days);
+        // 주말은 원래 쉬는 날이라 누를 필요 없음 (눌러지지 않게)
+        cells+=`<div class="cal-cell hcell${past?" future":""}${set?" hol":wk?" wkoff":""}${k===today?" today":""}" ${(past||wk)?"":`data-holday="${k}"`}><span>${d}</span>${set?`<small class="cal-n">휴무</small>`:wk?`<small class="cal-n">주말</small>`:""}</div>`;
+      }
+      const list=Object.keys(dr.days).filter(k=>k>=today).sort();
+      return `<button class="back" data-act="back">‹ 뒤로</button>
+        <h1 class="serif" style="font-size:26px;margin-bottom:4px">휴무일 설정</h1>
+        <div class="sub" style="font-size:14px;color:var(--sub);margin-bottom:16px">평일 날짜를 누르면 휴무로 지정·해제돼요. 토·일은 항상 휴무예요. 휴무일엔 주문을 받지 않고, 직원 화면에 안내돼요.</div>
+        <div class="cal-wrap">
+          <div class="cal-nav">
+            <button class="cal-arr${canPrev?"":" disabled"}" ${canPrev?`data-holmonth="${prevM}"`:""}>‹</button>
+            <span class="cal-title">${yr}년 ${mo}월</span>
+            <button class="cal-arr" data-holmonth="${nextM}">›</button>
+          </div>
+          <div class="cal-grid">
+            <div class="cal-dow-cell">일</div><div class="cal-dow-cell">월</div><div class="cal-dow-cell">화</div><div class="cal-dow-cell">수</div><div class="cal-dow-cell">목</div><div class="cal-dow-cell">금</div><div class="cal-dow-cell">토</div>
+            ${cells}
+          </div>
+        </div>
+        <div class="sectlbl">예정된 휴무일 ${list.length}일</div>
+        ${list.length===0?`<div class="empty small">지정된 휴무일이 없어요</div>`:list.map(k=>`<div class="holrow">
+          <span class="hr-d">${dayLabel(k)}${k===today?" · 오늘":""}</span>
+          <input class="nm" data-holreason="${k}" value="${esc(dr.days[k]||"")}" placeholder="사유 (선택) 예: 담당자 휴가" maxlength="30"/>
+          <button class="qdel" data-holdel="${k}" aria-label="해제">✕</button>
+        </div>`).join("")}
+        <button class="primary" style="margin-top:16px" data-act="saveHol">저장하기</button>`;
+    }
+    async function doSaveHol(){
+      readHolInputs();
+      const today=todayKey(), days={};
+      Object.keys(state.holDraft.days).filter(k=>k>=today && !isWeekend(k)).sort().forEach(k=>{ days[k]=String(state.holDraft.days[k]||"").trim(); }); // 지난 날짜·주말은 정리
+      const h={days, weekendOff:true}; // weekendOff는 아직 업데이트 안 된 -10/-11 기기도 주말을 쉬게 하려고 남겨둠
+      await setDoc(doc(db,"config","holidays"),h);
+      state.holidays=h; state.holDraft=null; state.view="home"; render(); toast("휴무일을 저장했어요");
+    }
+
     // ---- barista main ----
     function renderBarista(){
       const list=Object.entries(state.orders).map(([id,o])=>({id,...o}));
       const pending=list.filter(o=>o.status==="pending");
       const confirmed=list.filter(o=>o.status==="confirmed");
       const ready=list.filter(o=>o.status==="ready");
+      // 방금 완료: 최근 10분 안에 완료한 음료만 (지나면 자동으로 빠짐 — 가져갔는지는 추적하지 않음. 직원이 1층에 내려와 바로 가져가는 구조라 누를 사람이 없음)
+      const RECENT_MIN=10;
+      const recentDone=ready.filter(o=>o.readyAt && Date.now()-new Date(o.readyAt)<RECENT_MIN*60000).sort((a,b)=>new Date(b.readyAt)-new Date(a.readyAt));
       const ss=sessionState();
       const dateStr=new Date().toLocaleDateString("ko-KR",{month:"long",day:"numeric",weekday:"long"});
 
-      // 지금 만들 차례: 대기+제조중 전체를, 팀 구분 없이 들어온 순서대로 — 최대 10개만 노출
+      // 지금 만들 차례: 대기+제조중 전체를, 팀 구분 없이 들어온 순서대로
       const queueAll=[...pending,...confirmed].sort((a,b)=>new Date(a.time)-new Date(b.time));
-      const queue=queueAll.slice(0,10);
-      const moreCount=queueAll.length-queue.length;
-      // 방금 완료: 최근 3건만 살짝 보여줌 (되돌리기 확인용)
-      const doneRecent=ready.slice().sort((a,b)=>new Date(b.readyAt||b.time)-new Date(a.readyAt||a.time)).slice(0,3);
+      // 같은 음료 묶어보기: 음료별 잔 수 (많은 순)
+      const groups={};
+      queueAll.forEach(o=>{ const g=groups[o.drinkId]||(groups[o.drinkId]={id:o.drinkId,total:0,pend:0,make:0}); g.total++; o.status==="pending"?g.pend++:g.make++; });
+      const groupList=Object.values(groups).sort((a,b)=>b.total-a.total);
+      if(state.qFilter && !groups[state.qFilter]) state.qFilter=null; // 그 음료를 다 만들면 자동으로 전체 보기
+      const fg=state.qFilter?groups[state.qFilter]:null;
+      const queue = fg ? queueAll.filter(o=>o.drinkId===fg.id) : queueAll.slice(0,10);
+      const moreCount = fg ? 0 : queueAll.length-queue.length;
+
+      const chip=g=>{ const m=menuById(g.id); return `<button class="dchip${state.qFilter===g.id?' on':''}" data-qfilter="${esc(g.id)}"><span class="csq sm" style="background:${mColor(m)}"></span><span class="dc-nm">${m?drinkNameHTML(m.name):esc(g.id)}</span><b>×${g.total}</b></button>`; };
+      const sumHTML = groupList.length>1 || fg ? `<div class="drinksum">${groupList.map(chip).join("")}</div>
+        <div class="dshint">${fg?"":"음료를 누르면 같은 음료만 모아서 한 번에 처리할 수 있어요"}</div>` : ``;
+      const fm=fg?menuById(fg.id):null;
+      const batchHTML = fg ? `<div class="batchbar">
+          <div class="bb-t">${fm?drinkNameHTML(fm.name):esc(fg.id)} <b>${fg.total}잔</b>만 보는 중</div>
+          <div class="bb-btns">
+            ${fg.pend?`<button class="bbtn" data-qbatch="start">대기 ${fg.pend}잔 모두 시작</button>`:""}
+            ${fg.make?`<button class="bbtn making" data-qbatch="done">제조 중 ${fg.make}잔 모두 완료</button>`:""}
+            <button class="bbtn ghostb" data-act="clearQFilter">전체 보기</button>
+          </div></div>` : ``;
+
+      const ago=t=>{ const m=Math.max(0,Math.floor((Date.now()-new Date(t))/60000)); return m<1?"방금":`${m}분 전`; };
+      const doneRow=o=>orderCardHTML(o, "mainq waitpick", "blue", `<div class="qacts">
+          <span class="qago">${ago(o.readyAt)} 완료</span>
+          <div class="qact-btns"><button class="qundo" data-qundo="${o.id}">되돌리기</button></div>
+        </div>`);
 
       return `
         <div class="dash"><div class="dashemo">${dashEmoji()}</div><div class="dashbody"><div class="date">${dateStr}</div><h1 class="serif">담당자 대시보드</h1>
           <div class="stats">
-            <div class="stat a"><b>${pending.length}</b><small>확인 대기</small></div>
+            <div class="stat a"><b>${pending.length}</b><small>대기</small></div>
             <div class="stat"><b>${confirmed.length}</b><small>제조 중</small></div>
-            <div class="stat"><b>${list.length}</b><small>오늘 총 주문</small></div>
+            <div class="stat"><b>${ready.length}</b><small>완료</small></div>
+            <div class="stat"><b>${list.length}</b><small>총 주문</small></div>
           </div>
           <div class="dashfoot">
-            <span class="dfstatus">${ss.open?`<span style="color:#bbf7d0">● ${sessName(ss.session)} 주문 접수 중 (~${ss.endsAt})</span>`:`○ 주문 시간 외 · 다음: ${ss.next} ${ss.at}`}</span>
+            <span class="dfstatus">${ss.open?`<span style="color:${ss.soon?'#fde68a':'#bbf7d0'}">● ${sessName(ss.session)} 주문 접수 중 (~${ss.endsAt})${ss.soon?` · 마감 ${ss.left}분 전`:""}</span>`:ss.holiday?`📅 오늘 휴무${ss.reason?` (${esc(ss.reason)})`:""} · 다음: ${ss.next} ${ss.at}`:`○ 주문 시간 외 · 다음: ${ss.next} ${ss.at}`}</span>
             <button class="swt ${state.soundOn?'on':''}" data-act="toggleSound" aria-label="새 주문 알림 소리"><span class="swt-l">알림</span><span class="swt-t"></span></button>
           </div>
         </div></div>
 
-        <div class="sechead"><h2 class="sec serif" style="margin:0">지금 만들 차례</h2><button class="refreshbtn" data-act="refresh">🔄 새로고침</button></div>
-        ${queue.length===0?`<div class="empty">지금 만들 주문이 없어요</div>`:queue.map(qrowHTML).join("")}
-        ${moreCount>0?`<div class="moreq">+${moreCount}건 더 대기 중 · 10개 처리하면 이어서 나와요</div>`:``}
-
-        ${doneRecent.length?`<div class="sectlbl">방금 완료</div>${doneRecent.map(doneRowHTML).join("")}`:""}
-
-        <h2 class="sec serif" style="margin-top:24px">관리 메뉴</h2>
-        <div class="navtext">
-          <button data-act="disp">주문 목록</button>
-          <button data-act="editMenu">메뉴 관리</button>
-          <button data-act="editTeams">팀 관리</button>
-          <button data-act="editTime">주문 시간 설정</button>
-          <button data-act="stats">📊 집계</button>
-          <button data-act="editNotice">📢 공지사항</button>
+        <div class="bgrid">
+        <div class="bcol-main">
+          <div class="sechead"><h2 class="sec serif" style="margin:0">지금 만들 차례</h2><button class="refreshbtn" data-act="refresh">🔄 새로고침</button></div>
+          ${sumHTML}
+          ${batchHTML}
+          ${queue.length===0?`<div class="empty">지금 만들 주문이 없어요</div>`:queue.map(qrowHTML).join("")}
+          ${moreCount>0?`<div class="moreq">+${moreCount}건 더 대기 중 · 10개 처리하면 이어서 나와요</div>`:``}
         </div>
-        <div style="text-align:center;color:#c4cede;font-size:11px;margin-top:16px">버전 ${APP_BUILD}</div>
+        <div class="bcol-side">
+          <div class="sechead"><h2 class="sec serif" style="margin:0">방금 완료 <span class="secn">${recentDone.length}</span></h2></div>
+          ${recentDone.length===0?`<div class="empty small">최근 ${RECENT_MIN}분 안에 완료한 음료가 없어요</div>`:
+            recentDone.map(doneRow).join("") +
+            `<div class="dshint" style="margin-top:4px">완료를 잘못 눌렀으면 '되돌리기' · ${RECENT_MIN}분이 지나면 목록에서 자동으로 사라져요</div>`}
+
+          <h2 class="sec serif" style="margin-top:24px">관리 메뉴</h2>
+          <div class="navtext">
+            <button data-act="disp">주문 목록</button>
+            <button data-act="editMenu">메뉴 관리</button>
+            <button data-act="editTeams">팀 관리</button>
+            <button data-act="editTime">주문 시간 설정</button>
+            <button data-act="editHol">📅 휴무일 설정</button>
+            <button data-act="stats">📊 집계</button>
+            <button data-act="editNotice">📢 공지사항</button>
+          </div>
+          <div style="text-align:center;color:#c4cede;font-size:11px;margin-top:16px">버전 ${APP_BUILD}</div>
+        </div>
+        </div>
       `;
     }
     // 공통 주문 카드: 수령번호 배지 + (팀명·이름·대행) + 음료명, 오른쪽에 지정한 액션 요소
@@ -1091,35 +1636,71 @@
 
     // ---- menu editor ----
     function swatches(curColor, dataAttr, idx){
-      return MENU_COLORS.map(c=>`<button class="sw${c.toLowerCase()===curColor.toLowerCase()?' on':''}" style="background:${c}" ${dataAttr}="${idx}|${c}"></button>`).join("");
+      // 다른 메뉴가 쓰고 있는 색은 흐리게 표시 — 누르면 그 메뉴와 색을 맞바꿈
+      const usedBy = {};
+      state.menu.forEach((m,i)=>{ if(i!==idx && m.color) usedBy[_lc(m.color)] = m.name; });
+      return MENU_COLORS.map(c=>{
+        const on = _lc(c)===_lc(curColor), who = usedBy[_lc(c)];
+        return who && !on
+          ? `<button class="sw used" style="background:${c}" ${dataAttr}="${idx}|${c}" title="${esc(who)} 사용 중 · 누르면 맞바꿈"></button>`
+          : `<button class="sw${on?' on':' free'}" style="background:${c}" ${dataAttr}="${idx}|${c}"></button>`;
+      }).join("");
     }
     function renderMenuEdit(){
+      const all=state.menu.map((m,i)=>({m,i}));
+      const offCnt=all.filter(x=>x.m.active===false).length, onCnt=all.length-offCnt;
+      const onlyOff=state.menuFilter==="off";
+      const row=({m,i})=>{
+        const on=m.active!==false, open=state.menuOpen===m.id, {temp,rest}=splitTemp(m.name), g=menuTemp(m);
+        const same=all.filter(x=>menuTemp(x.m)===g), pos=same.findIndex(x=>x.i===i);
+        return `<div class="mrow${open?' open':''}${on?'':' off'}">
+          <div class="mr-main" data-mrow="${esc(m.id)}">
+            <span class="mr-dot" style="background:${mColor(m)}"></span>
+            <span class="mr-nm">${esc(rest)}</span>${temp?`<span class="temptag ${temp==='ICE'?'ice':'hot'}">${temp}</span>`:""}
+            ${on?"":`<span class="mr-off">품절</span>`}
+          </div>
+          <button class="swt2${on?' on':''}" data-mtoggle="${i}" aria-label="${on?'판매 중 (눌러서 품절)':'품절 (눌러서 판매)'}"><span class="swt2-t"></span></button>
+          <span class="mr-chev" data-mrow="${esc(m.id)}">${open?"▴":"▾"}</span>
+        </div>
+        ${open?`<div class="mexp">
+          <div class="mx-lbl">이름</div>
+          <input class="nm" data-nm="${i}" value="${esc(m.name)}"/>
+          <div class="mx-lbl">색상</div>
+          <div class="swatches" style="margin-top:0">${swatches(mColor(m), "data-mcolor", i)}</div>
+          <div class="swlegend">✓ 지금 색 · 테두리 있는 색 = 사용 가능 · 흐린 색 = 다른 메뉴가 사용 중 (누르면 맞바꿈)</div>
+          <div class="mx-acts">
+            <button class="mx-b" data-mmove="${i}|-1" ${pos<=0?"disabled":""}>▲ 위로</button>
+            <button class="mx-b" data-mmove="${i}|1" ${pos>=same.length-1?"disabled":""}>▼ 아래로</button>
+            <button class="mx-b" data-mgroup="${i}">${g==="ice"?"🔥 HOT 그룹으로":"🧊 ICE 그룹으로"}</button>
+            <button class="mx-b del" data-del="${i}">삭제</button>
+          </div>
+        </div>`:""}`;
+      };
+      const group=g=>{
+        const list=all.filter(x=>menuTemp(x.m)===g && (!onlyOff || x.m.active===false));
+        if(!list.length) return onlyOff?"":`<div class="mgh ${g}">${TEMP_LABEL[g]} <span>0</span></div><div class="mempty">${g==="hot"?"HOT 메뉴가 없어요":"ICE 메뉴가 없어요"}</div>`;
+        return `<div class="mgh ${g}">${TEMP_LABEL[g]} <span>${list.length}</span></div><div class="mlist">${list.map(row).join("")}</div>`;
+      };
       return `<button class="back" data-act="back">‹ 뒤로</button>
         <h1 class="serif" style="font-size:26px;margin-bottom:4px">메뉴 관리</h1>
-        <div class="sub" style="font-size:14px;color:var(--sub);margin-bottom:16px">메뉴 이름·색상 수정, 추가·삭제 가능 · 재료 소진 시 판매를 꺼두세요</div>
-        <div id="el">${state.menu.map((m,i)=>{const on=m.active!==false;return `<div class="editcard${on?'':' item-off'}">
-          <div class="editcard-top">
-            <button class="cpick${state.menuPickOpen===m.id?' open':''}" data-mpick="${m.id}" style="background:${mColor(m)}" aria-label="색상 선택"></button>
-            <input class="nm" data-nm="${i}" value="${esc(m.name)}"/>
-            <button class="del" data-del="${i}">삭제</button>
-          </div>
-          ${state.menuPickOpen===m.id?`<div class="swatches">${swatches(mColor(m), "data-mcolor", i)}</div>`:``}
-          <div class="editcard-sale${on?'':' off'}">
-            <span class="sale-lbl">${on?"판매 중":"품절 (직원 화면에 안 보여요)"}</span>
-            <button class="swt2${on?' on':''}" data-mtoggle="${i}"><span class="swt2-t"></span></button>
-          </div>
-        </div>`;}).join("")}</div>
+        <div class="sub" style="font-size:14px;color:var(--sub);margin-bottom:12px">스위치로 품절을 바로 켜고 끄세요 · 메뉴를 누르면 이름·색상·순서를 바꿀 수 있어요 · 이 순서대로 직원 화면에 보여요</div>
+        <div class="msum">
+          <button class="mpill${!onlyOff?' on':''}" data-mfilter="all">전체 ${all.length}</button>
+          <button class="mpill" data-mfilter="all" style="pointer-events:none">판매 중 ${onCnt}</button>
+          <button class="mpill off${onlyOff?' on':''}" data-mfilter="off">품절 ${offCnt}${onlyOff?" · 보는 중":""}</button>
+        </div>
+        ${onlyOff && !offCnt ? `<div class="empty small">품절인 메뉴가 없어요</div>` : group("ice")+group("hot")}
         ${state.addMenuOpen?`<div class="addmenuform">
           <input class="nm" id="newMenuName" placeholder="음료 이름 (예: 아메리카노)" autofocus/>
           <div class="tempchecks">
             <label class="chk"><input type="checkbox" id="newMenuIce" checked/> ICE</label>
             <label class="chk"><input type="checkbox" id="newMenuHot"/> HOT</label>
           </div>
-          <div class="tchint">둘 다 체크하면 "아메리카노 ICE"·"아메리카노 HOT"가 따로 만들어져요. 둘 다 안 하면 이름 그대로 하나만 추가돼요.</div>
+          <div class="tchint">ICE는 ICE 그룹, HOT은 HOT 그룹 맨 아래에 추가돼요. 둘 다 체크하면 두 개가 만들어지고, 둘 다 안 하면 이름 그대로 ICE 그룹에 추가돼요(에이드처럼).</div>
           <button class="primary" data-act="confirmAddMenu">추가</button>
           <button class="ghost" style="margin-top:8px" data-act="cancelAddMenu">취소</button>
         </div>`:`<button class="addbtn" data-act="addMenu">＋ 메뉴 추가</button>`}
-        <button class="primary" style="margin-top:16px" data-act="saveMenu">저장하기</button>`;
+        <div class="msave"><button class="primary" data-act="saveMenu">저장하기</button></div>`;
     }
 
     // ---- team editor ----
@@ -1188,22 +1769,40 @@
       document.querySelectorAll("[data-addpick]").forEach(el=>el.onclick=()=>addPersonOrder(el.dataset.addpick));
       document.querySelectorAll("[data-ack]").forEach(el=>el.onclick=()=>ackNotif(el.dataset.ack));
       document.querySelectorAll("[data-qstep]").forEach(el=>el.onclick=()=>stepOrder(el.dataset.qstep));
+      document.querySelectorAll("[data-holday]").forEach(el=>el.onclick=()=>{ readHolInputs(); const k=el.dataset.holday, d=state.holDraft.days; if(k in d) delete d[k]; else d[k]=""; render(); });
+      document.querySelectorAll("[data-holdel]").forEach(el=>el.onclick=()=>{ readHolInputs(); delete state.holDraft.days[el.dataset.holdel]; render(); });
+      document.querySelectorAll("[data-holmonth]").forEach(el=>el.onclick=()=>{ readHolInputs(); state.holMonth=el.dataset.holmonth; render(); });
+      document.querySelectorAll("[data-qundo]").forEach(el=>el.onclick=()=>undoReady(el.dataset.qundo));
+      document.querySelectorAll("[data-qfilter]").forEach(el=>el.onclick=()=>{ const d=el.dataset.qfilter; state.qFilter = state.qFilter===d ? null : d; render(); });
+      document.querySelectorAll("[data-qbatch]").forEach(el=>el.onclick=()=>batchStep(el.dataset.qbatch));
       document.querySelectorAll("[data-disp]").forEach(el=>el.onclick=()=>{ state.dispSession=el.dataset.disp; render(); });
-      document.querySelectorAll("[data-del]").forEach(el=>el.onclick=()=>{ readMenuInputs(); state.menu.splice(+el.dataset.del,1); render(); });
+      document.querySelectorAll("[data-del]").forEach(el=>el.onclick=()=>{ readMenuInputs(); const m=state.menu[+el.dataset.del]; if(!m || !confirm(`"${m.name}" 메뉴를 삭제할까요? (저장하기를 눌러야 반영돼요)`)) return; state.menu.splice(+el.dataset.del,1); state.menuOpen=null; render(); });
+      // 메뉴 관리: 줄 누르면 펼치기/접기, 품절만 보기, 위·아래 이동(같은 그룹 안에서), 그룹 바꾸기
+      document.querySelectorAll("[data-mrow]").forEach(el=>el.onclick=()=>{ readMenuInputs(); const id=el.dataset.mrow; state.menuOpen = state.menuOpen===id?null:id; render(); });
+      document.querySelectorAll("[data-mfilter]").forEach(el=>el.onclick=()=>{ readMenuInputs(); state.menuFilter=el.dataset.mfilter; state.menuOpen=null; render(); });
+      document.querySelectorAll("[data-mmove]").forEach(el=>el.onclick=()=>{
+        readMenuInputs(); const [i,d]=el.dataset.mmove.split("|").map(Number), m=state.menu[i]; if(!m) return;
+        const g=menuTemp(m); let j=i+d;
+        while(j>=0 && j<state.menu.length && menuTemp(state.menu[j])!==g) j+=d; // 같은 그룹의 바로 위/아래 메뉴와 자리 바꿈
+        if(j<0 || j>=state.menu.length) return;
+        [state.menu[i],state.menu[j]]=[state.menu[j],state.menu[i]]; render();
+      });
+      document.querySelectorAll("[data-mgroup]").forEach(el=>el.onclick=()=>{ readMenuInputs(); const m=state.menu[+el.dataset.mgroup]; if(!m) return; m.temp = menuTemp(m)==="ice"?"hot":"ice"; toast(`${TEMP_LABEL[m.temp]} 그룹으로 옮겼어요`); render(); });
       document.querySelectorAll("[data-tdel]").forEach(el=>el.onclick=()=>{ if(state.teams.length<=1){toast("최소 1개 팀은 있어야 해요");return;} readTeamInputs(); state.teams.splice(+el.dataset.tdel,1); render(); });
       document.querySelectorAll("[data-editorder]").forEach(el=>el.onclick=()=>{ state.editOrderId=el.dataset.editorder; state.view="edit-order"; render(); });
       document.querySelectorAll("[data-delorder]").forEach(el=>el.onclick=()=>delOrder(el.dataset.delorder));
       document.querySelectorAll("[data-editpick]").forEach(el=>el.onclick=()=>editOrderDrink(el.dataset.editpick));
       document.querySelectorAll("[data-mpick]").forEach(el=>el.onclick=()=>{ readMenuInputs(); const id=el.dataset.mpick; state.menuPickOpen = (state.menuPickOpen===id)?null:id; render(); });
-      document.querySelectorAll("[data-mcolor]").forEach(el=>el.onclick=()=>{ const [i,c]=el.dataset.mcolor.split("|"); readMenuInputs(); if(state.menu[+i])state.menu[+i].color=c; state.menuPickOpen=null; render(); });
+      document.querySelectorAll("[data-mcolor]").forEach(el=>el.onclick=()=>{ const [i,c]=el.dataset.mcolor.split("|"); readMenuInputs(); const me=state.menu[+i]; if(me){ const j=state.menu.findIndex((m,k)=>k!==+i && _lc(m.color)===_lc(c)); if(j>=0){ state.menu[j].color = me.color || freeMenuColor(state.menu, j) || menuColorFor(j); toast(`"${state.menu[j].name||"다른"}" 메뉴와 색을 맞바꿨어요`); } me.color=c; } render(); });
       document.querySelectorAll("[data-mtoggle]").forEach(el=>el.onclick=()=>{ const i=+el.dataset.mtoggle; readMenuInputs(); if(state.menu[i]) state.menu[i].active = !(state.menu[i].active!==false); render(); });
       // 집계 캘린더 월 이동
-      document.querySelectorAll("[data-statsmonth]").forEach(el=>el.onclick=()=>{ state.statsMonth=el.dataset.statsmonth; state.statsDate=null; state.statsData=null; render(); });
+      document.querySelectorAll("[data-statsmonth]").forEach(el=>el.onclick=()=>{ state.statsMonth=el.dataset.statsmonth; state.statsDate=null; state.statsData=null; state.statsMonthData=null; render(); });
       // 집계 캘린더 날짜 선택 → Firestore 1회 조회
       document.querySelectorAll("[data-calday]").forEach(el=>el.onclick=async()=>{
         const key=el.dataset.calday;
         if(state.statsDate===key){ state.statsDate=null; state.statsData=null; render(); return; }
         state.statsDate=key; state.statsData=null; render();
+        if(statsByDay()) return; // 한 달치를 이미 불러왔으면 추가 조회 없이 바로 표시
         if(key===todayKey()){ state.statsData=state.orders; render(); return; }
         try{
           const snap=await getDoc(doc(db,"daily",key));
@@ -1211,7 +1810,8 @@
         }catch(e){ state.statsData={}; }
         render();
       });
-      const an=document.getElementById("addName"); if(an) an.addEventListener("input",e=>state.addName=e.target.value);
+      const an=document.getElementById("addName"); if(an) an.addEventListener("input",e=>{ noSpaceInput(e); state.addName=e.target.value; });
+      const gd=document.getElementById("guide"); if(gd) gd.addEventListener("toggle",()=>{ state.guideOpen=gd.open; });
     }
 
     function handle(act){
@@ -1224,8 +1824,8 @@
         case "back": state.view="home"; render(); break;
         case "backToList": state.view="team-list"; render(); break;
         case "disp": state.dispSession=sessionState().session||"am"; state.view="disp"; render(); break;
-        case "editMenu": state.menuPickOpen=null; state.addMenuOpen=false; state.view="menu-edit"; render(); break;
-        case "stats": state.view="stats"; state.statsDate=null; state.statsData=null; render(); break;
+        case "editMenu": state.menuPickOpen=null; state.menuOpen=null; state.menuFilter="all"; state.addMenuOpen=false; state.view="menu-edit"; render(); break;
+        case "stats": state.view="stats"; state.statsDate=null; state.statsData=null; state.statsMonthData=null; render(); break;
         case "editNotice": state.view="notice-edit"; render(); break;
         case "saveNotice": doSaveNotice(); break;
         case "clearNotice":
@@ -1238,6 +1838,10 @@
         case "toggleLnSession": readHoursDraft(); state.hoursDraft.lnOn = !(state.hoursDraft.lnOn!==false); render(); break;
         case "togglePmSession": readHoursDraft(); state.hoursDraft.pmOn = !(state.hoursDraft.pmOn!==false); render(); break;
         case "refresh": toast("최신 상태예요"); render(); break;
+        case "editHol": state.holDraft={days:{...((state.holidays||{}).days||{})}}; state.holMonth=null; state.view="hol-edit"; render(); break;
+        case "saveHol": doSaveHol(); break;
+        case "clearQFilter": state.qFilter=null; render(); break;
+        case "csv": downloadMonthCSV(); break;
         case "toggleSound":
           state.soundOn=!state.soundOn;
           localStorage.setItem("ian_sound", JSON.stringify(state.soundOn));
@@ -1253,7 +1857,7 @@
           render();
           toast(state.keepAwake?"화면이 꺼지지 않게 유지해요 🔆":"화면 유지를 껐어요");
           break;
-        case "addMenu": readMenuInputs(); state.menuPickOpen=null; state.addMenuOpen=true; render(); break;
+        case "addMenu": readMenuInputs(); state.menuOpen=null; state.menuFilter="all"; state.addMenuOpen=true; render(); break;
         case "cancelAddMenu": state.addMenuOpen=false; render(); break;
         case "confirmAddMenu": {
           const nameEl=document.getElementById("newMenuName");
@@ -1262,11 +1866,14 @@
           const ice=document.getElementById("newMenuIce").checked;
           const hot=document.getElementById("newMenuHot").checked;
           readMenuInputs();
+          const need = (ice||hot) ? (ice?1:0)+(hot?1:0) : 1;
+          const freeCnt = MENU_COLORS.filter(c=>!state.menu.some(m=>_lc(m.color)===_lc(c))).length;
+          if(freeCnt < need){ toast("남은 색상이 없어요. 안 쓰는 메뉴를 삭제한 뒤 추가해 주세요"); break; }
           if(!ice && !hot){
-            state.menu.push({id:"m"+Date.now(), name:base, color:menuColorFor(state.menu.length)});
+            state.menu.push({id:"m"+Date.now(), name:base, color:freeMenuColor(state.menu), temp:"ice"});
           } else {
-            if(ice) state.menu.push({id:"m"+Date.now()+"i", name:`${base} ICE`, color:menuColorFor(state.menu.length)});
-            if(hot) state.menu.push({id:"m"+Date.now()+"h", name:`${base} HOT`, color:menuColorFor(state.menu.length)});
+            if(ice) state.menu.push({id:"m"+Date.now()+"i", name:`${base} ICE`, color:freeMenuColor(state.menu), temp:"ice"});
+            if(hot) state.menu.push({id:"m"+Date.now()+"h", name:`${base} HOT`, color:freeMenuColor(state.menu), temp:"hot"});
           }
           state.addMenuOpen=false; render(); toast(`${base} 추가했어요`);
           break;
@@ -1279,9 +1886,12 @@
     }
 
     let _orderInFlight=false; // 연속 탭 방지: 처리 중일 땐 같은 요청을 무시
+    // 주문 저장 중 표시 (몰릴 땐 몇 초 걸릴 수 있어서 아무 반응 없는 것처럼 보이지 않게)
+    function busyToast(m){ clearTimeout(tTimer); toastEl.textContent=m; toastEl.classList.add("show"); tTimer=setTimeout(()=>toastEl.classList.remove("show"),15000); }
     async function placeOrder(drinkId){
       if(_orderInFlight) return;
       _orderInFlight=true;
+      busyToast("주문 넣는 중이에요…");
       try{
         const ss=sessionState();
         if(!ss.open){ toast("지금은 주문 시간이 아니에요"); state.view="home"; render(); return; }
@@ -1290,73 +1900,177 @@
           team:state.user.team, name:state.user.name, drinkId,
           session:ss.session, status:"pending", time:new Date().toISOString(), by:state.user.name
         };
+        let id;
         if(mine){
-          await saveOrders({...state.orders,[mine.id]:{...mine, ...fields, no:mine.no}});
+          if(mine.drinkId===drinkId && mine.status==="pending"){ state.view="home"; render(); toast("이미 이 음료로 주문돼 있어요"); return; }
+          const res=await updateOrder(mine.id, cur=> cur.status!=="pending" ? "started" : {...cur, ...fields, no:cur.no});
+          if(res.err){ state.view="home"; orderFailToast(res); return; }
+          id=mine.id;
         } else {
-          await commitNewOrder({...fields, id:"o-"+Date.now()});
+          id="o-"+Date.now();
+          await commitNewOrder({...fields, id});
         }
-        state.view="home"; render(); toast(mine?"음료를 변경했어요 ☕":"주문했어요 ☕");
-      } finally { _orderInFlight=false; }
+        try{ localStorage.setItem("ian_last", drinkId); }catch(e){}
+        state.view="home"; render();
+        showUndo(mine?"음료를 변경했어요 ☕":"주문했어요 ☕", undoForOrder(id, mine?mine.drinkId:null, ""));
+      } catch(e){ console.error(e); toast("저장하지 못했어요. 인터넷 연결을 확인하고 다시 눌러 주세요"); }
+      finally { _orderInFlight=false; }
     }
+
+    // ---- 주문 직후 몇 초간 "취소" (잘못 누름 방지) ----
+    let _undoTimer=null, _undoFn=null;
+    function showUndo(text, fn){
+      const bar=document.getElementById("undobar");
+      clearTimeout(_undoTimer); _undoFn=fn;
+      toastEl.classList.remove("show");
+      bar.querySelector(".ub-t").textContent=text;
+      bar.classList.add("show");
+      _undoTimer=setTimeout(hideUndo, 6000);
+    }
+    function hideUndo(){ clearTimeout(_undoTimer); _undoFn=null; const bar=document.getElementById("undobar"); if(bar) bar.classList.remove("show"); }
+    async function runUndo(){
+      const fn=_undoFn; hideUndo(); if(!fn) return;
+      try{ await fn(); }catch(e){ console.error(e); toast("취소하지 못했어요"); }
+      render();
+    }
+    // 아직 "대기"인 주문만 삭제 (서버에서 확인) → null | "gone" | "started"
+    async function deletePendingOrder(id){
+      const ref=doc(db,"daily",todayKey());
+      const err=await txRun(async tx=>{
+        const snap=await tx.get(ref);
+        const cur=snap.exists() ? (snap.data().orders||{})[id] : null;
+        if(!cur) return "gone";
+        if(cur.status!=="pending") return "started";
+        tx.update(ref, new FieldPath("orders", id), deleteField());
+        return null;
+      });
+      if(!err){ const n={...state.orders}; delete n[id]; state.orders=n; }
+      return err;
+    }
+    // 새 주문 → 취소(삭제) / 음료 변경 → 이전 음료로 되돌림
+    function undoForOrder(id, prevDrinkId, who){
+      return async()=>{
+        if(!prevDrinkId){
+          const err=await deletePendingOrder(id);
+          toast(err==="started" ? "이미 제조가 시작돼서 취소할 수 없어요" : err==="gone" ? "이미 삭제된 주문이에요" : `${who}주문을 취소했어요`);
+        } else {
+          const res=await updateOrder(id, cur=> cur.status!=="pending" ? "started" : {...cur, drinkId:prevDrinkId});
+          if(!orderFailToast(res)) toast("원래 음료로 되돌렸어요");
+        }
+      };
+    }
+    // 늘 마시던 음료 (이 기기에서 마지막으로 주문한 내 음료)
+    const lastDrinkId = () => localStorage.getItem("ian_last");
 
     async function addPersonOrder(drinkId){
       if(_orderInFlight) return;
       _orderInFlight=true;
+      if(state.addName && nm(state.addName)) busyToast("주문 넣는 중이에요…");
       try{
         const ss=sessionState();
         if(!ss.open){ toast("지금은 주문 시간이 아니에요"); return; }
-        const name=(state.addName||"").trim();
+        const name=nm(state.addName);
         if(!name){ toast("이름을 입력하세요"); return; }
         const team=state.user.team; // 대행 주문은 항상 본인 팀으로 고정
         // prevent dup: same team+name today
-        const dup=Object.entries(state.orders).find(([_,o])=>o.team===team&&o.name===name);
+        const dup=Object.entries(state.orders).find(([_,o])=>o.team===team&&sameName(o.name,name));
         const fields={team, name, drinkId, session:ss.session, status:"pending", time:new Date().toISOString(), by:state.user.name};
         if(dup){
-          await saveOrders({...state.orders,[dup[0]]:{...dup[1], ...fields, no:dup[1].no}});
-        } else {
-          await commitNewOrder({...fields, id:"o-"+Date.now()});
+          // 이미 제조 중이거나 완료된 주문은 바꾸지 않음 (하루 1잔 — 완료된 음료를 새 주문으로 덮어쓰는 것 방지)
+          const res=await updateOrder(dup[0], cur=> cur.status!=="pending" ? "started" : {...cur, ...fields, no:cur.no});
+          if(res.err){ state.addName=""; state.view="home"; orderFailToast(res); return; }
         }
-        toast(`${name}님 주문을 ${dup?"변경":"추가"}했어요`);
+        const id = dup ? dup[0] : "o-"+Date.now();
+        if(!dup) await commitNewOrder({...fields, id});
         state.addName=""; state.view="home"; render();
-      } finally { _orderInFlight=false; }
+        showUndo(`${name}님 주문을 ${dup?"변경":"추가"}했어요`, undoForOrder(id, dup?dup[1].drinkId:null, `${name}님 `));
+      } catch(e){ console.error(e); toast("저장하지 못했어요. 인터넷 연결을 확인하고 다시 눌러 주세요"); }
+      finally { _orderInFlight=false; }
     }
 
-    async function ackNotif(id){
-      state.seenReady.push(id); localStorage.setItem("ian_seen",JSON.stringify(state.seenReady));
+    // 🔔 알림 "확인" → 이 기기에서만 알림을 지움 (서버에는 아무것도 안 씀)
+    function ackNotif(id){
+      if(!state.seenReady.includes(id)){ state.seenReady.push(id); localStorage.setItem("ian_seen",JSON.stringify(state.seenReady)); }
       state.view="home"; render(); toast("맛있게 드세요 ☕");
     }
 
     async function delOrder(id){
       const o=state.orders[id]; if(!o) return;
+      const isBarista=state.user.team==="barista";
+      if(!isBarista && o.status!=="pending"){ toast("이미 제조가 시작돼서 삭제할 수 없어요"); render(); return; }
       if(!confirm(`${o.name}님 주문을 삭제할까요?`)) return;
+      if(isBarista){
+        // 담당자는 상태와 관계없이 삭제 가능 — 해당 항목만 콕 집어 서버에서 제거
+        await setDoc(doc(db,"daily",todayKey()),{orders:{[id]:deleteField()}},{merge:true});
+      } else {
+        // 직원은 서버에서 아직 "대기"인지 확인한 뒤에만 삭제 (확인 창 띄운 사이 제조가 시작됐을 수 있음)
+        const err=await deletePendingOrder(id);
+        if(err==="started"){ toast("이미 제조가 시작돼서 삭제할 수 없어요"); render(); return; }
+        if(err==="gone"){ toast("이미 삭제된 주문이에요"); render(); return; }
+      }
       const n={...state.orders}; delete n[id];
       state.orders=n;
-      // merge로 저장하면 삭제가 반영되지 않으므로 해당 항목만 콕 집어 서버에서 제거
-      await setDoc(doc(db,"daily",todayKey()),{orders:{[id]:deleteField()}},{merge:true});
       // if I deleted my own order, go home; otherwise stay on list
-      if(o.name===state.user.name && o.team===state.user.team){ state.view="home"; }
+      if(sameName(o.name,state.user.name) && o.team===state.user.team){ state.view="home"; }
       render(); toast(`${o.name}님 주문을 삭제했어요`);
     }
     async function editOrderDrink(drinkId){
       const id=state.editOrderId, o=state.orders[id];
       if(!o){ state.view="team-list"; render(); return; }
-      await saveOrders({...state.orders,[id]:{...o,drinkId}});
+      const res=await updateOrder(id, cur=> cur.status!=="pending" ? "started" : {...cur, drinkId});
+      if(res.err){ state.view="team-list"; orderFailToast(res); return; }
       state.view="team-list"; render(); toast(`${o.name}님 음료를 변경했어요`);
     }
 
     // 개별 주문 상태 전환: 대기 → 제조 중(시작) → 완료
+    // 서버의 현재 상태가 화면에서 본 상태와 같을 때만 다음 단계로 (연타·다른 기기 동시 처리 시 단계 건너뜀 방지)
+    const _stepInFlight=new Set(); // 같은 주문 버튼 연타 방지
     async function stepOrder(id){
-      const o=state.orders[id]; if(!o) return;
-      const n={...state.orders};
-      if(o.status==="pending"){
-        n[id]={...o,status:"confirmed"};
-        await saveOrders(n);
-        toast(`${o.name}님 음료 제조를 시작했어요`);
-      } else if(o.status==="confirmed"){
-        n[id]={...o,status:"ready",readyAt:new Date().toISOString()};
-        await saveOrders(n);
-        toast(`${o.name}님 음료 완료! 알림을 보냈어요`);
-      }
+      const o=state.orders[id]; if(!o || _stepInFlight.has(id)) return;
+      _stepInFlight.add(id);
+      try{ await _stepOrder(id, o); } finally { _stepInFlight.delete(id); }
+    }
+    async function _stepOrder(id, o){
+      const from=o.status;
+      if(from!=="pending" && from!=="confirmed") return;
+      const res=await updateOrder(id, cur=>{
+        if(cur.status!==from) return "stale";
+        if(from==="pending" && cur.drinkId!==o.drinkId) return "changed"; // 누르는 순간 직원이 음료를 바꿨으면 멈춤 (엉뚱한 음료 제조 방지)
+        return from==="pending" ? {...cur,status:"confirmed"} : {...cur,status:"ready",readyAt:new Date().toISOString()};
+      });
+      if(orderFailToast(res)) return;
+      render();
+      toast(from==="pending" ? `${o.name}님 음료 제조를 시작했어요` : `${o.name}님 음료 완료! 알림을 보냈어요`);
+    }
+
+    // ---- 담당자: 되돌리기 / 수령 / 묶어서 처리 ----
+    let _baristaBusy=false;
+    async function baristaOp(fn){ if(_baristaBusy) return; _baristaBusy=true; try{ await fn(); } catch(e){ console.error(e); toast("처리하지 못했어요. 다시 시도해 주세요"); } finally{ _baristaBusy=false; render(); } }
+    // 완료를 잘못 눌렀을 때: 완료 → 제조 중으로 되돌림 (완료·수령 시각 제거)
+    function undoReady(id){
+      return baristaOp(async()=>{
+        const res=await updateOrder(id, cur=>{
+          if(cur.status!=="ready") return "stale";
+          const {readyAt, pickedAt, pickedBy, ...rest}=cur;
+          return {...rest, status:"confirmed"};
+        });
+        if(!orderFailToast(res)) toast(`${res.ok.name}님 음료를 제조 중으로 되돌렸어요`);
+      });
+    }
+    // 같은 음료 묶어서 한 번에: 대기 → 제조 시작 / 제조 중 → 완료
+    function batchStep(kind){
+      const dId=state.qFilter; if(!dId) return;
+      const from = kind==="start" ? "pending" : "confirmed";
+      const ids=Object.entries(state.orders).filter(([id,o])=>o.drinkId===dId && o.status===from).map(([id])=>id);
+      if(!ids.length) return;
+      return baristaOp(async()=>{
+        const now=new Date().toISOString();
+        const n=await updateOrders(ids, cur=>{
+          if(cur.status!==from) return "skip";
+          return kind==="start" ? {...cur, status:"confirmed"} : {...cur, status:"ready", readyAt:now};
+        });
+        toast(kind==="start" ? `${n}잔 제조를 시작했어요` : `${n}잔 완료! 알림을 보냈어요`);
+      });
     }
 
     // read current edit-field values back into state (prevents reset on re-render)
@@ -1368,7 +2082,7 @@
     }
     async function doSaveMenu(){
       readMenuInputs();
-      state.menu.forEach((m,i)=>{ if(!m.color) m.color=menuColorFor(i); });
+      state.menu = dedupeMenuColors(state.menu);
       await saveMenu(state.menu); state.view="home"; render(); toast("메뉴를 저장했어요");
     }
     async function doSaveTeams(){
