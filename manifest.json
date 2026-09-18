@@ -4,7 +4,7 @@
   "description": "사내 음료 주문 앱",
   "start_url": "./index.html",
   "display": "standalone",
-  "orientation": "portrait",
+  "orientation": "any",
   "background_color": "#1c1917",
   "theme_color": "#1c1917",
   "icons": [
