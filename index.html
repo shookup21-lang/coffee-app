@@ -42,7 +42,9 @@
     .wrap{padding:6px 20px 120px}
 
     /* login */
-    .login{background:linear-gradient(165deg,#5b81c6 0%,#3f5fa8 55%,#7190ce 100%);color:#fff;min-height:100vh;padding:36px 22px 18px;display:flex;flex-direction:column}
+    .login{background:linear-gradient(165deg,#5b81c6 0%,#3f5fa8 55%,#7190ce 100%);color:#fff;min-height:100vh;min-height:100dvh;padding:36px 22px 18px;display:flex;flex-direction:column}
+    /* 로그인 화면에서는 페이지 바탕까지 파란색 — 키보드가 내려간 뒤 화면이 올라가 있어도 아래에 흰 바탕이 안 보이게 */
+    html.onlogin, html.onlogin body{background:#6d8dcc}
     .login .lc{width:46px;height:46px;border-radius:14px;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:18px}
     .login .brandrow{display:flex;align-items:center;gap:14px;margin-bottom:6px}
     .login .appicon{flex:0 0 auto;display:inline-flex;box-shadow:0 6px 16px rgba(20,30,80,.25);border-radius:12px}
@@ -621,7 +623,7 @@
     // 배포할 때마다 이 값을 바꿔주세요 — 값이 바뀌면 모든 기기가 자동으로 최신 버전을 받아옵니다
     // 버전 규칙: "수정한 날짜-그날의 순번" (예: 2026-09-18-01 → 같은 날 또 수정하면 -02)
     // 날짜가 바뀌면 순번은 01부터 다시 시작. 코드 수정 시 반드시 이 값을 바꿔야 자동 업데이트가 동작함.
-    const APP_BUILD = "2026-09-19-09";
+    const APP_BUILD = "2026-09-19-10";
     // 이름은 띄어쓰기 없이 사용 ("김철수"와 "김 철수"가 다른 사람이 되는 문제 방지)
     const nm = s => String(s||"").replace(/\s+/g,"");
     const sameName = (a,b) => nm(a)===nm(b);
@@ -1057,6 +1059,7 @@
       document.body.classList.toggle("wide", !!(state.user && state.user.team==="barista" && !["menu-edit","team-edit","time-edit","notice-edit","hol-edit","disp","stats"].includes(state.view)));
       syncRealWatch();
       document.body.classList.toggle("wsub", !!(state.user && state.user.team==="barista" && ["menu-edit","team-edit","time-edit","notice-edit","hol-edit","disp","stats"].includes(state.view)));
+      document.documentElement.classList.toggle("onlogin", !state.user);
       if(!state.user) return renderLogin();
       maybeWake();
       syncHistory();
@@ -1179,6 +1182,13 @@
       });
     }
     window.addEventListener("resize",()=>{ if(!state.user) fitTeamNames(); });
+    // 키보드가 내려간 뒤 화면이 위로 올라간 채 남는 경우(안드로이드) → 내용이 한 화면에 들어가면 맨 위로 되돌림
+    function resetLoginScroll(){ if(!state.user && document.documentElement.scrollHeight<=window.innerHeight+2 && window.scrollY>0) window.scrollTo(0,0); }
+    if(window.visualViewport){
+      let _vvH=window.visualViewport.height;
+      window.visualViewport.addEventListener("resize",()=>{ const h=window.visualViewport.height; if(h>_vvH+80) setTimeout(resetLoginScroll,60); _vvH=h; });
+    }
+    document.addEventListener("focusout",e=>{ if(e.target && e.target.id==="ni") setTimeout(resetLoginScroll,120); });
     // 이름 입력칸: 띄어쓰기를 치면 바로 지우고 한 번 안내
     let _spaceWarned=false;
     function noSpaceInput(e){
