@@ -127,6 +127,75 @@
     .wb.open .wlbl{color:#fff}
     .wb.open .wtime{color:#fff}
     .wb.open .live{display:inline-block}
+    /* 직원 홈 개편(09-19-11): 인사말 한 줄, 지금 할 일 카드, 얇은 시간표, 보조 버튼 2칸 */
+    .greet{padding:2px 4px 10px}
+    .greet h1{font-size:21px;line-height:1.3}
+    .greet .date{font-size:13px;margin-top:3px}
+    .hero{padding:18px;border-radius:22px}
+    .hero .bigcup{top:10px;right:10px;bottom:auto;font-size:46px;opacity:.85}
+    .hero .sub{font-size:12.5px;margin-top:0;color:rgba(255,255,255,.92);font-weight:600;padding-right:44px}
+    .hero h1{font-size:24px;margin-top:6px}
+    .hero .team{font-size:12.5px;margin-bottom:6px;padding-right:44px}
+    .hero .team+h1{margin-top:0}
+    .hero h1+.sub{margin-top:6px}
+    .hero .usual{margin:14px 0 0}
+    .hgo{width:100%;margin-top:8px;background:rgba(255,255,255,.16);color:#fff;border:1px solid rgba(255,255,255,.35);border-radius:14px;padding:12px;font-weight:800;font-size:14.5px}
+    .hgo.solo{background:#fff;color:#2563eb;border-color:#fff;padding:15px;margin-top:14px;font-size:16px}
+    .hero.myorder .sub{padding-right:0}
+    .hrow{display:flex;align-items:center;gap:12px}
+    .hmain{flex:1;min-width:0}
+    .hchg{margin-top:10px;color:#fff;font-weight:700;font-size:12.5px;background:rgba(255,255,255,.18);padding:7px 12px;border-radius:99px}
+    .hnote{margin-top:8px;font-size:12.5px;color:rgba(255,255,255,.9)}
+    .hero h1.hdrink{word-break:keep-all}
+    .hero h1.hdrink .temptag{font-size:13px;padding:2px 8px;vertical-align:4px}
+    .hero .hname{font-size:18px;font-weight:800;margin-top:5px;word-break:keep-all}
+    .hero .hname .temptag{font-size:12px;vertical-align:2px}
+    .hero .pickno{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;background:#fff;border-radius:16px;padding:8px 12px;min-width:68px}
+    .hero .pickno .pickno-lbl{font-size:10.5px;font-weight:700;color:#c2632a;white-space:nowrap}
+    .hero .pickno .pickno-n{font-size:32px;font-weight:700;color:#f97316;line-height:1.15;font-family:'Roboto Mono',monospace}
+    .hero .pickno.green .pickno-lbl{color:#15803d}
+    .hero .pickno.green .pickno-n{color:#16a34a}
+    .hero.myorder.ready{background:linear-gradient(135deg,#22c55e 0%,#16a34a 100%);box-shadow:0 14px 30px rgba(22,163,74,.30)}
+    .hero .pickno.big{display:inline-flex;margin:12px 0 4px;padding:10px 30px;border-radius:20px}
+    .hero .pickno.big .pickno-lbl{color:#15803d;font-size:12px}
+    .hero .pickno.big .pickno-n{font-size:56px;color:#16a34a}
+    .hero.myorder.ready h1{font-size:22px;margin-top:4px}
+    .hstep{display:flex;gap:5px;margin-top:14px}
+    .hstep i{flex:1;height:6px;border-radius:99px;background:rgba(255,255,255,.3)}
+    .hstep i.on{background:#fff}
+    .hstep-l{display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,.9);margin-top:5px;font-weight:600}
+    .windowbar{gap:6px;margin-bottom:10px}
+    .wb{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;padding:6px 2px;border-radius:12px;background:#fff;white-space:nowrap;overflow:hidden}
+    .wb .wlbl{font-size:10.5px;gap:3px}
+    .wb .wtime{font-size:11.5px;margin-top:0;font-weight:700;letter-spacing:-0.2px}
+    .wb.open{box-shadow:0 4px 12px rgba(37,99,235,.22)}
+    .hbtns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .hb{background:#fff;border-radius:14px;padding:14px 6px;font-weight:700;font-size:14px;color:var(--ink);box-shadow:0 3px 12px rgba(80,90,160,.06)}
+    .hb:active{background:#f3f4fa}
+    .awakerow{width:100%;margin-top:8px;display:flex;align-items:center;justify-content:space-between;gap:10px;background:#fff;border-radius:14px;padding:11px 14px;font-size:13px;font-weight:600;color:var(--sub);box-shadow:0 3px 12px rgba(80,90,160,.06);text-align:left}
+    .awakerow.on{color:#15803d;background:#eaf6ec}
+    /* 우리 팀 목록 한 줄 */
+    .l2list{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(80,90,160,.05)}
+    .l2row{display:flex;align-items:center;gap:10px;padding:10px 12px;border-top:1px solid #f0f4fb;min-height:56px}
+    .l2list>.l2row:first-child{border-top:0}
+    .l2-main{flex:1;min-width:0}
+    .l2-top{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+    .l2row .lr-nm{font-size:15px}
+    .l2row .lr-drink{font-size:13px;margin-top:2px;gap:5px}
+    .l2-act{flex:0 0 auto;display:flex;gap:5px}
+    .l2-act .mini{flex:0 0 auto;border-radius:9px;padding:7px 10px;font-size:12px;font-weight:700}
+    .l2row .lr-lock{flex:0 0 auto;margin-top:0;font-size:11.5px;font-weight:700;padding:4px 8px;border-radius:99px;background:#eef3fc;color:#2563eb}
+    .l2row .lr-lock.st-confirmed{background:#e9f7ee;color:#15803d}
+    .l2row .lr-lock.st-pending{background:#fff2e8;color:#c2632a}
+    /* 음료 카드: 품절·지금 주문 */
+    .drink.soldout{background:#f1f4f9;box-shadow:none;cursor:default}
+    .drink.soldout .em{background:#d5dce8}
+    .drink.soldout .dnm{color:#9aa6bd;text-decoration:line-through}
+    .drink.soldout:active{transform:none}
+    .drink .dnm{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+    .drink .so{font-size:11px;font-weight:800;color:#dc2626;background:#fee2e2;padding:2px 7px;border-radius:6px}
+    .drink .cur{font-size:11px;font-weight:800;color:#2563eb;background:#dbeafe;padding:2px 7px;border-radius:6px}
+
 
     /* buttons */
     .primary{width:100%;background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff;font-weight:800;font-size:16px;border-radius:18px;padding:18px;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 8px 20px rgba(59,130,246,.30)}
@@ -594,6 +663,12 @@
     const menuTemp = m => (m && (m.temp==="hot"||m.temp==="ice")) ? m.temp : (/(^|\s)HOT(\s|$)/i.test((m&&m.name)||"") ? "hot" : "ice");
     const TEMP_LABEL = {ice:"🧊 ICE", hot:"🔥 HOT"};
     // 직원 화면용: ICE 먼저, HOT 다음으로 제목을 붙여 음료 버튼을 그림 (HOT이 없으면 제목 없이)
+    // 음료 카드: 품절이면 회색 "품절"(누를 수 없음), 지금 주문한 음료면 "지금 주문" 표시
+    function drinkCardHTML(m, attr, curId){
+      const cur = curId && m.id===curId;
+      if(m.active===false && !cur) return `<div class="drink soldout" aria-disabled="true"><div class="em"></div><div class="dn"><span class="dnm">${drinkNameHTML(m.name)}</span><span class="so">품절</span></div></div>`;
+      return `<button class="drink${cur?' on':''}" ${attr}="${m.id}"><div class="em" style="background:${mColor(m)}"></div><div class="dn"><span class="dnm">${drinkNameHTML(m.name)}</span>${cur?`<span class="cur">지금 주문</span>`:""}</div></button>`;
+    }
     function drinkGroupsHTML(list, btn){
       const ice=list.filter(m=>menuTemp(m)==="ice"), hot=list.filter(m=>menuTemp(m)==="hot");
       if(!ice.length || !hot.length) return `<div class="grid2">${list.map(btn).join("")}</div>`;
@@ -623,7 +698,7 @@
     // 배포할 때마다 이 값을 바꿔주세요 — 값이 바뀌면 모든 기기가 자동으로 최신 버전을 받아옵니다
     // 버전 규칙: "수정한 날짜-그날의 순번" (예: 2026-09-18-01 → 같은 날 또 수정하면 -02)
     // 날짜가 바뀌면 순번은 01부터 다시 시작. 코드 수정 시 반드시 이 값을 바꿔야 자동 업데이트가 동작함.
-    const APP_BUILD = "2026-09-19-10";
+    const APP_BUILD = "2026-09-19-12";
     // 이름은 띄어쓰기 없이 사용 ("김철수"와 "김 철수"가 다른 사람이 되는 문제 방지)
     const nm = s => String(s||"").replace(/\s+/g,"");
     const sameName = (a,b) => nm(a)===nm(b);
@@ -1221,13 +1296,11 @@
       return "";
     }
     function windowBarHTML(){
+      // 한 줄짜리 얇은 시간표 (지금 열린 시간대만 파랗게, 마감 10분 전이면 주황)
       const ss=sessionState(), h=state.hours;
-      const amOpen=ss.open&&ss.session==="am", lnOpen=ss.open&&ss.session==="ln", pmOpen=ss.open&&ss.session==="pm";
-      const dot='<span class="live"></span>';
-      const amCell = h.amOn!==false ? `<div class="wb ${amOpen?'open':'closed'}${amOpen&&ss.soon?' soon':''}"><div class="wlbl">${amOpen?dot:''}${amOpen&&ss.soon?`마감 ${ss.left}분 전`:`오전 주문${amOpen?' 중':''}`}</div><div class="wtime">${h.amStart}~${h.amEnd}</div></div>` : ``;
-      const lnCell = h.lnOn!==false ? `<div class="wb ${lnOpen?'open':'closed'}${lnOpen&&ss.soon?' soon':''}"><div class="wlbl">${lnOpen?dot:''}${lnOpen&&ss.soon?`마감 ${ss.left}분 전`:`점심 주문${lnOpen?' 중':''}`}</div><div class="wtime">${h.lnStart||'--:--'}~${h.lnEnd||'--:--'}</div></div>` : ``;
-      const pmCell = h.pmOn!==false ? `<div class="wb ${pmOpen?'open':'closed'}${pmOpen&&ss.soon?' soon':''}"><div class="wlbl">${pmOpen?dot:''}${pmOpen&&ss.soon?`마감 ${ss.left}분 전`:`오후 주문${pmOpen?' 중':''}`}</div><div class="wtime">${h.pmStart}~${h.pmEnd}</div></div>` : ``;
-      return `<div class="windowbar${ss.holiday?' holiday':''}">${amCell}${lnCell}${pmCell}</div>`;
+      const cell=(key,label,st,en,on)=>{ if(!on) return ""; const open=ss.open&&ss.session===key, soon=open&&ss.soon;
+        return `<div class="wb ${open?'open':'closed'}${soon?' soon':''}"><span class="wlbl">${open?'<span class="live"></span>':''}${soon?`마감 ${ss.left}분 전`:label}</span><span class="wtime">${st}~${en}</span></div>`; };
+      return `<div class="windowbar${ss.holiday?' holiday':''}">${cell("am","오전",h.amStart,h.amEnd,h.amOn!==false)}${cell("ln","점심",h.lnStart||'--:--',h.lnEnd||'--:--',h.lnOn!==false)}${cell("pm","오후",h.pmStart,h.pmEnd,h.pmOn!==false)}</div>`;
     }
 
     // ---- employee home ----
@@ -1235,41 +1308,34 @@
       if(state.guideOpen && !localStorage.getItem("ian_guide")) { try{ localStorage.setItem("ian_guide","1"); }catch(e){} } // 다음부터는 접힌 채로
       const u=state.user, t=teamById(u.team); // 팀 목록 불러오기 전에도 오류 없이
       const ss=sessionState(), mine=myTodayOrder();
+      const showAwake = (mine && mine.status!=="ready") || state.keepAwake; // 완료 알림용이라 주문 후(완료 전)에만
       return `
         <div class="greet">
-          <h1><span class="nm">${esc(u.name)}</span>님, 안녕하세요.<br/>좋은 하루 보내세요.</h1>
+          <h1><span class="nm">${esc(u.name)}</span>님, 좋은 하루 보내세요</h1>
           <div class="date">${new Date().toLocaleDateString("ko-KR",{month:"long",day:"numeric",weekday:"long"})}</div>
         </div>
-        <div class="hero${isTestMode()?' test':''}"><div class="bigcup">${heroEmoji()}</div><div class="rel">
-          <div class="team">${esc(t.name)} · ${ss.open?`${sessName(ss.session)} 주문 중`:ss.holiday?"오늘 휴무":"주문 시간 외"}</div>
-          <h1>${mine?(mine.status==="ready"?"음료가 준비됐어요":"오늘 주문 완료"):ss.holiday?"오늘은 휴무예요":"오늘의 한 잔"}</h1>
-          <div class="sub">${ss.open?(ss.soon?`<b class="soon">⏰ 곧 마감돼요 · ${ss.left}분 남았어요</b>`:`지금 주문을 받고 있어요 (~${ss.endsAt})`):`${ss.holiday&&ss.reason?esc(ss.reason)+" · ":""}${ss.next} 주문은 ${ss.at}부터예요`}</div>
-        </div></div>
         ${state.notice?`<div class="noticebox"><span class="ic">📢</span><span class="tx">${esc(state.notice.text).replace(/\n/g,"<br/>")}</span></div>`:``}
         ${upcomingHolidayHTML()}
+        ${heroHTML(ss, mine, t)}
         ${windowBarHTML()}
-        ${mine ? myCupHTML(mine, ss)
-          : ss.open ? `
-          ${usualBtnHTML()}
-          <button class="primary" data-act="goOrder">＋ ${lastDrinkId()?"다른 음료 고르기":"내 음료 주문하기"}</button>
-          <button class="ghost" data-act="goAdd">👥 다른 사람 대신 주문하기</button>
-        ` : `<div class="empty">${ss.holiday?"📅 오늘은 휴무라 주문을 받지 않아요":"지금은 주문 시간이 아니에요"}</div>
-          <button class="ghost" data-act="goAdd" style="margin-top:12px">👥 다른 사람 대신 주문하기</button>`}
-        <button class="ghost" data-act="goTeamList" style="margin-top:10px">📋 우리 팀 주문 목록 보기</button>
-        <button class="ghost awakebtn ${state.keepAwake?'on':''}" data-act="toggleAwake">${state.keepAwake?"🔆 화면 켜둠 · 대기 중 안 꺼져요 (눌러서 끄기)":"🌙 화면 꺼짐 방지 (음료 알림 받기)"}</button>
+        <div class="hbtns">
+          <button class="hb" data-act="goAdd">👥 대신 주문하기</button>
+          <button class="hb" data-act="goTeamList">📋 우리 팀 목록</button>
+        </div>
+        ${showAwake?`<button class="awakerow${state.keepAwake?' on':''}" data-act="toggleAwake"><span>${state.keepAwake?"🔆 화면 켜둠 · 완료되면 알림이 울려요":"🌙 화면 꺼짐 방지 (완료 알림 받기)"}</span><span class="swt2${state.keepAwake?' on':''}"><span class="swt2-t"></span></span></button>`:``}
         <details class="guide" id="guide" ${state.guideOpen?"open":""}>
         <summary>ℹ️ 이용 안내 · 알림 안내</summary>
         <ul class="footlist">
           <li>하루 1잔, 무료로 제공됩니다.</li>
-          <li>'다른 사람 대신 주문하기'로 대행 주문이 가능합니다.</li>
-          <li>'우리 팀 주문 목록 보기'에서 주문을 확인할 수 있어요.</li>
+          <li>'대신 주문하기'로 폰이 없는 우리 팀 동료의 주문을 넣을 수 있어요.</li>
+          <li>'우리 팀 목록'에서 팀 주문을 확인할 수 있어요.</li>
         </ul>
         <div class="alertguide">
           <div class="ag-t">🔔 음료 준비 알림 안내</div>
           <ul>
             <li>음료가 준비되면 <b>알림 소리</b>가 울려요.</li>
             <li>단, <b>앱이 켜져 있을 때만</b> 울려요. 화면이 꺼지거나 다른 앱을 보면 울리지 않아요.</li>
-            <li>위 <b>'화면 꺼짐 방지'</b>를 켜두면 대기 중 화면이 안 꺼져서 알림을 놓치지 않아요.</li>
+            <li>주문한 뒤 나오는 <b>'화면 꺼짐 방지'</b>를 켜두면 대기 중 화면이 안 꺼져서 알림을 놓치지 않아요.</li>
             <li>소리가 안 들리면 휴대폰 <b>무음/벨소리</b> 설정을 확인해 주세요.</li>
           </ul>
         </div>
@@ -1277,6 +1343,53 @@
         <div style="text-align:center;color:#c4cede;font-size:11px;margin-top:16px">버전 ${APP_BUILD}</div>
       `;
     }
+    // 홈 맨 위 카드 = "지금 할 일"
+    //  주문 전: 늘 마시던 걸로 + 다른 음료 고르기 / 주문 후: 수령 번호 + 내 앞에 N잔 + 진행 단계(접수→제조 중→완료)
+    //  완료: 초록 카드 + 큰 수령 번호 + "1층에서 가져가세요" / 주문 시간 외·휴무: 다음 주문 안내
+    function heroHTML(ss, mine, t){
+      const T=isTestMode()?' test':'';
+      if(mine){
+        const m=menuById(mine.drinkId), dn=m?drinkNameHTML(m.name):esc(mine.drinkId);
+        const by = mine.by && !sameName(mine.by,mine.name) ? ` · ${esc(mine.by)}님이 대행 주문` : "";
+        const step = mine.status==="ready"?3 : mine.status==="confirmed"?2 : 1;
+        const steps = `<div class="hstep">${[1,2,3].map(i=>`<i class="${i<=step?'on':''}"></i>`).join("")}</div><div class="hstep-l"><span>접수</span><span>제조 중</span><span>완료</span></div>`;
+        if(mine.status==="ready"){
+          return `<div class="hero myorder ready${T}"><div class="rel" style="text-align:center">
+            <div class="sub">${sessName(mine.session)} 주문${by}</div>
+            <div class="hname">${dn}</div>
+            <div class="pickno big"><span class="pickno-lbl">수령 번호</span><span class="pickno-n">${pickNo(mine)}</span></div>
+            <h1 class="mstat">1층에서 가져가세요</h1>
+            ${steps}
+          </div></div>`;
+        }
+        const n=aheadCount(mine);
+        const stat = mine.status==="confirmed" ? "제조 중" : (n>0 ? `내 앞에 ${n}잔` : "곧 만들어요");
+        return `<div class="hero myorder${T}"><div class="rel">
+          <div class="hrow"><div class="hmain">
+            <div class="sub">${sessName(mine.session)} 주문 · ${stat}${by}</div>
+            <h1 class="mstat hdrink">${dn}</h1>
+            ${ss.open&&mine.status==="pending" ? `<button class="hchg" data-act="goOrder">음료 변경하기 ›</button>` : mine.status==="confirmed" ? `<div class="hnote">담당자가 만들고 있어요</div>` : ``}
+          </div>
+          <div class="pickno ${mine.status==="confirmed"?"green":"orange"}"><span class="pickno-lbl">수령 번호</span><span class="pickno-n">${pickNo(mine)}</span></div></div>
+          ${steps}
+        </div></div>`;
+      }
+      if(ss.open){
+        const u=usualBtnHTML();
+        return `<div class="hero${T}"><div class="bigcup">${heroEmoji()}</div><div class="rel">
+          <div class="sub">${esc(t.name)} · ${sessName(ss.session)} 주문 중 · ${ss.soon?`<b class="soon">⏰ 곧 마감 · ${ss.left}분 남았어요</b>`:`${ss.endsAt} 마감`}</div>
+          <h1>오늘의 한 잔</h1>
+          ${u}
+          <button class="hgo${u?'':' solo'}" data-act="goOrder">＋ ${u?"다른 음료 고르기":"내 음료 주문하기"}</button>
+        </div></div>`;
+      }
+      return `<div class="hero${T}"><div class="bigcup">${heroEmoji()}</div><div class="rel">
+        <div class="team">${esc(t.name)} · ${ss.holiday?"오늘 휴무":"주문 시간 외"}</div>
+        <h1>${ss.holiday?"오늘은 휴무예요":"오늘의 한 잔"}</h1>
+        <div class="sub">${ss.holiday&&ss.reason?esc(ss.reason)+" · ":""}${ss.next} 주문은 ${ss.at}부터예요</div>
+      </div></div>`;
+    }
+
     // "늘 마시던 걸로" — 마지막으로 주문한 음료가 지금 판매 중이면 한 번에 주문
     function usualBtnHTML(){
       const id=lastDrinkId(); if(!id) return "";
@@ -1291,24 +1404,6 @@
       const t=new Date(o.time);
       return Object.values(state.orders).filter(x=>(x.status==="pending"||x.status==="confirmed") && new Date(x.time)<t).length;
     }
-    function myCupHTML(o,ss){
-      const m=menuById(o.drinkId);
-      const stat = o.status==="ready" ? "✓ 1층에서 가져가세요"
-                 : o.status==="confirmed" ? "담당자가 확인했어요 · 제조 중"
-                 : (()=>{ const n=aheadCount(o); return n>0 ? `주문 접수됨 · <b class="ahead">내 앞에 ${n}잔</b>` : `주문 접수됨 · <b class="ahead">곧 만들어요</b>`; })();
-      const badge = o.status==="ready"?"blue":o.status==="confirmed"?"green":"orange";
-      return `<div class="mycup">
-        <div class="mc" style="background:${mColor(m)}"></div>
-        <div style="flex:1">
-          <div class="mlbl">${sessName(o.session)} 주문${o.by&&o.by!==o.name?` · ${esc(o.by)}님이 대행 주문`:""}</div>
-          <div class="mname">${m?drinkNameHTML(m.name):esc(o.drinkId)}</div>
-          <div class="mstat">${stat}</div>
-          ${ss.open&&o.status==="pending"?`<span class="chg" data-act="goOrder">음료 변경하기</span>`:""}
-        </div>
-        <div class="pickno ${badge}"><span class="pickno-lbl">수령 번호</span><span class="pickno-n">${pickNo(o)}</span></div>
-        </div>
-        <button class="ghost" data-act="goAdd">👥 다른 사람 대신 주문하기</button>`;
-    }
 
     // ---- order (pick 1 drink) ----
     function renderOrder(){
@@ -1319,7 +1414,7 @@
         <div class="sub" style="font-size:14px;color:var(--sub);margin-top:4px">하나만 고르면 바로 주문됩니다</div></div>
         ${(()=>{ const ss=sessionState(); return ss.open&&ss.soon?`<div class="soonbar">⏰ ${ss.left}분 뒤 주문이 마감돼요</div>`:""; })()}
         ${state.menu.filter(m=>m.active!==false).length===0?`<div class="empty">지금은 판매 중인 메뉴가 없어요</div>`:
-        drinkGroupsHTML(state.menu.filter(m=>m.active!==false), m=>`<button class="drink" data-pick="${m.id}"><div class="em" style="background:${mColor(m)}"></div><div class="dn">${drinkNameHTML(m.name)}</div></button>`)}`;
+        drinkGroupsHTML(state.menu, m=>drinkCardHTML(m,"data-pick",(myTodayOrder()||{}).drinkId))}`;
     }
 
     // ---- add person (order for someone else) ----
@@ -1336,7 +1431,7 @@
         <div class="picklbl">1. 이름 입력</div>
         <input id="addName" value="${esc(state.addName)}" placeholder="동료 이름 (띄어쓰기 없이)" autocomplete="off" style="width:100%;border:1px solid var(--line);border-radius:14px;padding:14px 16px;font-size:16px;outline:none;background:#f7faff"/>
         <div class="picklbl">2. 음료 선택</div>
-        ${drinkGroupsHTML(state.menu.filter(m=>m.active!==false), m=>`<button class="drink" data-addpick="${m.id}"><div class="em" style="background:${mColor(m)}"></div><div class="dn">${drinkNameHTML(m.name)}</div></button>`)}
+        ${drinkGroupsHTML(state.menu, m=>drinkCardHTML(m,"data-addpick",null))}
         <div class="footnote">이름을 입력하고 음료를 누르면 바로 주문됩니다. 대행 주문은 본인 팀(${myTeam?esc(myTeam.name):''})으로만 들어갑니다.</div>`;
     }
 
@@ -1368,24 +1463,23 @@
           <span class="cdot" style="width:11px;height:11px;border-radius:99px;background:${t.color};display:inline-block"></span>
           <h1 class="serif" style="font-size:26px">${esc(t.name)} 주문 목록</h1>
         </div>
-        <div class="sub" style="font-size:14px;color:var(--sub);margin-bottom:16px">완성된 음료를 받을 때 누구 것인지 확인하세요 (이름순)${editable?" · 대기 중인 주문만 수정·삭제 가능":""}</div>
+        <div class="sub" style="font-size:14px;color:var(--sub);margin-bottom:16px">완성된 음료를 받을 때 누구 것인지 확인하세요 (이름순)${editable?" · 대기 중인 주문만 수정·삭제할 수 있어요":""}</div>
         <div class="seg">
           <button class="${sess==="am"?'on':''}" data-disp="am">오전 (${amCount})</button>
           <button class="${sess==="ln"?'on':''}" data-disp="ln">점심 (${lnCount})</button>
           <button class="${sess==="pm"?'on':''}" data-disp="pm">오후 (${pmCount})</button>
         </div>
         ${list.length===0?`<div class="empty">${sessName(sess)} 주문이 없어요</div>`:
-          list.map(o=>{const m=menuById(o.drinkId); const badge=o.status==="ready"?"":o.status==="confirmed"?" green":" pending";
-            return `<div class="lrow">
-              <div class="lrow-main">
-                <div class="lr-who"><span class="seq${badge}">${pickNo(o)}</span><span class="lr-nm">${esc(o.name)}</span>${o.by&&o.by!==o.name?`<span class="bytag">대행:${esc(o.by)}</span>`:""}</div>
+          `<div class="l2list">${list.map(o=>{const m=menuById(o.drinkId); const badge=o.status==="ready"?"":o.status==="confirmed"?" green":" pending";
+            return `<div class="l2row">
+              <span class="seq${badge}">${pickNo(o)}</span>
+              <div class="l2-main">
+                <div class="l2-top"><span class="lr-nm">${esc(o.name)}</span>${o.by&&!sameName(o.by,o.name)?`<span class="bytag">대행:${esc(o.by)}</span>`:""}</div>
                 <div class="lr-drink">${m?`<span class="csq sm" style="background:${mColor(m)}"></span>${drinkNameHTML(m.name)}`:esc(o.drinkId)}</div>
               </div>
-              ${editable && o.status==="pending"?`<div class="lrow-act">
-                <button class="mini edit" data-editorder="${o.id}">수정</button>
-                <button class="mini del" data-delorder="${o.id}">삭제</button>
-              </div>`: editable ? `<div class="lr-lock">${o.status==="ready"?"완료된 주문이라 수정할 수 없어요":"제조 중이라 수정할 수 없어요"}</div>` : ""}
-            </div>`;}).join("")}`;
+              ${editable && o.status==="pending"?`<div class="l2-act"><button class="mini edit" data-editorder="${o.id}">수정</button><button class="mini del" data-delorder="${o.id}">삭제</button></div>`
+                : `<span class="lr-lock st-${o.status}">${o.status==="ready"?"완료":o.status==="confirmed"?"제조 중":"대기"}</span>`}
+            </div>`;}).join("")}</div>`}`;
     }
 
     // ---- edit one order's drink ----
@@ -1399,7 +1493,7 @@
           <h1 class="serif" style="font-size:26px">음료 변경</h1>
           <div class="sub" style="font-size:14px;color:var(--sub);margin-top:4px">새 음료를 누르면 바로 변경됩니다</div>
         </div>
-        ${drinkGroupsHTML(state.menu.filter(m=>m.active!==false || m.id===o.drinkId), m=>`<button class="drink ${m.id===o.drinkId?'on':''}" data-editpick="${m.id}"><div class="em" style="background:${mColor(m)}"></div><div class="dn">${drinkNameHTML(m.name)}</div></button>`)}`;
+        ${drinkGroupsHTML(state.menu, m=>drinkCardHTML(m,"data-editpick",o.drinkId))}`;
     }
 
     // ---- 공지사항 편집 ----
