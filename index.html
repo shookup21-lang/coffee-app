@@ -574,7 +574,7 @@
     .usual .u-c{width:26px;height:26px;border-radius:8px;flex:0 0 auto}
     .usual .u-body{flex:1;min-width:0;display:flex;flex-direction:column}
     .usual small{font-size:12px;font-weight:700;color:#2563eb}
-    .usual b{font-size:18px;font-weight:800;color:var(--ink);margin-top:2px;display:flex;align-items:center;gap:6px}
+    .usual b{font-size:18px;font-weight:800;color:var(--ink);margin-top:2px;display:flex;align-items:center;gap:6px;word-break:keep-all}
     .usual .u-go{flex:0 0 auto;font-size:13px;font-weight:800;color:#2563eb}
     .ahead{color:#f97316}
     .undobar{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);width:calc(100% - 32px);max-width:520px;background:#16243f;color:#fff;border-radius:16px;padding:10px 10px 10px 18px;display:flex;align-items:center;gap:12px;z-index:60;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;box-shadow:0 10px 28px rgba(20,30,70,.35)}
@@ -663,13 +663,19 @@
     const menuTemp = m => (m && (m.temp==="hot"||m.temp==="ice")) ? m.temp : (/(^|\s)HOT(\s|$)/i.test((m&&m.name)||"") ? "hot" : "ice");
     const TEMP_LABEL = {ice:"🧊 ICE", hot:"🔥 HOT"};
     // 직원 화면용: ICE 먼저, HOT 다음으로 제목을 붙여 음료 버튼을 그림 (HOT이 없으면 제목 없이)
-    // 음료 카드: 품절이면 회색 "품절"(누를 수 없음), 지금 주문한 음료면 "지금 주문" 표시
+    // 직원 선택 화면에는 판매 중인 메뉴만 (품절 숨김, -13 사용자 결정).
+    // 단, 지금 주문한 음료가 품절돼도 "음료 변경" 화면에서는 계속 보이게 함
+    function visibleMenu(curId){
+      return state.menu.filter(m=>m.active!==false || (curId && m.id===curId));
+    }
+    // 음료 카드: (안전망) 품절이 목록에 남아 있으면 회색 "품절", 지금 주문한 음료면 "지금 주문" 표시
     function drinkCardHTML(m, attr, curId){
       const cur = curId && m.id===curId;
       if(m.active===false && !cur) return `<div class="drink soldout" aria-disabled="true"><div class="em"></div><div class="dn"><span class="dnm">${drinkNameHTML(m.name)}</span><span class="so">품절</span></div></div>`;
       return `<button class="drink${cur?' on':''}" ${attr}="${m.id}"><div class="em" style="background:${mColor(m)}"></div><div class="dn"><span class="dnm">${drinkNameHTML(m.name)}</span>${cur?`<span class="cur">지금 주문</span>`:""}</div></button>`;
     }
     function drinkGroupsHTML(list, btn){
+      if(!list.length) return `<div class="empty">지금은 판매 중인 메뉴가 없어요</div>`;
       const ice=list.filter(m=>menuTemp(m)==="ice"), hot=list.filter(m=>menuTemp(m)==="hot");
       if(!ice.length || !hot.length) return `<div class="grid2">${list.map(btn).join("")}</div>`;
       return `<div class="dgh ice">${TEMP_LABEL.ice}</div><div class="grid2">${ice.map(btn).join("")}</div>
@@ -698,7 +704,7 @@
     // 배포할 때마다 이 값을 바꿔주세요 — 값이 바뀌면 모든 기기가 자동으로 최신 버전을 받아옵니다
     // 버전 규칙: "수정한 날짜-그날의 순번" (예: 2026-09-18-01 → 같은 날 또 수정하면 -02)
     // 날짜가 바뀌면 순번은 01부터 다시 시작. 코드 수정 시 반드시 이 값을 바꿔야 자동 업데이트가 동작함.
-    const APP_BUILD = "2026-09-19-12";
+    const APP_BUILD = "2026-09-19-14";
     // 이름은 띄어쓰기 없이 사용 ("김철수"와 "김 철수"가 다른 사람이 되는 문제 방지)
     const nm = s => String(s||"").replace(/\s+/g,"");
     const sameName = (a,b) => nm(a)===nm(b);
@@ -1413,8 +1419,7 @@
         <h1 class="serif" style="font-size:26px">음료를 선택하세요</h1>
         <div class="sub" style="font-size:14px;color:var(--sub);margin-top:4px">하나만 고르면 바로 주문됩니다</div></div>
         ${(()=>{ const ss=sessionState(); return ss.open&&ss.soon?`<div class="soonbar">⏰ ${ss.left}분 뒤 주문이 마감돼요</div>`:""; })()}
-        ${state.menu.filter(m=>m.active!==false).length===0?`<div class="empty">지금은 판매 중인 메뉴가 없어요</div>`:
-        drinkGroupsHTML(state.menu, m=>drinkCardHTML(m,"data-pick",(myTodayOrder()||{}).drinkId))}`;
+        ${(()=>{ const cur=(myTodayOrder()||{}).drinkId; return drinkGroupsHTML(visibleMenu(cur), m=>drinkCardHTML(m,"data-pick",cur)); })()}`;
     }
 
     // ---- add person (order for someone else) ----
@@ -1431,7 +1436,7 @@
         <div class="picklbl">1. 이름 입력</div>
         <input id="addName" value="${esc(state.addName)}" placeholder="동료 이름 (띄어쓰기 없이)" autocomplete="off" style="width:100%;border:1px solid var(--line);border-radius:14px;padding:14px 16px;font-size:16px;outline:none;background:#f7faff"/>
         <div class="picklbl">2. 음료 선택</div>
-        ${drinkGroupsHTML(state.menu, m=>drinkCardHTML(m,"data-addpick",null))}
+        ${drinkGroupsHTML(visibleMenu(null), m=>drinkCardHTML(m,"data-addpick",null))}
         <div class="footnote">이름을 입력하고 음료를 누르면 바로 주문됩니다. 대행 주문은 본인 팀(${myTeam?esc(myTeam.name):''})으로만 들어갑니다.</div>`;
     }
 
@@ -1493,7 +1498,7 @@
           <h1 class="serif" style="font-size:26px">음료 변경</h1>
           <div class="sub" style="font-size:14px;color:var(--sub);margin-top:4px">새 음료를 누르면 바로 변경됩니다</div>
         </div>
-        ${drinkGroupsHTML(state.menu, m=>drinkCardHTML(m,"data-editpick",o.drinkId))}`;
+        ${drinkGroupsHTML(visibleMenu(o.drinkId), m=>drinkCardHTML(m,"data-editpick",o.drinkId))}`;
     }
 
     // ---- 공지사항 편집 ----
