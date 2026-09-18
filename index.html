@@ -285,15 +285,16 @@
     .qundo:active,.qpick:active{filter:brightness(.95)}
     .secn{display:inline-block;font-size:13px;background:#dbeafe;color:#2563eb;border-radius:99px;padding:2px 8px;vertical-align:middle;margin-left:4px}
     .empty.small{padding:20px;font-size:13px}
-    /* 태블릿/PC 넓은 화면, 또는 가로로 돌린 폰: 담당자 메인 2단 */
-    @media (min-width:900px), (orientation:landscape) and (min-width:640px){
+    /* 태블릿/PC 넓은 화면: 담당자 메인 2단 (폰은 가로로 돌려도 적용 안 함 — 폰 가로는 높이가 500px 미만) */
+    @media (min-width:900px) and (min-height:500px){
       body.wide{max-width:1180px}
       body.wide .bgrid{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:24px;align-items:start}
       body.wide .dash{margin-bottom:4px}
     }
-    /* 가로 모드(화면 높이가 낮을 때): 대시보드를 한 줄짜리 얇은 막대로 줄이고 화면 맨 위에 고정.
-       머리글(로고·이름)은 스크롤하면 올라가게 해서 주문 목록이 보일 자리를 최대한 확보 */
-    @media (orientation:landscape) and (max-height:900px){
+    /* 태블릿 가로 모드: 대시보드를 한 줄짜리 얇은 막대로 줄이고 화면 맨 위에 고정.
+       머리글(로고·이름)은 스크롤하면 올라가게 해서 주문 목록이 보일 자리를 최대한 확보.
+       (예전엔 "높이 900px 이하"로 판단해서 화면이 큰 태블릿은 빠지고 폰 가로는 들어가던 문제 → 폭 900px 이상 + 높이 500px 이상인 가로 화면으로 판단) */
+    @media (orientation:landscape) and (min-width:900px) and (min-height:500px){
       body.wide header{position:static;padding:8px 16px 4px}
       body.wide .wrap{padding-top:0}
       body.wide .dash{position:sticky;top:0;z-index:15;padding:8px 14px;border-radius:14px;margin-bottom:6px;box-shadow:0 6px 16px rgba(37,99,235,.25)}
@@ -565,7 +566,7 @@
     // 배포할 때마다 이 값을 바꿔주세요 — 값이 바뀌면 모든 기기가 자동으로 최신 버전을 받아옵니다
     // 버전 규칙: "수정한 날짜-그날의 순번" (예: 2026-09-18-01 → 같은 날 또 수정하면 -02)
     // 날짜가 바뀌면 순번은 01부터 다시 시작. 코드 수정 시 반드시 이 값을 바꿔야 자동 업데이트가 동작함.
-    const APP_BUILD = "2026-09-19-01";
+    const APP_BUILD = "2026-09-19-02";
     // 이름은 띄어쓰기 없이 사용 ("김철수"와 "김 철수"가 다른 사람이 되는 문제 방지)
     const nm = s => String(s||"").replace(/\s+/g,"");
     const sameName = (a,b) => nm(a)===nm(b);
