@@ -298,6 +298,24 @@
       body.wide .bgrid{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:24px;align-items:start}
       body.wide .dash{margin-bottom:4px}
     }
+    /* 태블릿(가로) 관리 화면: 넓은 폭을 나눠 쓰기 (폰·세로 화면은 그대로) */
+    @media (min-width:900px) and (min-height:500px){
+      body.wsub{max-width:1180px}
+      body.wsub .subhead{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+      body.wsub .subhead .back{margin:0}
+      body.wsub .subhead h1{margin:0!important}
+      body.wsub .dlist{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 12px}
+      body.wsub .mgroups{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 20px;align-items:start}
+      body.wsub .tgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;align-items:start}
+      body.wsub .tgrid>*{margin-bottom:0}
+      body.wsub .hgrid, body.wsub .sgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:start}
+      body.wsub .hgrid .cal-wrap, body.wsub .sgrid .cal-wrap{margin-bottom:0}
+      body.wsub #tl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 12px}
+      body.wsub .noticeta{min-height:240px}
+      body.wsub .primary{max-width:520px;margin-left:auto;margin-right:auto}
+      body.wsub .addbtn, body.wsub .addmenuform{display:block;max-width:520px;margin-left:auto;margin-right:auto}
+      body.wsub .ghost{max-width:520px;margin-left:auto;margin-right:auto}
+    }
     /* 태블릿 가로 모드: 대시보드를 한 줄짜리 얇은 막대로 줄이고 화면 맨 위에 고정.
        머리글(로고·이름)은 스크롤하면 올라가게 해서 주문 목록이 보일 자리를 최대한 확보.
        (예전엔 "높이 900px 이하"로 판단해서 화면이 큰 태블릿은 빠지고 폰 가로는 들어가던 문제 → 폭 900px 이상 + 높이 500px 이상인 가로 화면으로 판단) */
@@ -573,7 +591,7 @@
     // 배포할 때마다 이 값을 바꿔주세요 — 값이 바뀌면 모든 기기가 자동으로 최신 버전을 받아옵니다
     // 버전 규칙: "수정한 날짜-그날의 순번" (예: 2026-09-18-01 → 같은 날 또 수정하면 -02)
     // 날짜가 바뀌면 순번은 01부터 다시 시작. 코드 수정 시 반드시 이 값을 바꿔야 자동 업데이트가 동작함.
-    const APP_BUILD = "2026-09-19-03";
+    const APP_BUILD = "2026-09-19-04";
     // 이름은 띄어쓰기 없이 사용 ("김철수"와 "김 철수"가 다른 사람이 되는 문제 방지)
     const nm = s => String(s||"").replace(/\s+/g,"");
     const sameName = (a,b) => nm(a)===nm(b);
@@ -1006,6 +1024,7 @@
       // 태블릿/PC처럼 넓은 화면에서 담당자 메인은 2단으로 넓게 (CSS의 body.wide 참고)
       document.body.classList.toggle("wide", !!(state.user && state.user.team==="barista" && !["menu-edit","team-edit","time-edit","notice-edit","hol-edit","disp","stats"].includes(state.view)));
       syncRealWatch();
+      document.body.classList.toggle("wsub", !!(state.user && state.user.team==="barista" && ["menu-edit","team-edit","time-edit","notice-edit","hol-edit","disp","stats"].includes(state.view)));
       if(!state.user) return renderLogin();
       maybeWake();
       syncHistory();
@@ -1240,8 +1259,7 @@
     // ---- add person (order for someone else) ----
     function renderAddPerson(){
       const myTeam = TEAMS.find(t=>t.id===state.user.team);
-      return `<button class="back" data-act="back">‹ 뒤로</button>
-        <h1 class="serif" style="font-size:26px;margin-bottom:4px">다른 사람 대신 주문</h1>
+      return `<div class="subhead"><button class="back" data-act="back">‹ 뒤로</button><h1 class="serif" style="font-size:26px;margin-bottom:4px">다른 사람 대신 주문</h1></div>
         <div class="sub" style="font-size:14px;color:var(--sub);margin-bottom:14px">폰이 없는 우리 팀 동료의 주문을 넣어줄 수 있어요</div>
 
         <div class="teamfixed">
@@ -1259,8 +1277,7 @@
     // ---- notifications (employee) ----
     function renderNotifs(){
       const list=myNotifs();
-      return `<button class="back" data-act="back">‹ 뒤로</button>
-        <h1 class="serif" style="font-size:26px;margin-bottom:4px">알림</h1>
+      return `<div class="subhead"><button class="back" data-act="back">‹ 뒤로</button><h1 class="serif" style="font-size:26px;margin-bottom:4px">알림</h1></div>
         <div class="sub" style="font-size:14px;color:var(--sub);margin-bottom:16px">담당자가 보낸 메시지</div>
         ${list.length===0?`<div class="empty">🔔<br/><br/>새 알림이 없어요</div>`:
           list.map(n=>{const m=menuById(n.drinkId); const forSomeone = !sameName(n.name,state.user.name);
@@ -1322,8 +1339,7 @@
     // ---- 공지사항 편집 ----
     function renderNoticeEdit(){
       const cur = state.notice?state.notice.text:"";
-      return `<button class="back" data-act="back">‹ 뒤로</button>
-        <h1 class="serif" style="font-size:26px;margin-bottom:4px">공지사항</h1>
+      return `<div class="subhead"><button class="back" data-act="back">‹ 뒤로</button><h1 class="serif" style="font-size:26px;margin-bottom:4px">공지사항</h1></div>
         <div class="sub" style="font-size:14px;color:var(--sub);margin-bottom:16px">직원 홈 화면에 그대로 보여요. 비워두면 안 보여요. (예: 재료 소진으로 특정 음료 일시 중단 안내)</div>
         <textarea id="noticeTxt" class="noticeta" placeholder="예) 재고 소진으로 오늘 '카페 라떼'는 주문이 어려워요. 양해 부탁드립니다.">${esc(cur)}</textarea>
         <button class="primary" style="margin-top:14px" data-act="saveNotice">저장하기</button>
@@ -1458,9 +1474,8 @@
             </div>`;
       }
 
-      return `<button class="back" data-act="back">‹ 뒤로</button>
-        <h1 class="serif" style="font-size:26px;margin-bottom:16px">집계</h1>
-        <div class="cal-wrap">
+      return `<div class="subhead"><button class="back" data-act="back">‹ 뒤로</button><h1 class="serif" style="font-size:26px;margin-bottom:16px">집계</h1></div>
+        <div class="sgrid"><div class="cal-wrap">
           <div class="cal-nav">
             <button class="cal-arr" data-statsmonth="${prevMonth}">‹</button>
             <span class="cal-title">${yr}년 ${mo}월</span>
@@ -1471,7 +1486,7 @@
             ${cells}
           </div>
         </div>
-        ${detail}`;
+        <div class="sg-r">${detail}</div></div>`;
     }
 
     // ---- 휴무일 설정 (담당자) ----
@@ -1496,10 +1511,9 @@
         cells+=`<div class="cal-cell hcell${past?" future":""}${set?" hol":wk?" wkoff":""}${k===today?" today":""}" ${(past||wk)?"":`data-holday="${k}"`}><span>${d}</span>${set?`<small class="cal-n">휴무</small>`:wk?`<small class="cal-n">주말</small>`:""}</div>`;
       }
       const list=Object.keys(dr.days).filter(k=>k>=today).sort();
-      return `<button class="back" data-act="back">‹ 뒤로</button>
-        <h1 class="serif" style="font-size:26px;margin-bottom:4px">휴무일 설정</h1>
+      return `<div class="subhead"><button class="back" data-act="back">‹ 뒤로</button><h1 class="serif" style="font-size:26px;margin-bottom:4px">휴무일 설정</h1></div>
         <div class="sub" style="font-size:14px;color:var(--sub);margin-bottom:16px">평일 날짜를 누르면 휴무로 지정·해제돼요. 토·일은 항상 휴무예요. 휴무일엔 주문을 받지 않고, 직원 화면에 안내돼요.</div>
-        <div class="cal-wrap">
+        <div class="hgrid"><div class="hg-l"><div class="cal-wrap">
           <div class="cal-nav">
             <button class="cal-arr${canPrev?"":" disabled"}" ${canPrev?`data-holmonth="${prevM}"`:""}>‹</button>
             <span class="cal-title">${yr}년 ${mo}월</span>
@@ -1509,14 +1523,14 @@
             <div class="cal-dow-cell">일</div><div class="cal-dow-cell">월</div><div class="cal-dow-cell">화</div><div class="cal-dow-cell">수</div><div class="cal-dow-cell">목</div><div class="cal-dow-cell">금</div><div class="cal-dow-cell">토</div>
             ${cells}
           </div>
-        </div>
-        <div class="sectlbl">예정된 휴무일 ${list.length}일</div>
+        </div></div><div class="hg-r">
+        <div class="sectlbl" style="margin-top:0">예정된 휴무일 ${list.length}일</div>
         ${list.length===0?`<div class="empty small">지정된 휴무일이 없어요</div>`:list.map(k=>`<div class="holrow">
           <span class="hr-d">${dayLabel(k)}${k===today?" · 오늘":""}</span>
           <input class="nm" data-holreason="${k}" value="${esc(dr.days[k]||"")}" placeholder="사유 (선택) 예: 담당자 휴가" maxlength="30"/>
           <button class="qdel" data-holdel="${k}" aria-label="해제">✕</button>
         </div>`).join("")}
-        <button class="primary" style="margin-top:16px" data-act="saveHol">저장하기</button>`;
+        <button class="primary" style="margin-top:16px" data-act="saveHol">저장하기</button></div></div>`;
     }
     async function doSaveHol(){
       noTestSave();
@@ -1659,15 +1673,14 @@
         const badge = o.status==="ready"?"blue":o.status==="confirmed"?"green":"orange";
         return orderCardHTML(o, "", badge, `<button class="qdel" data-delorder="${o.id}" aria-label="삭제">✕</button>`);
       };
-      return `<button class="back" data-act="back">‹ 뒤로</button>
-        <h1 class="serif" style="font-size:26px;margin-bottom:4px">주문 목록</h1>
+      return `<div class="subhead"><button class="back" data-act="back">‹ 뒤로</button><h1 class="serif" style="font-size:26px;margin-bottom:4px">주문 목록</h1></div>
         <div class="sub" style="font-size:14px;color:var(--sub);margin-bottom:16px">음료를 나눠줄 때 보는 주문순 목록 · 잘못된 주문은 ✕로 삭제</div>
         <div class="seg">
           <button class="${sess==="am"?'on':''}" data-disp="am">오전 (${Object.values(state.orders).filter(o=>o.session==="am").length})</button>
           <button class="${sess==="ln"?'on':''}" data-disp="ln">점심 (${lnCount})</button>
           <button class="${sess==="pm"?'on':''}" data-disp="pm">오후 (${Object.values(state.orders).filter(o=>o.session==="pm").length})</button>
         </div>
-        ${list.length===0?`<div class="empty">${sessName(sess)} 주문이 없어요</div>`:list.map(rowHTML).join("")}`;
+        ${list.length===0?`<div class="empty">${sessName(sess)} 주문이 없어요</div>`:`<div class="dlist">${list.map(rowHTML).join("")}</div>`}`;
     }
 
     // ---- menu editor ----
@@ -1717,15 +1730,14 @@
         if(!list.length) return onlyOff?"":`<div class="mgh ${g}">${TEMP_LABEL[g]} <span>0</span></div><div class="mempty">${g==="hot"?"HOT 메뉴가 없어요":"ICE 메뉴가 없어요"}</div>`;
         return `<div class="mgh ${g}">${TEMP_LABEL[g]} <span>${list.length}</span></div><div class="mlist">${list.map(row).join("")}</div>`;
       };
-      return `<button class="back" data-act="back">‹ 뒤로</button>
-        <h1 class="serif" style="font-size:26px;margin-bottom:4px">메뉴 관리</h1>
+      return `<div class="subhead"><button class="back" data-act="back">‹ 뒤로</button><h1 class="serif" style="font-size:26px;margin-bottom:4px">메뉴 관리</h1></div>
         <div class="sub" style="font-size:14px;color:var(--sub);margin-bottom:12px">스위치로 품절을 바로 켜고 끄세요 · 메뉴를 누르면 이름·색상·순서를 바꿀 수 있어요 · 이 순서대로 직원 화면에 보여요</div>
         <div class="msum">
           <button class="mpill${!onlyOff?' on':''}" data-mfilter="all">전체 ${all.length}</button>
           <button class="mpill" data-mfilter="all" style="pointer-events:none">판매 중 ${onCnt}</button>
           <button class="mpill off${onlyOff?' on':''}" data-mfilter="off">품절 ${offCnt}${onlyOff?" · 보는 중":""}</button>
         </div>
-        ${onlyOff && !offCnt ? `<div class="empty small">품절인 메뉴가 없어요</div>` : group("ice")+group("hot")}
+        ${onlyOff && !offCnt ? `<div class="empty small">품절인 메뉴가 없어요</div>` : `<div class="mgroups"><div class="mg-col">${group("ice")}</div><div class="mg-col">${group("hot")}</div></div>`}
         ${state.addMenuOpen?`<div class="addmenuform">
           <input class="nm" id="newMenuName" placeholder="음료 이름 (예: 아메리카노)" autofocus/>
           <div class="tempchecks">
@@ -1741,8 +1753,7 @@
 
     // ---- team editor ----
     function renderTeamEdit(){
-      return `<button class="back" data-act="back">‹ 뒤로</button>
-        <h1 class="serif" style="font-size:26px;margin-bottom:4px">팀 관리</h1>
+      return `<div class="subhead"><button class="back" data-act="back">‹ 뒤로</button><h1 class="serif" style="font-size:26px;margin-bottom:4px">팀 관리</h1></div>
         <div class="sub" style="font-size:14px;color:var(--sub);margin-bottom:16px">팀 이름 수정, 추가·삭제 가능 (색상은 자동 배정)</div>
         <div id="tl">${state.teams.map((t,i)=>`<div class="editrow">
           <span class="cdot" style="width:14px;height:14px;border-radius:99px;background:${t.color};flex:0 0 auto"></span>
@@ -1776,12 +1787,13 @@
     }
     function renderTimeEdit(){
       const h=state.hoursDraft||state.hours;
-      return `<button class="back" data-act="back">‹ 뒤로</button>
-        <h1 class="serif" style="font-size:26px;margin-bottom:4px">주문 시간 설정</h1>
+      return `<div class="subhead"><button class="back" data-act="back">‹ 뒤로</button><h1 class="serif" style="font-size:26px;margin-bottom:4px">주문 시간 설정</h1></div>
         <div class="sub" style="font-size:14px;color:var(--sub);margin-bottom:16px">오전·점심·오후 주문 시작/마감 시간을 조정하고, 필요 없는 시간대는 꺼두세요</div>
+        <div class="tgrid">
         ${sessionBlock("Am","오전 주문","am", h.amStart, h.amEnd, h.amOn!==false)}
         ${sessionBlock("Ln","점심 주문","ln", h.lnStart||"11:30", h.lnEnd||"13:00", h.lnOn!==false)}
         ${sessionBlock("Pm","오후 주문","pm", h.pmStart, h.pmEnd, h.pmOn!==false)}
+        </div>
         <button class="primary" style="margin-top:8px" data-act="saveTime">저장하기</button>
         <div class="footnote">마감 시간이 지나면 새 주문은 자동으로 차단됩니다. 이미 들어온 주문은 그대로 유지돼요. 꺼둔 시간대는 직원 화면에서 보이지 않아요.</div>`;
     }
