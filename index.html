@@ -42,14 +42,18 @@
     .wrap{padding:6px 20px 120px}
 
     /* login */
-    .login{background:linear-gradient(165deg,#5b81c6 0%,#3f5fa8 55%,#7190ce 100%);color:#fff;min-height:100vh;padding:64px 26px 40px;display:flex;flex-direction:column}
+    .login{background:linear-gradient(165deg,#5b81c6 0%,#3f5fa8 55%,#7190ce 100%);color:#fff;min-height:100vh;padding:36px 22px 18px;display:flex;flex-direction:column}
     .login .lc{width:46px;height:46px;border-radius:14px;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:18px}
     .login .brandrow{display:flex;align-items:center;gap:14px;margin-bottom:6px}
     .login .appicon{flex:0 0 auto;display:inline-flex;box-shadow:0 6px 16px rgba(20,30,80,.25);border-radius:12px}
-    .login .brandrow h1{font-size:40px;line-height:1;font-weight:800;letter-spacing:-0.02em}
+    .login .brandrow h1{font-size:30px;line-height:1;font-weight:800;letter-spacing:-0.02em}
     .login h1{font-size:38px;line-height:1.08;font-weight:800;letter-spacing:-0.02em}
     .login p{color:rgba(255,255,255,.82);font-size:15px;margin-top:10px}
-    .login .field{margin-top:26px}
+    .login .field{margin-top:18px}
+    .login .lg-desc{font-size:14.5px;margin-top:10px}
+    .login .lg-once{font-size:13px;margin-top:4px;color:#fde68a;font-weight:600}
+    .login .lg-hint{font-size:12px;color:rgba(255,255,255,.78);margin-top:7px;line-height:1.5}
+    .login .lg-foot{display:flex;align-items:center;justify-content:space-between;margin-top:14px;font-size:11px;color:rgba(255,255,255,.45)}
     .login label{font-size:13px;color:rgba(255,255,255,.85);display:block;margin-bottom:9px;font-weight:600}
     .login input{width:100%;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:16px;padding:16px;font-size:16px;outline:none}
     .login input::placeholder{color:rgba(255,255,255,.6)}
@@ -58,14 +62,16 @@
     .login .teams button{flex:1;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);color:#fff;border-radius:16px;padding:15px 0;font-size:14px;font-weight:600}
     .login .teams button.on{background:#fff;color:#2563eb;border-color:#fff}
     /* wrapping team grid (many teams) */
-    .login .teamgrid{display:flex;flex-wrap:wrap;gap:8px;max-height:38vh;overflow-y:auto;padding:2px}
-    .login .teamgrid button{flex:0 0 calc(50% - 4px);background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);color:#fff;border-radius:14px;padding:14px 8px;font-size:14px;font-weight:600;text-align:center;line-height:1.2;word-break:break-word}
+    .login .teamgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+    .login .teamgrid button{min-height:46px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);color:#fff;border-radius:12px;padding:8px 6px;font-weight:600;text-align:center;line-height:1.2;overflow:hidden;display:flex;align-items:center;justify-content:center}
+    .login .teamgrid .tn{display:block;max-width:100%;font-size:13.5px}
     .login .teamgrid button.on{background:#fff;color:#2563eb;border-color:#fff}
     .teamgrid{display:flex;flex-wrap:wrap;gap:8px}
     .teamgrid button{flex:0 0 calc(50% - 4px);background:#fff;border:1px solid var(--line);color:var(--ink);border-radius:14px;padding:14px 8px;font-weight:700;font-size:14px;text-align:center;line-height:1.2;word-break:break-word;box-shadow:0 2px 8px rgba(80,90,160,.05)}
-    .login .start{margin-top:auto;background:#fff;color:#2563eb;font-weight:800;border-radius:18px;padding:18px;font-size:16px;box-shadow:0 8px 20px rgba(40,30,120,.2)}
-    .login .start:disabled{background:rgba(255,255,255,.4);color:rgba(109,92,255,.5);box-shadow:none}
-    .login .blink{margin-top:18px;text-align:center;color:rgba(255,255,255,.85);font-size:14px;text-decoration:underline}
+    .login .start{margin-top:auto;background:#fff;color:#2563eb;font-weight:800;border-radius:16px;padding:16px 12px;font-size:16px;box-shadow:0 8px 20px rgba(40,30,120,.2);line-height:1.3;word-break:keep-all}
+    .login .start:disabled{background:rgba(255,255,255,.18);color:rgba(255,255,255,.8);border:1px dashed rgba(255,255,255,.5);box-shadow:none;font-weight:700;font-size:14.5px}
+    .login .fname{margin-bottom:18px}
+    .login .blink{color:rgba(255,255,255,.6);font-size:12px;text-decoration:underline;padding:6px 0 6px 12px}
 
     /* hero gradient banner */
     .hero{background:linear-gradient(135deg,#3b82f6 0%,#2563eb 100%);color:#fff;border-radius:26px;padding:24px 24px 26px;position:relative;overflow:hidden;margin-bottom:14px;box-shadow:0 14px 30px rgba(37,99,235,.30)}
@@ -274,6 +280,24 @@
     .dchip b{color:#2563eb;font-size:15px}
     .dchip.on{border-color:#2563eb;background:#eef4ff}
     .dchip .temptag{font-size:10px;padding:2px 5px}
+    .drinksum.collapsed{flex-wrap:nowrap;overflow:hidden}
+    .drinksum.collapsed{gap:5px}
+    .drinksum.collapsed .dchip{flex:0 0 auto;padding:5px 8px;font-size:12.5px;gap:4px;border-width:1.5px}
+    .drinksum.collapsed .dchip b{font-size:14px}
+    .drinksum.collapsed .dchip .csq{width:10px;height:10px}
+    .drinksum.collapsed .dchip .temptag{font-size:9.5px;padding:1px 4px}
+    .dchip.one{opacity:.7}
+    .dchip.more{color:var(--sub);background:#f5f8ff;border:2px dashed #c4d4ef;box-shadow:none}
+    .dside{display:none;background:#fff;border-radius:16px;padding:10px 12px;margin:10px 0 4px;box-shadow:0 2px 8px rgba(80,90,160,.05)}
+    .dside-h{font-size:14px;font-weight:800;margin:2px 2px 6px}
+    .dside-h span{font-size:11.5px;color:var(--sub);font-weight:600;margin-left:6px}
+    .dsrow{width:100%;display:flex;align-items:center;gap:8px;padding:8px 6px;border-top:1px solid #f0f4fb;text-align:left;border-radius:10px;font-size:14px;font-weight:700;color:var(--ink)}
+    .dsrow:first-of-type{border-top:0}
+    .dsrow b{margin-left:auto;color:#2563eb;font-size:15px}
+    .dsrow.one{color:#7e8aa6;font-weight:600} .dsrow.one b{color:#9aa6bd}
+    .dsrow.on{background:#eef4ff;outline:2px solid #2563eb;outline-offset:-2px}
+    .ds-nm{display:flex;align-items:center;gap:6px;min-width:0;white-space:nowrap;overflow:hidden}
+    .ds-nm .temptag{font-size:10px;padding:2px 5px}
     .dshint{font-size:11.5px;color:var(--sub);margin:0 4px 10px;line-height:1.5}
     .batchbar{background:#eef4ff;border-radius:16px;padding:12px 14px;margin-bottom:10px}
     .batchbar .bb-t{font-size:14px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
@@ -300,6 +324,8 @@
       body.wide{max-width:1180px}
       body.wide .bgrid{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:24px;align-items:start}
       body.wide .dash{margin-bottom:4px}
+      body.wide .drinksum, body.wide .drinksum+.dshint{display:none}
+      body.wide .dside{display:block}
     }
     /* 태블릿(가로) 관리 화면: 넓은 폭을 나눠 쓰기 (폰·세로 화면은 그대로) */
     @media (min-width:900px) and (min-height:500px){
@@ -372,6 +398,7 @@
     .editrow .cdot{flex:0 0 auto}
     .editrow input.nm{flex:1 1 auto;min-width:0;border:1px solid #e8eef8;background:#f7faff;border-radius:10px;font-size:15px;outline:none;font-weight:600;padding:10px 12px}
     .editrow input.nm:focus{border-color:#3b82f6;background:#fff}
+    .editrow.newteam{outline:2px dashed #93c5fd;outline-offset:-2px}
     .editrow input.emj{flex:0 0 auto;width:48px;border:1px solid #e8eef8;background:#f7faff;border-radius:10px;font-size:22px;outline:none;text-align:center;padding:8px 0}
     .editrow .del{flex:0 0 auto;color:#fff;background:#ef4444;font-size:13px;padding:9px 14px;font-weight:700;border-radius:10px;white-space:nowrap}
     .editrow .del:active{background:#dc2626}
@@ -594,7 +621,7 @@
     // 배포할 때마다 이 값을 바꿔주세요 — 값이 바뀌면 모든 기기가 자동으로 최신 버전을 받아옵니다
     // 버전 규칙: "수정한 날짜-그날의 순번" (예: 2026-09-18-01 → 같은 날 또 수정하면 -02)
     // 날짜가 바뀌면 순번은 01부터 다시 시작. 코드 수정 시 반드시 이 값을 바꿔야 자동 업데이트가 동작함.
-    const APP_BUILD = "2026-09-19-05";
+    const APP_BUILD = "2026-09-19-09";
     // 이름은 띄어쓰기 없이 사용 ("김철수"와 "김 철수"가 다른 사람이 되는 문제 방지)
     const nm = s => String(s||"").replace(/\s+/g,"");
     const sameName = (a,b) => nm(a)===nm(b);
@@ -1021,6 +1048,8 @@
     const menuById=id=>state.menu.find(m=>m.id===id);
     const timeStr=iso=>new Date(iso).toLocaleTimeString("ko-KR",{hour:"2-digit",minute:"2-digit"});
     const krSort=(a,b)=>a.localeCompare(b,"ko");
+    // 팀명 오름차순 (숫자 크기순 → 한글 ㄱㄴㄷ → 영문 ABC) — 로그인 화면과 팀 관리 화면에서 같이 사용
+    const cmpTeamName=(a,b)=>String(a).localeCompare(String(b),"ko",{numeric:true,sensitivity:"base"});
 
     // ============ RENDER ============
     function render(){
@@ -1052,6 +1081,7 @@
       }
       bind();
       fitQdrinkText();
+      fitDrinkChips();
     }
 
     // ----- hardware/browser back handling -----
@@ -1100,23 +1130,34 @@
         <rect x="170" y="206" width="172" height="20" rx="10" fill="#bfdbfe"/><rect x="186" y="232" width="140" height="10" rx="5" fill="#dbeafe" opacity="0.8"/>
       </svg>`;
     }
+    // ---- 로그인 (직원 전용 화면 · 폰 세로 기준) ----
+    // 팀 3열(전부 보이게, 긴 팀명은 글자 자동 축소) → 팀 누르면 이름 칸으로 이동 → 이름 입력.
+    // 키보드 "완료"는 시작하지 않고 키보드만 내림(오타 확인용). 시작 버튼에 "팀 · 이름으로 시작하기"가 보여 마지막으로 확인.
+    const roJosa = s => { const c=String(s||"").charCodeAt(String(s||"").length-1); if(c>=0xAC00&&c<=0xD7A3){ const j=(c-0xAC00)%28; return (j===0||j===8)?"로":"으로"; } return "로"; };
     function renderLogin(){
       app.innerHTML=`<div class="login">
-        <div class="brandrow"><span class="appicon">${appIconSVG(52)}</span><h1 class="serif" style="margin:0">${APP_NAME}</h1></div>
-        <p>팀을 선택하고 이름을 입력하세요</p>
-        <div class="field"><label>팀 선택</label>
-          <div class="teamgrid" id="ts">${TEAMS.map(t=>`<button data-team="${t.id}">${esc(t.name)}</button>`).join("")}</div></div>
-        <div class="field"><label>이름</label><input id="ni" placeholder="이름 입력 (띄어쓰기 없이)" autocomplete="off"/></div>
-        <button class="start" id="sb" disabled>시작하기</button>
-        <button class="blink" id="bb">담당자로 로그인 →</button>
-        <div style="text-align:center;color:rgba(255,255,255,.4);font-size:11px;margin-top:14px">버전 ${APP_BUILD}</div>
+        <div class="brandrow"><span class="appicon">${appIconSVG(42)}</span><h1 class="serif" style="margin:0">${APP_NAME}</h1></div>
+        <p class="lg-desc">하루 한 잔, 무료 음료를 주문하는 앱이에요</p>
+        <p class="lg-once">처음 한 번만 입력하면 다음부터는 바로 열려요</p>
+        <div class="field"><label>1. 팀 선택</label>
+          <div class="teamgrid" id="ts">${[...TEAMS.list].sort((a,b)=>cmpTeamName(a.name,b.name)).map(t=>`<button data-team="${t.id}"><span class="tn">${esc(t.name)}</span></button>`).join("")}</div></div>
+        <div class="field fname"><label for="ni">2. 이름</label><input id="ni" placeholder="이름 입력" autocomplete="off" maxlength="10" enterkeyhint="done"/>
+          <div class="lg-hint">띄어쓰기 없이 입력해 주세요. 같은 팀에 이름이 같은 분이 있으면 김민수A처럼 구분해 주세요.</div></div>
+        <button class="start" id="sb" disabled>팀과 이름을 입력해 주세요</button>
+        <div class="lg-foot"><span>버전 ${APP_BUILD}</span><button class="blink" id="bb">담당자</button></div>
       </div>`;
       let name="",team="";
       const ni=document.getElementById("ni"),sb=document.getElementById("sb"),tb=[...document.querySelectorAll("#ts button")];
-      const rf=()=>sb.disabled=!(name.trim()&&team);
+      const rf=()=>{
+        const n=nm(name), ok=!!(n&&team);
+        sb.disabled=!ok;
+        sb.textContent = ok ? `${teamById(team).name} · ${n}${roJosa(n)} 시작하기` : (team ? "이름을 입력해 주세요" : n ? "팀을 선택해 주세요" : "팀과 이름을 입력해 주세요");
+      };
       ni.addEventListener("input",e=>{ noSpaceInput(e); name=e.target.value; rf(); });
-      tb.forEach(b=>b.addEventListener("click",()=>{tb.forEach(x=>x.classList.remove("on"));b.classList.add("on");team=b.dataset.team;rf();}));
-      sb.addEventListener("click",()=>doLogin(name.trim(),team));
+      // 키보드 "완료/엔터": 시작하지 않고 키보드만 내려서 시작 버튼(이름 확인)이 보이게
+      ni.addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); ni.blur(); } });
+      tb.forEach(b=>b.addEventListener("click",()=>{ tb.forEach(x=>x.classList.remove("on")); b.classList.add("on"); team=b.dataset.team; rf(); if(!nm(ni.value)) ni.focus(); }));
+      sb.addEventListener("click",()=>{ if(!sb.disabled) doLogin(name.trim(),team); });
       document.getElementById("bb").addEventListener("click",()=>{
         const pin=prompt("담당자 비밀번호를 입력하세요");
         if(pin===null) return;
@@ -1125,7 +1166,19 @@
         if(code!=="0825"){ toast("비밀번호가 틀렸어요"); return; }
         doLogin(nm(ni.value)||"담당자","barista");
       });
+      fitTeamNames();
+      if(document.fonts && document.fonts.ready) document.fonts.ready.then(fitTeamNames); // 글꼴이 늦게 적용되면 다시 맞춤
     }
+    // 긴 팀명은 버튼 칸에 맞게 글자 크기를 자동으로 줄임 (최소 10px, 그래도 길면 두 줄)
+    function fitTeamNames(){
+      document.querySelectorAll("#ts .tn").forEach(sp=>{
+        const btn=sp.parentElement; let fs=13.5; sp.style.fontSize=fs+"px"; sp.style.whiteSpace="nowrap";
+        const room=()=>btn.clientWidth-12;
+        while(sp.scrollWidth>room() && fs>10){ fs-=0.5; sp.style.fontSize=fs+"px"; }
+        if(sp.scrollWidth>room()) sp.style.whiteSpace="normal";
+      });
+    }
+    window.addEventListener("resize",()=>{ if(!state.user) fitTeamNames(); });
     // 이름 입력칸: 띄어쓰기를 치면 바로 지우고 한 번 안내
     let _spaceWarned=false;
     function noSpaceInput(e){
@@ -1568,9 +1621,19 @@
       const queue = fg ? queueAll.filter(o=>o.drinkId===fg.id) : queueAll.slice(0,10);
       const moreCount = fg ? 0 : queueAll.length-queue.length;
 
-      const chip=g=>{ const m=menuById(g.id); return `<button class="dchip${state.qFilter===g.id?' on':''}" data-qfilter="${esc(g.id)}"><span class="csq sm" style="background:${mColor(m)}"></span><span class="dc-nm">${m?drinkNameHTML(m.name):esc(g.id)}</span><b>×${g.total}</b></button>`; };
-      const sumHTML = groupList.length>1 || fg ? `<div class="drinksum">${groupList.map(chip).join("")}</div>
-        <div class="dshint">${fg?"":"음료를 누르면 같은 음료만 모아서 한 번에 처리할 수 있어요"}</div>` : ``;
+      // 같은 음료 묶어보기 — 1잔짜리는 묶을 필요가 없으므로 2잔 이상을 앞세움
+      //  · 폰·세로: 한 줄만(2잔 이상, 많은 순). 1잔짜리와 한 줄에 안 들어가는 칩은 "+N종"으로 접음 → 누르면 펼침/접기
+      //  · 태블릿 가로: 오른쪽 칸 맨 위 세로 목록(.dside)으로 전부 보여줌 → 왼쪽 주문 목록이 밀리지 않음
+      const chip=g=>{ const m=menuById(g.id); return `<button class="dchip${state.qFilter===g.id?' on':''}${g.total<2?' one':''}" data-qfilter="${esc(g.id)}"><span class="csq sm" style="background:${mColor(m)}"></span><span class="dc-nm">${m?drinkNameHTML(m.name):esc(g.id)}</span><b>×${g.total}</b></button>`; };
+      const multi=groupList.filter(g=>g.total>=2), ones=groupList.length-multi.length;
+      const showSum = groupList.length>1 || fg;
+      const sumHTML = !showSum ? `` : state.chipsOpen
+        ? `<div class="drinksum open">${groupList.map(chip).join("")}<button class="dchip more" data-act="chipsToggle">접기 ▴</button></div>
+           <div class="dshint">음료를 누르면 같은 음료만 모아서 한 번에 처리할 수 있어요</div>`
+        : (multi.length||fg) ? `<div class="drinksum collapsed">${multi.map(chip).join("")}${ones?`<button class="dchip more" data-act="chipsToggle" data-ones="${ones}">+${ones}종 ▾</button>`:""}</div>
+           <div class="dshint">${fg?"":"음료를 누르면 같은 음료만 모아서 한 번에 처리할 수 있어요"}</div>` : ``;
+      const sideRow=g=>{ const m=menuById(g.id); return `<button class="dsrow${state.qFilter===g.id?' on':''}${g.total<2?' one':''}" data-qfilter="${esc(g.id)}"><span class="csq sm" style="background:${mColor(m)}"></span><span class="ds-nm">${m?drinkNameHTML(m.name):esc(g.id)}</span><b>×${g.total}</b></button>`; };
+      const sideHTML = showSum ? `<div class="dside"><div class="dside-h">음료별 모아보기 <span>누르면 그 음료만</span></div>${groupList.map(sideRow).join("")}</div>` : ``;
       const fm=fg?menuById(fg.id):null;
       const batchHTML = fg ? `<div class="batchbar">
           <div class="bb-t">${fm?drinkNameHTML(fm.name):esc(fg.id)} <b>${fg.total}잔</b>만 보는 중</div>
@@ -1610,6 +1673,7 @@
           ${moreCount>0?`<div class="moreq">+${moreCount}건 더 대기 중 · 10개 처리하면 이어서 나와요</div>`:``}
         </div>
         <div class="bcol-side">
+          ${sideHTML}
           <div class="sechead"><h2 class="sec serif" style="margin:0">방금 완료 <span class="secn">${recentDone.length}</span></h2></div>
           ${recentDone.length===0?`<div class="empty small">최근 ${RECENT_MIN}분 안에 완료한 음료가 없어요</div>`:
             recentDone.map(doneRow).join("") +
@@ -1758,7 +1822,7 @@
     function renderTeamEdit(){
       return `<div class="subhead"><button class="back" data-act="back">‹ 뒤로</button><h1 class="serif" style="font-size:26px;margin-bottom:4px">팀 관리</h1></div>
         <div class="sub" style="font-size:14px;color:var(--sub);margin-bottom:16px">팀 이름 수정, 추가·삭제 가능 (색상은 자동 배정)</div>
-        <div id="tl">${state.teams.map((t,i)=>`<div class="editrow">
+        <div id="tl">${state.teams.map((t,i)=>({t,i})).sort((a,b)=>((a.t._new?1:0)-(b.t._new?1:0)) || (a.t._new&&b.t._new ? a.i-b.i : cmpTeamName(a.t.name,b.t.name))).map(({t,i})=>`<div class="editrow${t._new?' newteam':''}">
           <span class="cdot" style="width:14px;height:14px;border-radius:99px;background:${t.color};flex:0 0 auto"></span>
           <input class="nm" data-tnm="${i}" value="${esc(t.name)}"/>
           <button class="del" data-tdel="${i}">삭제</button></div>`).join("")}</div>
@@ -1803,6 +1867,20 @@
 
     // ============ EVENTS ============
     // 음료명이 한 줄에 안 들어가면(두 줄로 안 넘어가고) 자동으로 글자 크기를 줄여서 맞춤
+    // 접힌 묶어보기가 한 줄을 넘으면 끝에서부터 칩을 숨기고 "+N종"에 더함 (화면 폭이 달라도 항상 한 줄)
+    function fitDrinkChips(){
+      const box=document.querySelector(".drinksum.collapsed"); if(!box || !box.offsetParent) return;
+      let more=box.querySelector(".dchip.more");
+      const chips=[...box.querySelectorAll(".dchip:not(.more)")];
+      let hidden=0;
+      const over=()=>box.scrollWidth>box.clientWidth+1;
+      for(let i=chips.length-1; i>=0 && over(); i--){
+        if(chips[i].classList.contains("on")) continue; // 지금 보고 있는 음료는 남김
+        chips[i].style.display="none"; hidden++;
+        if(!more){ more=document.createElement("button"); more.className="dchip more"; more.dataset.act="chipsToggle"; more.dataset.ones="0"; more.onclick=()=>handle("chipsToggle"); box.appendChild(more); }
+        more.textContent=`+${(+more.dataset.ones||0)+hidden}종 ▾`;
+      }
+    }
     function fitQdrinkText(){
       document.querySelectorAll(".qdname").forEach(el=>{
         let size=parseFloat(getComputedStyle(el).fontSize);
@@ -1895,6 +1973,7 @@
         case "refresh": toast("최신 상태예요"); render(); break;
         case "editHol": state.holDraft={days:{...((state.holidays||{}).days||{})}}; state.holMonth=null; state.view="hol-edit"; render(); break;
         case "saveHol": doSaveHol(); break;
+        case "chipsToggle": state.chipsOpen=!state.chipsOpen; render(); break;
         case "clearQFilter": state.qFilter=null; render(); break;
         case "csv": downloadMonthCSV(); break;
         case "toggleSound":
@@ -1933,7 +2012,7 @@
           state.addMenuOpen=false; render(); toast(`${base} 추가했어요`);
           break;
         }
-        case "addTeam": readTeamInputs(); state.teams.push({id:"t"+Date.now(),name:"새 팀",color:colorFor(state.teams.length)}); render(); break;
+        case "addTeam": readTeamInputs(); state.teams.push({id:"t"+Date.now(),name:"새 팀",color:colorFor(state.teams.length),_new:true}); render(); break;
         case "saveMenu": doSaveMenu(); break;
         case "saveTeams": doSaveTeams(); break;
         case "saveTime": doSaveTime(); break;
@@ -2174,7 +2253,7 @@
     }
     async function doSaveTeams(){
       readTeamInputs();
-      state.teams.forEach((t,i)=>{ if(!t.color) t.color=colorFor(i); if(!t.name) t.name="이름없음"; });
+      state.teams=state.teams.map(({_new,...t},i)=>({...t, color:t.color||colorFor(i), name:t.name||"이름없음"})); // 화면용 표시(_new)는 저장하지 않음
       await saveTeams(state.teams);
       state.view="home"; render(); toast("팀을 저장했어요");
     }
