@@ -96,6 +96,13 @@
     .wkrow{display:flex;align-items:center;justify-content:space-between;gap:12px}
     .wkrow .wl{font-size:15px;font-weight:800}
     .wkrow .ws{font-size:12px;color:var(--sub);margin-top:3px}
+    .testbar{position:sticky;top:0;z-index:30;display:flex;align-items:center;justify-content:space-between;gap:10px;background:#f97316;color:#fff;font-size:13px;font-weight:800;padding:8px 14px}
+    .testbar button{flex:0 0 auto;background:#fff;color:#c2410c;font-weight:800;font-size:12.5px;padding:6px 12px;border-radius:99px}
+    .realwarn{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#fef2f2;border:2px solid #dc2626;color:#991b1b;border-radius:16px;padding:12px 14px;font-size:14px;font-weight:700;margin-bottom:12px}
+    .realwarn button{flex:0 0 auto;background:#dc2626;color:#fff;font-weight:800;font-size:13px;padding:9px 12px;border-radius:12px}
+    .dash.test,.hero.test{background:linear-gradient(135deg,#fb923c 0%,#ea580c 100%);box-shadow:0 14px 30px rgba(234,88,12,.28)}
+    .navtext button.locked{color:#9aa6bd;background:#eef1f6}
+    .navtext button.cleartest{background:#fff4e5;color:#c2410c}
     .noticebox{display:flex;gap:9px;align-items:flex-start;background:#fffbeb;border:1px solid #fde68a;border-radius:16px;padding:13px 15px;margin-bottom:14px}
     .noticebox .ic{font-size:16px;line-height:1.5;flex:0 0 auto}
     .noticebox .tx{font-size:13.5px;line-height:1.55;color:#92700a;font-weight:600;word-break:keep-all}
@@ -566,10 +573,20 @@
     // 배포할 때마다 이 값을 바꿔주세요 — 값이 바뀌면 모든 기기가 자동으로 최신 버전을 받아옵니다
     // 버전 규칙: "수정한 날짜-그날의 순번" (예: 2026-09-18-01 → 같은 날 또 수정하면 -02)
     // 날짜가 바뀌면 순번은 01부터 다시 시작. 코드 수정 시 반드시 이 값을 바꿔야 자동 업데이트가 동작함.
-    const APP_BUILD = "2026-09-19-02";
+    const APP_BUILD = "2026-09-19-03";
     // 이름은 띄어쓰기 없이 사용 ("김철수"와 "김 철수"가 다른 사람이 되는 문제 방지)
     const nm = s => String(s||"").replace(/\s+/g,"");
     const sameName = (a,b) => nm(a)===nm(b);
+    // ---------- 테스트 모드 ----------
+    // 담당자 비밀번호 6067 → 테스트 담당자 / 이름이 "테스트"로 시작하는 직원(테스트, 테스트1…) → 테스트 직원.
+    // 테스트 모드의 주문은 daily/"TEST-날짜" 문서에 따로 저장 → 실제 주문·번호·집계와 완전히 분리.
+    // 시간·휴무·주말 제한 없이 항상 주문 가능. 설정(메뉴·팀·시간·휴무·공지) 수정은 막음(실제 앱에 반영되므로).
+    const TEST_PREFIX="TEST-";
+    const isTestBarista = () => !!(state && state.user && state.user.team==="barista" && state.user.test);
+    const isTestEmp = () => !!(state && state.user && state.user.team!=="barista" && nm(state.user.name).startsWith("테스트"));
+    const isTestMode = () => isTestBarista() || isTestEmp();
+    const dataPrefix = () => isTestMode() ? TEST_PREFIX : "";
+    const dailyKey = () => dataPrefix() + todayKey(); // 지금 모드의 오늘 주문 문서 id
     const todayKey = () => { const d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; };
     const toMin = hhmm => { const [h,m]=hhmm.split(":").map(Number); return h*60+m; };
     const nowMin = () => { const d=new Date(); return d.getHours()*60+d.getMinutes(); };
@@ -685,7 +702,7 @@
         }
       }catch(e){}
     }
-    document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible"){ maybeWake(); subscribeDaily(); checkForUpdate(); } });
+    document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible"){ checkTestExpiry(); maybeWake(); subscribeDaily(); checkForUpdate(); } });
     // accessor so existing TEAMS.* code keeps working
     const TEAMS = { get list(){return state.teams;}, find(fn){return state.teams.find(fn);}, filter(fn){return state.teams.filter(fn);}, map(fn){return state.teams.map(fn);} };
     const teamById = id => state.teams.find(t=>t.id===id) || {id,name:id,color:"#64748b"};
@@ -722,6 +739,12 @@
         {key:"ln", start:h.lnStart||"11:30", end:h.lnEnd||"13:00", on:h.lnOn!==false, label:"점심"},
         {key:"pm", start:h.pmStart, end:h.pmEnd, on:h.pmOn!==false, label:"오후"},
       ].filter(s=>s.on);
+      if(isTestMode()){
+        // 테스트: 시간·휴무·주말과 관계없이 항상 열림. 시간대는 지금 시각에 가까운 세션으로 표시
+        const list=sessions.length?sessions:[{key:"am",end:h.amEnd||"10:30"}];
+        const s=list.find(x=>n<=toMin(x.end)) || list[list.length-1];
+        return {open:true, session:s.key, endsAt:s.end, left:999, soon:false, test:true};
+      }
       if(!sessions.length) return {open:false, next:"운영 안내", at:"-"};
       const holiday=isHoliday(tk);
       if(!holiday){
@@ -754,7 +777,7 @@
     //   (충돌이 없는 일반 쓰기) 번호는 잠시 뒤 따로 발급함(ensureMyNumber + 담당자 기기 repairPickupNos).
     //   → 주문이 사라지는 일은 없고, 번호만 1~2초 늦게 나올 수 있음.
     async function commitNewOrder(fields){
-      const ref=doc(db,"daily",todayKey());
+      const ref=doc(db,"daily",dailyKey());
       fields={...fields, build:APP_BUILD}; // 어느 버전 앱이 만든 주문인지 기록 (번호 문제 추적용)
       try{
         const no=await runTransaction(db, async tx=>{
@@ -784,7 +807,7 @@
         if(!cur || Number(cur.no)>0) return;
         try{
           await runTransaction(db, async tx=>{
-            const ref=doc(db,"daily",todayKey());
+            const ref=doc(db,"daily",dailyKey());
             const snap=await tx.get(ref); if(!snap.exists()) return;
             const data=snap.data(), o=(data.orders||{})[id];
             if(!o || Number(o.no)>0) return;
@@ -827,7 +850,7 @@
       if(_repairingNos) return;
       _repairingNos=true;
       try{
-        const ref=doc(db,"daily",todayKey());
+        const ref=doc(db,"daily",dailyKey());
         const changed=await txRun(async tx=>{
           const snap=await tx.get(ref);
           if(!snap.exists()) return [];
@@ -859,7 +882,7 @@
 
     let _dailyUnsub=null, _dailyKey=null;
     function subscribeDaily(){
-      const key=todayKey();
+      const key=dailyKey(); // 테스트 모드면 TEST-날짜 문서, 모드가 바뀌면 자동으로 다시 연결
       if(_dailyKey===key) return; // 이미 오늘 날짜에 연결돼 있음
       if(_dailyUnsub){ _dailyUnsub(); _dailyUnsub=null; }
       _dailyKey=key;
@@ -896,7 +919,7 @@
     //  옛날 값으로 되돌아가거나 삭제된 주문이 되살아날 위험이 있었음)
     // mutate(cur) → 바꾼 주문 객체를 반환하면 저장, 문자열을 반환하면 저장하지 않고 그 사유를 돌려줌
     async function updateOrder(id, mutate){
-      const ref=doc(db,"daily",todayKey());
+      const ref=doc(db,"daily",dailyKey());
       const res=await txRun(async tx=>{
         const snap=await tx.get(ref);
         const cur=snap.exists() ? (snap.data().orders||{})[id] : null;
@@ -911,7 +934,7 @@
     }
     // 여러 주문을 한 번에 수정 (묶어서 시작/완료, 전체 수령 등). mutate가 문자열을 돌려준 주문은 건너뜀.
     async function updateOrders(ids, mutate){
-      const ref=doc(db,"daily",todayKey());
+      const ref=doc(db,"daily",dailyKey());
       const done=await txRun(async tx=>{
         const snap=await tx.get(ref);
         const orders=snap.exists() ? (snap.data().orders||{}) : {};
@@ -936,10 +959,13 @@
       else if(res.err==="changed") toast("방금 음료가 바뀌었어요. 확인하고 다시 눌러 주세요");
       render(); return true;
     }
-    const saveMenu=async i=>{state.menu=i;await setDoc(doc(db,"config","menu"),{items:i});};
-    const saveTeams=async i=>{state.teams=i;await setDoc(doc(db,"config","teams"),{items:i});};
-    const saveHours=async h=>{state.hours=h;await setDoc(doc(db,"config","hours"),h);};
+    // 테스트 모드에서는 설정을 절대 저장하지 않음 (실제 앱 설정과 같은 곳이라서)
+    const noTestSave=()=>{ if(isTestMode()){ toast("🔒 테스트 모드에서는 설정을 저장할 수 없어요"); throw new Error("test-mode-config-write-blocked"); } };
+    const saveMenu=async i=>{noTestSave();state.menu=i;await setDoc(doc(db,"config","menu"),{items:i});};
+    const saveTeams=async i=>{noTestSave();state.teams=i;await setDoc(doc(db,"config","teams"),{items:i});};
+    const saveHours=async h=>{noTestSave();state.hours=h;await setDoc(doc(db,"config","hours"),h);};
     const saveNotice=async text=>{
+      noTestSave();
       const t=(text||"").trim();
       if(!t){ state.notice=null; await setDoc(doc(db,"config","notice"),{text:"",updatedAt:new Date().toISOString()}); return; }
       state.notice={text:t,updatedAt:new Date().toISOString()};
@@ -979,10 +1005,11 @@
     function render(){
       // 태블릿/PC처럼 넓은 화면에서 담당자 메인은 2단으로 넓게 (CSS의 body.wide 참고)
       document.body.classList.toggle("wide", !!(state.user && state.user.team==="barista" && !["menu-edit","team-edit","time-edit","notice-edit","hol-edit","disp","stats"].includes(state.view)));
+      syncRealWatch();
       if(!state.user) return renderLogin();
       maybeWake();
       syncHistory();
-      app.innerHTML = renderHeader() + `<div class="wrap" id="wrap"></div>`;
+      app.innerHTML = testBarHTML() + renderHeader() + `<div class="wrap" id="wrap"></div>`;
       const w=document.getElementById("wrap");
       if(state.user.team==="barista"){
         if(state.view==="menu-edit") w.innerHTML=renderMenuEdit();
@@ -1071,7 +1098,9 @@
       document.getElementById("bb").addEventListener("click",()=>{
         const pin=prompt("담당자 비밀번호를 입력하세요");
         if(pin===null) return;
-        if(pin.trim()!=="0825"){ toast("비밀번호가 틀렸어요"); return; }
+        const code=pin.trim();
+        if(code==="6067"){ doLogin(nm(ni.value)||"테스트담당자","barista",true); return; } // 테스트 담당자
+        if(code!=="0825"){ toast("비밀번호가 틀렸어요"); return; }
         doLogin(nm(ni.value)||"담당자","barista");
       });
     }
@@ -1083,11 +1112,13 @@
       el.value=nm(el.value); try{ el.setSelectionRange(before,before); }catch(_){}
       if(!_spaceWarned){ _spaceWarned=true; toast("이름은 띄어쓰기 없이 입력해 주세요"); }
     }
-    function doLogin(name,team){
+    function doLogin(name,team,test){
       name=nm(name);
-      state.user={name,team};
+      state.user = test ? {name,team,test:true,testDay:todayKey()} : {name,team};
       localStorage.setItem("ian_user",JSON.stringify(state.user));
       state.view="home";
+      subscribeDaily(); // 실제/테스트 주문 문서 전환
+      if(isTestMode()) setTimeout(()=>toast("🧪 테스트 모드예요 · 실제 주문과 분리돼요"),50);
       if("Notification" in window && Notification.permission==="default") Notification.requestPermission();
       render();
     }
@@ -1124,7 +1155,7 @@
           <h1><span class="nm">${esc(u.name)}</span>님, 안녕하세요.<br/>좋은 하루 보내세요.</h1>
           <div class="date">${new Date().toLocaleDateString("ko-KR",{month:"long",day:"numeric",weekday:"long"})}</div>
         </div>
-        <div class="hero"><div class="bigcup">${heroEmoji()}</div><div class="rel">
+        <div class="hero${isTestMode()?' test':''}"><div class="bigcup">${heroEmoji()}</div><div class="rel">
           <div class="team">${esc(t.name)} · ${ss.open?`${sessName(ss.session)} 주문 중`:ss.holiday?"오늘 휴무":"주문 시간 외"}</div>
           <h1>${mine?(mine.status==="ready"?"음료가 준비됐어요":"오늘 주문 완료"):ss.holiday?"오늘은 휴무예요":"오늘의 한 잔"}</h1>
           <div class="sub">${ss.open?(ss.soon?`<b class="soon">⏰ 곧 마감돼요 · ${ss.left}분 남았어요</b>`:`지금 주문을 받고 있어요 (~${ss.endsAt})`):`${ss.holiday&&ss.reason?esc(ss.reason)+" · ":""}${ss.next} 주문은 ${ss.at}부터예요`}</div>
@@ -1310,13 +1341,14 @@
       let byDay={};
       try{
         // 한 번의 조회로 그 달 문서 전부 (문서 id가 날짜라 범위 조회 가능)
-        const qs=await getDocs(query(collection(db,"daily"), where(documentId(),">=",`${ym}-01`), where(documentId(),"<=",`${ym}-31`)));
-        qs.forEach(d=>{ byDay[d.id]=d.data().orders||{}; });
+        const P=dataPrefix(); // 실제 모드는 "2026-09-.." 범위라 TEST- 문서는 자동으로 빠짐
+        const qs=await getDocs(query(collection(db,"daily"), where(documentId(),">=",`${P}${ym}-01`), where(documentId(),"<=",`${P}${ym}-31`)));
+        qs.forEach(d=>{ byDay[d.id.slice(P.length)]=d.data().orders||{}; });
       }catch(e){
         // 보안 규칙상 범위 조회가 막혀 있으면 하루씩 조회
         console.warn("month query failed, fallback per day", e);
         const keys=[]; for(let d=1; d<=days; d++){ const k=`${ym}-${String(d).padStart(2,"0")}`; if(k<=todayKey()) keys.push(k); }
-        const snaps=await Promise.all(keys.map(k=>getDoc(doc(db,"daily",k)).catch(()=>null)));
+        const snaps=await Promise.all(keys.map(k=>getDoc(doc(db,"daily",dataPrefix()+k)).catch(()=>null)));
         snaps.forEach((sn,i)=>{ if(sn && sn.exists()) byDay[keys[i]]=sn.data().orders||{}; });
       }
       _statsLoadingYM=null;
@@ -1362,7 +1394,7 @@
       if(rows.length===1){ toast("이 달에는 주문 기록이 없어요"); return; }
       const csv="\ufeff"+rows.map(r=>r.map(v=>{ const x=String(v??""); return /[",\n]/.test(x)?`"${x.replace(/"/g,'""')}"`:x; }).join(",")).join("\r\n");
       const url=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));
-      const a=document.createElement("a"); a.href=url; a.download=`이안음료_${state.statsMonth}.csv`;
+      const a=document.createElement("a"); a.href=url; a.download=`${isTestMode()?"테스트_":""}이안음료_${state.statsMonth}.csv`;
       document.body.appendChild(a); a.click(); a.remove();
       setTimeout(()=>URL.revokeObjectURL(url), 5000);
       toast(`${rows.length-1}건을 내려받았어요`);
@@ -1487,6 +1519,7 @@
         <button class="primary" style="margin-top:16px" data-act="saveHol">저장하기</button>`;
     }
     async function doSaveHol(){
+      noTestSave();
       readHolInputs();
       const today=todayKey(), days={};
       Object.keys(state.holDraft.days).filter(k=>k>=today && !isWeekend(k)).sort().forEach(k=>{ days[k]=String(state.holDraft.days[k]||"").trim(); }); // 지난 날짜·주말은 정리
@@ -1537,7 +1570,8 @@
         </div>`);
 
       return `
-        <div class="dash"><div class="dashemo">${dashEmoji()}</div><div class="dashbody"><div class="date">${dateStr}</div><h1 class="serif">담당자 대시보드</h1>
+        ${isTestBarista() && state.realWaiting>0 ? `<div class="realwarn"><span>⚠️ 실제 주문 <b>${state.realWaiting}건</b>이 기다리고 있어요. 테스트 모드에서는 안 보여요.</span><button data-act="endTest">테스트 끝내기</button></div>` : ""}
+        <div class="dash${isTestMode()?' test':''}"><div class="dashemo">${dashEmoji()}</div><div class="dashbody"><div class="date">${dateStr}</div><h1 class="serif">${isTestMode()?"🧪 테스트 대시보드":"담당자 대시보드"}</h1>
           <div class="stats">
             <div class="stat a"><b>${pending.length}</b><small>대기</small></div>
             <div class="stat"><b>${confirmed.length}</b><small>제조 중</small></div>
@@ -1567,12 +1601,13 @@
           <h2 class="sec serif" style="margin-top:24px">관리 메뉴</h2>
           <div class="navtext">
             <button data-act="disp">주문 목록</button>
-            <button data-act="editMenu">메뉴 관리</button>
-            <button data-act="editTeams">팀 관리</button>
-            <button data-act="editTime">주문 시간 설정</button>
-            <button data-act="editHol">📅 휴무일 설정</button>
+            <button data-act="editMenu"${isTestMode()?' class="locked"':''}>${isTestMode()?"🔒 ":""}메뉴 관리</button>
+            <button data-act="editTeams"${isTestMode()?' class="locked"':''}>${isTestMode()?"🔒 ":""}팀 관리</button>
+            <button data-act="editTime"${isTestMode()?' class="locked"':''}>${isTestMode()?"🔒 ":""}주문 시간 설정</button>
+            <button data-act="editHol"${isTestMode()?' class="locked"':''}>${isTestMode()?"🔒":"📅"} 휴무일 설정</button>
             <button data-act="stats">📊 집계</button>
-            <button data-act="editNotice">📢 공지사항</button>
+            <button data-act="editNotice"${isTestMode()?' class="locked"':''}>${isTestMode()?"🔒":"📢"} 공지사항</button>
+            ${isTestMode()?`<button data-act="clearTest" class="cleartest">🧹 테스트 주문 모두 지우기</button>`:""}
           </div>
           <div style="text-align:center;color:#c4cede;font-size:11px;margin-top:16px">버전 ${APP_BUILD}</div>
         </div>
@@ -1806,7 +1841,7 @@
         if(statsByDay()) return; // 한 달치를 이미 불러왔으면 추가 조회 없이 바로 표시
         if(key===todayKey()){ state.statsData=state.orders; render(); return; }
         try{
-          const snap=await getDoc(doc(db,"daily",key));
+          const snap=await getDoc(doc(db,"daily",dataPrefix()+key));
           state.statsData=snap.exists()?(snap.data().orders||{}):{};
         }catch(e){ state.statsData={}; }
         render();
@@ -1815,9 +1850,13 @@
       const gd=document.getElementById("guide"); if(gd) gd.addEventListener("toggle",()=>{ state.guideOpen=gd.open; });
     }
 
+    const SETTING_ACTS=new Set(["editMenu","editTeams","editTime","editHol","editNotice"]);
     function handle(act){
+      if(isTestMode() && SETTING_ACTS.has(act)){ toast("🔒 테스트 모드에서는 설정을 바꿀 수 없어요 (실제 앱에 그대로 반영돼서)"); return; }
       switch(act){
-        case "logout": if(confirm("로그아웃 할까요? (다시 이름·팀을 입력해야 해요)")){localStorage.removeItem("ian_user");state.user=null;render();} break;
+        case "logout": if(confirm("로그아웃 할까요? (다시 이름·팀을 입력해야 해요)")){localStorage.removeItem("ian_user");state.user=null;subscribeDaily();render();} break;
+        case "endTest": if(confirm("테스트 모드를 끝낼까요? 담당자 비밀번호로 다시 로그인하면 실제 주문을 받아요.")){ localStorage.removeItem("ian_user"); state.user=null; subscribeDaily(); render(); toast("테스트 모드를 끝냈어요"); } break;
+        case "clearTest": clearTestOrders(); break;
         case "bell": state.view="notifications"; render(); break;
         case "goOrder": state.view="order"; render(); break;
         case "goAdd": state.addTeam=state.user.team!=="barista"?state.user.team:null; state.addName=""; state.view="add-person"; render(); break;
@@ -1936,7 +1975,7 @@
     }
     // 아직 "대기"인 주문만 삭제 (서버에서 확인) → null | "gone" | "started"
     async function deletePendingOrder(id){
-      const ref=doc(db,"daily",todayKey());
+      const ref=doc(db,"daily",dailyKey());
       const err=await txRun(async tx=>{
         const snap=await tx.get(ref);
         const cur=snap.exists() ? (snap.data().orders||{})[id] : null;
@@ -2002,7 +2041,7 @@
       if(!confirm(`${o.name}님 주문을 삭제할까요?`)) return;
       if(isBarista){
         // 담당자는 상태와 관계없이 삭제 가능 — 해당 항목만 콕 집어 서버에서 제거
-        await setDoc(doc(db,"daily",todayKey()),{orders:{[id]:deleteField()}},{merge:true});
+        await setDoc(doc(db,"daily",dailyKey()),{orders:{[id]:deleteField()}},{merge:true});
       } else {
         // 직원은 서버에서 아직 "대기"인지 확인한 뒤에만 삭제 (확인 창 띄운 사이 제조가 시작됐을 수 있음)
         const err=await deletePendingOrder(id);
@@ -2042,6 +2081,38 @@
       if(orderFailToast(res)) return;
       render();
       toast(from==="pending" ? `${o.name}님 음료 제조를 시작했어요` : `${o.name}님 음료 완료! 알림을 보냈어요`);
+    }
+
+    // ---- 테스트 모드 도구 ----
+    async function clearTestOrders(){
+      if(!isTestMode()) return; // 안전장치: 실제 모드에서는 절대 실행 안 함
+      if(!confirm("오늘 테스트 주문을 모두 지울까요? (실제 주문은 그대로예요)")) return;
+      await setDoc(doc(db,"daily",TEST_PREFIX+todayKey()),{orders:{},nextNo:0}); // TEST- 문서만 비움
+      state.orders={}; state.qFilter=null; render(); toast("테스트 주문을 모두 지웠어요");
+    }
+    // 테스트 담당자 화면에서도 실제 주문이 들어왔는지 지켜봄 (월요일 아침에 테스트 모드로 둔 채 놓치는 일 방지)
+    let _realUnsub=null, _realKey=null;
+    function syncRealWatch(){
+      const want=isTestBarista()?todayKey():null;
+      if(want===_realKey) return;
+      if(_realUnsub){ _realUnsub(); _realUnsub=null; }
+      _realKey=want; state.realWaiting=0;
+      if(want) _realUnsub=onSnapshot(doc(db,"daily",want), s=>{
+        const os=s.exists()?(s.data().orders||{}):{};
+        const n=Object.values(os).filter(o=>o.status==="pending"||o.status==="confirmed").length;
+        if(n!==state.realWaiting){ state.realWaiting=n; safeRender(); }
+      }, e=>console.error(e));
+    }
+    // 테스트 담당자 모드는 자정이 지나면 자동으로 끝남 (깜빡하고 둬도 다음 날엔 로그인 화면으로)
+    function checkTestExpiry(){
+      if(isTestBarista() && state.user.testDay!==todayKey()){
+        localStorage.removeItem("ian_user"); state.user=null; subscribeDaily(); render();
+        toast("자정이 지나 테스트 모드가 끝났어요. 담당자로 다시 로그인해 주세요");
+      }
+    }
+    function testBarHTML(){
+      if(!isTestMode()) return "";
+      return `<div class="testbar"><span>🧪 테스트 모드 · 실제 주문과 분리돼요 · 시간·휴무 제한 없음</span>${isTestBarista()?`<button data-act="endTest">테스트 끝내기</button>`:""}</div>`;
     }
 
     // ---- 담당자: 되돌리기 / 수령 / 묶어서 처리 ----
@@ -2127,7 +2198,8 @@
     try{ if("speechSynthesis" in window){ _voices=speechSynthesis.getVoices(); speechSynthesis.onvoiceschanged=()=>{ _voices=speechSynthesis.getVoices(); }; } }catch(e){}
     startSync(); render();
     checkForUpdate();
-    setInterval(()=>{ subscribeDaily(); checkForUpdate(); if(state.user&&state.view==="home") render(); }, 60000); // 매분: 날짜 전환 + 자동 업데이트 확인 + 주문 시간 상태 갱신
+    checkTestExpiry();
+    setInterval(()=>{ checkTestExpiry(); subscribeDaily(); checkForUpdate(); if(state.user&&state.view==="home") render(); }, 60000); // 매분: 날짜 전환 + 자동 업데이트 확인 + 주문 시간 상태 갱신
   </script>
 </body>
 </html>
