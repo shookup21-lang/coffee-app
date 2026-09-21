@@ -10,7 +10,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@700&display=swap" rel="stylesheet" />
   <style>
     :root{
       --bg:#f6efdc;--card:#ffffff;--ink:#192d45;--sub:#7c8794;--line:#ebe3cd;
@@ -160,7 +159,7 @@
     .hero .hname .temptag{font-size:12px;vertical-align:2px}
     .hero .pickno{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;background:#fff;border-radius:16px;padding:8px 12px;min-width:68px}
     .hero .pickno .pickno-lbl{font-size:10.5px;font-weight:700;color:#c2632a;white-space:nowrap}
-    .hero .pickno .pickno-n{font-size:32px;font-weight:700;color:#f97316;line-height:1.15;font-family:'Roboto Mono',monospace}
+    .hero .pickno .pickno-n{font-size:32px;font-weight:800;color:#f97316;line-height:1.15;font-family:'Pretendard',system-ui,sans-serif;font-feature-settings:'ss01','tnum';font-variant-numeric:tabular-nums}
     .hero .pickno.green .pickno-lbl{color:#15803d}
     .hero .pickno.green .pickno-n{color:#16a34a}
     .hero.myorder.ready{background:linear-gradient(135deg,#22c55e 0%,#16a34a 100%);box-shadow:0 14px 30px rgba(22,163,74,.30)}
@@ -267,7 +266,7 @@
     .mycup .mstat{font-size:13px;color:var(--sub);margin-top:6px}
     .mycup .pickno{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#f1e8d2;border-radius:14px;padding:8px 14px;min-width:52px}
     .mycup .pickno .pickno-lbl{font-size:10px;font-weight:700;color:#5b7bb8;white-space:nowrap}
-    .mycup .pickno .pickno-n{font-size:24.2px;font-weight:700;color:#192d45;line-height:1.2;margin-top:1px;font-family:'Roboto Mono',monospace;-webkit-text-stroke:0.3px currentColor}
+    .mycup .pickno .pickno-n{font-size:24.2px;font-weight:800;color:#192d45;line-height:1.2;margin-top:1px;font-family:'Pretendard',system-ui,sans-serif;font-feature-settings:'ss01','tnum';font-variant-numeric:tabular-nums;-webkit-text-stroke:0.3px currentColor}
     .mycup .pickno.orange{background:#fff2e8}
     .mycup .pickno.orange .pickno-lbl{color:#c2632a}
     .mycup .pickno.orange .pickno-n{color:#f97316}
@@ -331,7 +330,7 @@
     .qrow{display:flex;align-items:center;gap:12px;background:#fff;border-radius:16px;padding:12px 14px;margin-bottom:8px;box-shadow:0 2px 10px rgba(70,55,25,.06)}
     .qrow.making{outline:2px solid #192d45;outline-offset:-2px}
     .qrow.done{opacity:.5}
-    .qno{flex:0 0 auto;width:36px;height:36px;border-radius:99px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15.5px;color:#fff;font-family:'Roboto Mono',monospace;-webkit-text-stroke:0.3px currentColor}
+    .qno{flex:0 0 auto;width:36px;height:36px;border-radius:99px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15.5px;color:#fff;font-family:'Pretendard',system-ui,sans-serif;font-feature-settings:'ss01','tnum';font-variant-numeric:tabular-nums;-webkit-text-stroke:0.3px currentColor}
     .qno.orange{background:#f97316}
     .qno.green{background:#16a34a}
     .qno.blue{background:#192d45}
@@ -454,7 +453,7 @@
     .seg{display:flex;gap:8px;margin-bottom:16px;background:#e8dec3;padding:5px;border-radius:16px}
     .seg button{flex:1;padding:11px;border-radius:12px;font-size:14px;font-weight:700;background:transparent;color:var(--sub)}
     .seg button.on{background:#fff;color:#192d45;box-shadow:0 2px 8px rgba(70,55,25,.1)}
-    .seq{display:inline-flex;align-items:center;justify-content:center;min-width:26px;height:26px;padding:0 5px;border-radius:99px;background:#192d45;color:#fff;font-size:13.2px;font-weight:700;flex:0 0 auto;font-family:'Roboto Mono',monospace;-webkit-text-stroke:0.3px currentColor}
+    .seq{display:inline-flex;align-items:center;justify-content:center;min-width:26px;height:26px;padding:0 5px;border-radius:99px;background:#192d45;color:#fff;font-size:13.2px;font-weight:800;flex:0 0 auto;font-family:'Pretendard',system-ui,sans-serif;font-feature-settings:'ss01','tnum';font-variant-numeric:tabular-nums;-webkit-text-stroke:0.3px currentColor}
     .seq.pending{background:#f97316}
     .seq.green{background:#16a34a}
     /* list row with edit/delete (employee team list) */
@@ -712,7 +711,7 @@
     // 배포할 때마다 이 값을 바꿔주세요 — 값이 바뀌면 모든 기기가 자동으로 최신 버전을 받아옵니다
     // 버전 규칙: "수정한 날짜-그날의 순번" (예: 2026-09-18-01 → 같은 날 또 수정하면 -02)
     // 날짜가 바뀌면 순번은 01부터 다시 시작. 코드 수정 시 반드시 이 값을 바꿔야 자동 업데이트가 동작함.
-    const APP_BUILD = "2026-09-20-04";
+    const APP_BUILD = "2026-09-21-01";
     // 이름은 띄어쓰기 없이 사용 ("김철수"와 "김 철수"가 다른 사람이 되는 문제 방지)
     const nm = s => String(s||"").replace(/\s+/g,"");
     const sameName = (a,b) => nm(a)===nm(b);
