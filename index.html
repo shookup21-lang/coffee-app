@@ -447,6 +447,8 @@
       body.wide .qrow{padding:9px 12px;margin-bottom:6px}
       body.wide .qrow.waitpick .qdrink{font-size:15px}
     }
+    .dupwarn{display:inline-block;font-size:10.5px;font-weight:800;color:#fff;background:#dc2626;border-radius:6px;padding:1px 6px;margin-right:5px;vertical-align:1px}
+    .dupbar{background:#fef2f2;border:1px solid #fecaca;color:#991b1b;border-radius:14px;padding:10px 13px;font-size:13px;font-weight:600;line-height:1.5;margin-bottom:10px}
     .qdonelbl{flex:0 0 auto;font-size:12px;font-weight:700;color:#15803d;background:#eaf6ec;padding:8px 12px;border-radius:99px;white-space:nowrap}
 
     /* segmented + dispense */
@@ -727,7 +729,7 @@
     // 배포할 때마다 이 값을 바꿔주세요 — 값이 바뀌면 모든 기기가 자동으로 최신 버전을 받아옵니다
     // 버전 규칙: "수정한 날짜-그날의 순번" (예: 2026-09-18-01 → 같은 날 또 수정하면 -02)
     // 날짜가 바뀌면 순번은 01부터 다시 시작. 코드 수정 시 반드시 이 값을 바꿔야 자동 업데이트가 동작함.
-    const APP_BUILD = "2026-09-28-01";
+    const APP_BUILD = "2026-10-20-02";
     // 이름은 띄어쓰기 없이 사용 ("김철수"와 "김 철수"가 다른 사람이 되는 문제 방지)
     const nm = s => String(s||"").replace(/\s+/g,"");
     const sameName = (a,b) => nm(a)===nm(b);
@@ -936,29 +938,67 @@
     //   → 주문이 사라지는 일은 없고, 번호만 1~2초 늦게 나올 수 있음.
     // 주문 id: 시각 + 난수 (예전 "o-"+시각만 쓰면 두 폰이 같은 1/1000초에 누를 때 id가 같아져 한 명 주문이 사라졌음)
     const newOrderId = () => "o-"+Date.now()+"-"+Math.random().toString(36).slice(2,8);
+    // (10-20) 주문 칸 고정: 한 사람(팀+이름)의 오늘 주문 id는 항상 같음 → 어떤 경로로 저장돼도 서버에 2건이 생길 수 없음.
+    //   "o-s날짜-해시" (영문·숫자만 — 이름이 한글이라도 서버 키는 기존 "o-…" id와 같은 모양). 날짜를 넣어 매일 다른 id.
+    //   해시가 우연히 다른 사람과 같으면(사실상 없음) commitNewOrder가 예전처럼 무작위 id로 바꿈.
+    function fnv(str, seed){ let h=seed>>>0; for(let i=0;i<str.length;i++){ h^=str.charCodeAt(i); h=Math.imul(h,16777619)>>>0; } return h.toString(16).padStart(8,"0"); }
+    const slotId = (team, name) => { const k=String(team)+"|"+nm(name); return "o-s"+todayKey().replace(/-/g,"")+"-"+fnv(k,2166136261)+fnv(k,0x9747b28c); };
     const sameOwner = (a,b) => !!(a && b && a.team===b.team && sameName(a.name,b.name));
+    // 서버 주문 목록에서 같은 사람(팀+이름)의 오늘 주문 찾기 → [id, 주문] | null
+    const findOwnerOrder = (orders, f) => Object.entries(orders||{}).find(([id,o])=>sameOwner(o,f)) || null;
+    // 반환: {id, no, prev} — prev가 있으면 "새 주문"이 아니라 이미 있던 내 주문의 음료를 바꾼 것 (prev = 원래 음료)
+    //       {err:"started"} — 이미 제조가 시작된/완료된 주문이 있어서 아무것도 안 함
+    // ※ (10-20) 같은 사람 주문이 2건 생기던 문제: 예전엔 "내 폰 화면에 내 주문이 보이는지"로만 새 주문/변경을 정했음.
+    //   앱을 막 켜서 목록이 아직 안 왔거나, 동료가 대신 주문을 넣는 순간 본인도 주문하면 새 주문이 하나 더 생겼음.
+    //   → 저장하는 순간 서버 목록에서 같은 사람 주문을 다시 확인해서, 있으면 그 주문을 바꿈(대기일 때만).
     async function commitNewOrder(fields){
       const ref=doc(db,"daily",dailyKey());
       fields.build=APP_BUILD; // 어느 버전 앱이 만든 주문인지 기록 (번호 문제 추적용) — 호출한 쪽 객체를 그대로 써서 id가 바뀌면 호출한 쪽도 알게 함
       try{
-        const no=await runTransaction(db, async tx=>{
+        const r=await runTransaction(db, async tx=>{
           const snap=await tx.get(ref);
           const data=snap.exists()?snap.data():{};
-          let already=(data.orders||{})[fields.id];
-          for(let k=1; already && !sameOwner(already,fields); k++){ fields.id=newOrderId()+k; already=(data.orders||{})[fields.id]; } // (안전망) 다른 사람이 같은 id를 쓰고 있으면 새 id로
-          if(already && already.no) return already.no; // 앞선 시도가 이미 저장됐으면 그대로 (중복 방지)
+          const orders=data.orders||{};
+          const own=findOwnerOrder(orders, fields);
+          if(own){
+            const [eid,cur]=own;
+            if(eid===fields.id && cur.no) return {id:eid, no:cur.no}; // 앞선 시도가 이미 저장됐으면 그대로
+            if(cur.status!=="pending") return {err:"started", cur};
+            const next={...cur, ...fields, id:eid}; // fields엔 번호가 없어서 cur.no 그대로 // 기존 주문의 음료만 바꿈 (번호 유지, 시간은 지금 → 큐 맨 뒤, 기존 변경 규칙과 같음)
+            tx.update(ref, new FieldPath("orders", eid), next);
+            return {id:eid, no:cur.no, prev:cur.drinkId, next};
+          }
+          let already=orders[fields.id];
+          for(let k=1; already; k++){ fields.id=newOrderId()+k; already=orders[fields.id]; } // (안전망) 다른 사람이 같은 id를 쓰고 있으면 새 id로
           const next=nextPickupNo(data);
           tx.set(ref,{orders:{[fields.id]:{...fields, no:next}}, nextNo:next},{merge:true});
-          return next;
+          return {id:fields.id, no:next};
         }, {maxAttempts:3});
-        state.orders={...state.orders,[fields.id]:{...fields, no}};
-        return no;
+        if(r.err) return r;
+        fields.id=r.id;
+        state.orders={...state.orders,[r.id]: r.next || {...fields, no:r.no}};
+        return r;
       }catch(e){
         console.warn("번호 발급 트랜잭션 실패 → 주문만 먼저 저장", e);
+        // 몰림 안전망: 그래도 저장 직전에 서버 목록을 한 번 읽어 같은 사람 주문이 있는지 확인 (읽기는 충돌이 없음)
+        let own=null;
+        let _srvOrders=null;
+        try{ const s=await getDoc(ref); _srvOrders=s.exists()?(s.data().orders||{}):{}; own=findOwnerOrder(_srvOrders, fields); }catch(_){}
+        if(own){
+          const [eid,cur]=own;
+          if(cur.status!=="pending") return {err:"started", cur};
+          const patch={drinkId:fields.drinkId, session:fields.session, time:fields.time, by:fields.by, build:fields.build}; // 상태·번호는 건드리지 않음
+          await setDoc(ref,{orders:{[eid]:patch}},{merge:true});
+          fields.id=eid;
+          state.orders={...state.orders,[eid]:{...cur, ...patch}};
+          if(!(Number(cur.no)>0)) ensureMyNumber(eid);
+          return {id:eid, no:cur.no||null, prev:cur.drinkId};
+        }
+        if(_srvOrders && _srvOrders[fields.id] && !sameOwner(_srvOrders[fields.id],fields)) fields.id=newOrderId(); // (안전망) 해시가 다른 사람과 같으면 무작위 id
         await setDoc(ref,{orders:{[fields.id]:fields}},{merge:true}); // 충돌 없는 일반 쓰기 (merge라 혹시 저장된 번호가 있어도 안 지워짐)
         state.orders={...state.orders,[fields.id]:{...(state.orders[fields.id]||{}), ...fields}};
         ensureMyNumber(fields.id);
-        return null;
+        return {id:fields.id, no:null};
       }
     }
     // 번호 없이 저장된 내 주문에 번호 붙이기 (몰림이 풀릴 때까지 간격을 두고 재시도, 담당자 기기가 먼저 붙이면 종료)
@@ -1171,11 +1211,14 @@
       return sameName(o.by,state.user.name) || (sameName(o.name,state.user.name) && (!o.by));
     }
     const _notified=new Set();
+    // 완료 알림 "확인" 기록: id + 완료 시각 (주문 칸 고정으로 같은 날 삭제→재주문 시 id가 같아도 새 완료는 다시 알림)
+    const seenKey = (id,o) => id+"@"+((o&&o.readyAt)||"");
+    const isSeen = (id,o) => state.seenReady.includes(seenKey(id,o)) || (!String(id).startsWith("o-s") && state.seenReady.includes(id)); // 예전 기록(id만)도 인정
     function checkNotif(){
       if(!state.user||state.user.team==="barista")return;
       Object.entries(state.orders).forEach(([id,o])=>{
-        if(isMyOrder(o) && o.status==="ready" && !state.seenReady.includes(id) && !_notified.has(id)){
-          _notified.add(id); // 같은 완료 알림은 한 번만 (예전엔 다른 사람 주문이 바뀔 때마다 다시 떴음)
+        if(isMyOrder(o) && o.status==="ready" && !isSeen(id,o) && !_notified.has(seenKey(id,o))){
+          _notified.add(seenKey(id,o)); // 같은 완료 알림은 한 번만 (예전엔 다른 사람 주문이 바뀔 때마다 다시 떴음)
           if("Notification" in window && Notification.permission==="granted"){
             try{
               const who = !sameName(o.name,state.user.name) ? `${o.name}님 ` : "";
@@ -1187,7 +1230,7 @@
     }
     function myNotifs(){
       if(!state.user||state.user.team==="barista")return [];
-      return Object.entries(state.orders).filter(([id,o])=>isMyOrder(o)&&o.status==="ready"&&!state.seenReady.includes(id)).map(([id,o])=>({id,...o}));
+      return Object.entries(state.orders).filter(([id,o])=>isMyOrder(o)&&o.status==="ready"&&!isSeen(id,o)).map(([id,o])=>({id,...o}));
     }
 
     // ---------- helpers ----------
@@ -1864,6 +1907,8 @@
         <div class="bgrid">
         <div class="bcol-main">
           <div class="sechead"><h2 class="sec serif" style="margin:0">지금 만들 차례</h2><button class="refreshbtn" data-act="refresh">🔄 새로고침</button></div>
+          ${(()=>{ const d=dupOrderIds(state.orders); if(!d.size) return ""; const ppl=new Set([...d].map(id=>{const o=state.orders[id]; return o.team+"|"+nm(o.name);})).size;
+            return `<div class="dupbar">⚠️ 같은 사람 주문이 2건 이상인 경우가 <b>${ppl}명</b> 있어요 · 빨간 <span class="dupwarn">중복</span> 표시를 확인하고 하나는 '주문 목록'에서 ✕로 지워 주세요</div>`; })()}
           ${sumHTML}
           ${batchHTML}
           ${queue.length===0?`<div class="empty">지금 만들 주문이 없어요</div>`:queue.map(qrowHTML).join("")}
@@ -1907,13 +1952,20 @@
       const {temp,rest}=splitTemp(name);
       return `${esc(rest)}${temp?` <span class="temptag ${temp==='ICE'?'ice':'hot'}">${temp}</span>`:``}`;
     }
+    // 같은 사람(팀+이름) 주문이 2건 이상인 주문 id — 담당자 화면에 "중복" 표시 (옛 버전 앱 등으로 혹시 생겨도 바로 보이게)
+    function dupOrderIds(orders){
+      const by={}, out=new Set();
+      Object.entries(orders||{}).forEach(([id,o])=>{ const k=(o&&o.team)+"|"+nm(o&&o.name); (by[k]=by[k]||[]).push(id); });
+      Object.values(by).forEach(ids=>{ if(ids.length>1) ids.forEach(id=>out.add(id)); });
+      return out;
+    }
     function orderCardHTML(o, rowClass, badgeClass, actionHTML){
-      const t=teamById(o.team), m=menuById(o.drinkId);
+      const t=teamById(o.team), m=menuById(o.drinkId), dup=dupOrderIds(state.orders).has(o.id);
       const {temp,rest}=splitTemp(m?m.name:GONE_MENU);
       return `<div class="qrow${rowClass?` ${rowClass}`:""}">
         <div class="qno ${badgeClass}">${pickNo(o)}</div>
         <div class="qmain">
-          <div class="qwho"><span class="qteam">${esc(t.name)}</span><span class="qsep">·</span><span class="qpname">${esc(o.name)}</span>${byOther(o)?` <span class="bytag">대행:${esc(o.by)}</span>`:""}</div>
+          <div class="qwho">${dup?`<span class="dupwarn">중복</span>`:""}<span class="qteam">${esc(t.name)}</span><span class="qsep">·</span><span class="qpname">${esc(o.name)}</span>${byOther(o)?` <span class="bytag">대행:${esc(o.by)}</span>`:""}</div>
           <div class="qdrink"><span class="csq sm" style="background:${mColor(m)}"></span><span class="qdname">${esc(rest)}</span>${temp?`<span class="temptag ${temp==='ICE'?'ice':'hot'}">${temp}</span>`:``}</div>
         </div>
         ${actionHTML}
@@ -2239,19 +2291,20 @@
           team:state.user.team, name:state.user.name, drinkId,
           session:ss.session, status:"pending", time:new Date().toISOString(), by:state.user.name
         };
-        let id;
+        let id, prev=null;
         if(mine){
           if(mine.drinkId===drinkId && mine.status==="pending"){ goHome(); toast("이미 이 음료로 주문돼 있어요"); return; }
-          const res=await updateOrder(mine.id, cur=> cur.status!=="pending" ? "started" : {...cur, ...fields, no:cur.no});
+          const res=await updateOrder(mine.id, cur=> cur.status!=="pending" ? "started" : {...cur, ...fields}); // fields엔 번호가 없어서 번호 유지
           if(res.err){ goHome(); orderFailToast(res); return; }
-          id=mine.id;
+          id=mine.id; prev=mine.drinkId;
         } else {
-          const f={...fields, id:newOrderId()};
-          await commitNewOrder(f); id=f.id; // commitNewOrder가 id를 바꿀 수 있어서 f.id를 씀
+          const r=await commitNewOrder({...fields, id:slotId(fields.team, fields.name)});
+          if(r.err){ goHome(); toast("오늘 이미 주문한 음료가 있어요 (제조가 시작돼서 바꿀 수 없어요)"); return; }
+          id=r.id; prev=r.prev||null; // prev: 화면엔 안 보였지만 서버에 이미 내 주문이 있어서 그 주문의 음료를 바꾼 경우
         }
         try{ localStorage.setItem("ian_last", drinkId); }catch(e){}
         goHome();
-        showUndo(mine?"음료를 변경했어요 ☕":"주문했어요 ☕", undoForOrder(id, mine?mine.drinkId:null, ""));
+        showUndo(prev?"이미 있던 내 주문의 음료를 바꿨어요 ☕":"주문했어요 ☕", undoForOrder(id, prev, ""));
       } catch(e){ console.error(e); toast("저장하지 못했어요. 인터넷 연결을 확인하고 다시 눌러 주세요"); }
       finally { _orderInFlight=false; }
     }
@@ -2316,20 +2369,26 @@
         const fields={team, name, drinkId, session:ss.session, status:"pending", time:new Date().toISOString(), by:state.user.name};
         if(dup){
           // 이미 제조 중이거나 완료된 주문은 바꾸지 않음 (하루 1잔 — 완료된 음료를 새 주문으로 덮어쓰는 것 방지)
-          const res=await updateOrder(dup[0], cur=> cur.status!=="pending" ? "started" : {...cur, ...fields, no:cur.no});
+          const res=await updateOrder(dup[0], cur=> cur.status!=="pending" ? "started" : {...cur, ...fields});
           if(res.err){ state.addName=""; goHome(); orderFailToast(res); return; }
         }
-        let id = dup ? dup[0] : newOrderId();
-        if(!dup){ const f={...fields, id}; await commitNewOrder(f); id=f.id; }
+        let id = dup ? dup[0] : null, prev = dup ? dup[1].drinkId : null;
+        if(!dup){
+          // 서버에서 같은 사람 주문을 다시 확인 (본인이나 다른 동료가 방금 넣었을 수 있음)
+          const r=await commitNewOrder({...fields, id:slotId(fields.team, fields.name)});
+          if(r.err){ state.addName=""; goHome(); toast(`${name}님은 오늘 이미 주문이 있어요 (제조가 시작돼서 바꿀 수 없어요)`); return; }
+          id=r.id; prev=r.prev||null;
+        }
         state.addName=""; goHome();
-        showUndo(`${name}님 주문을 ${dup?"변경":"추가"}했어요`, undoForOrder(id, dup?dup[1].drinkId:null, `${name}님 `));
+        showUndo(`${name}님 주문을 ${prev?(dup?"변경":"이미 있던 주문으로 변경"):"추가"}했어요`, undoForOrder(id, prev, `${name}님 `));
       } catch(e){ console.error(e); toast("저장하지 못했어요. 인터넷 연결을 확인하고 다시 눌러 주세요"); }
       finally { _orderInFlight=false; }
     }
 
     // 🔔 알림 "확인" → 이 기기에서만 알림을 지움 (서버에는 아무것도 안 씀)
     function ackNotif(id){
-      if(!state.seenReady.includes(id)){ state.seenReady.push(id); localStorage.setItem("ian_seen",JSON.stringify(state.seenReady)); }
+      const k=seenKey(id,state.orders[id]);
+      if(!state.seenReady.includes(k)){ state.seenReady.push(k); state.seenReady=state.seenReady.slice(-200); localStorage.setItem("ian_seen",JSON.stringify(state.seenReady)); } // 오래된 기록은 정리 (최근 200개만)
       goHome(); toast("맛있게 드세요 ☕");
     }
 
