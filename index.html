@@ -447,6 +447,25 @@
       body.wide .qrow{padding:9px 12px;margin-bottom:6px}
       body.wide .qrow.waitpick .qdrink{font-size:15px}
     }
+    /* 관리 메뉴 A안: 매일 쓰는 것 / 가끔 바꾸는 설정 (10-20) */
+    .mg-h{font-size:12.5px;font-weight:800;color:var(--sub);margin:14px 4px 8px}
+    .sec+.mg-h{margin-top:4px}
+    .navset{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+    .navset button{background:var(--tile);border-radius:14px;padding:13px 4px;font-weight:700;font-size:14px;color:#192d45;white-space:nowrap;box-shadow:0 2px 8px rgba(70,55,25,.05)}
+    .navset button:active{background:#e8dec3}
+    .navset button.locked{color:#9aa3ae;background:#efe9da}
+    .holimp{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;background:#fff;border:2px dashed #d6caa8;border-radius:14px;padding:12px 14px;font-size:14px;font-weight:800;color:#192d45;margin-bottom:14px;text-align:left}
+    .holimp span{font-size:12px;font-weight:600;color:var(--sub)}
+    .holimp.off{border-style:solid;border-color:#ebe3cd;color:var(--sub);font-size:13px;font-weight:600;justify-content:flex-start}
+    .oldbar{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:14px;padding:10px 13px;font-size:13px;font-weight:600;line-height:1.5;margin:-6px 0 12px}
+    .oldchip{flex:0 0 auto;background:#ffedd5;color:#9a3412;font-size:12px;font-weight:800;padding:5px 10px;border-radius:99px;white-space:nowrap}
+    .oldchip.on{background:#fff;color:#9a3412}
+    .oldbar span{font-size:12px;font-weight:600;color:#b45309}
+    .soldtag{flex:0 0 auto;font-size:11px;font-weight:800;color:#fff;background:#dc2626;border-radius:6px;padding:2px 6px}
+    .hsold{margin-top:10px;background:#fff;color:#b91c1c;border-radius:12px;padding:9px 12px;font-size:13px;font-weight:800;line-height:1.45}
+    .hsold small{font-size:11.5px;font-weight:600;color:#7c8794}
+    .hsold{word-break:keep-all}
+    .hchg.must{background:#fff;color:#b91c1c;font-size:14px;padding:9px 14px}
     .dupwarn{display:inline-block;font-size:10.5px;font-weight:800;color:#fff;background:#dc2626;border-radius:6px;padding:1px 6px;margin-right:5px;vertical-align:1px}
     .dupbar{background:#fef2f2;border:1px solid #fecaca;color:#991b1b;border-radius:14px;padding:10px 13px;font-size:13px;font-weight:600;line-height:1.5;margin-bottom:10px}
     .qdonelbl{flex:0 0 auto;font-size:12px;font-weight:700;color:#15803d;background:#eaf6ec;padding:8px 12px;border-radius:99px;white-space:nowrap}
@@ -729,7 +748,7 @@
     // 배포할 때마다 이 값을 바꿔주세요 — 값이 바뀌면 모든 기기가 자동으로 최신 버전을 받아옵니다
     // 버전 규칙: "수정한 날짜-그날의 순번" (예: 2026-09-18-01 → 같은 날 또 수정하면 -02)
     // 날짜가 바뀌면 순번은 01부터 다시 시작. 코드 수정 시 반드시 이 값을 바꿔야 자동 업데이트가 동작함.
-    const APP_BUILD = "2026-10-20-02";
+    const APP_BUILD = "2026-10-20-04";
     // 이름은 띄어쓰기 없이 사용 ("김철수"와 "김 철수"가 다른 사람이 되는 문제 방지)
     const nm = s => String(s||"").replace(/\s+/g,"");
     const sameName = (a,b) => nm(a)===nm(b);
@@ -887,6 +906,19 @@
       const h=state.holidays||{};
       return !!(h.days && Object.prototype.hasOwnProperty.call(h.days,k));
     }
+    // 대한민국 공휴일 (평일만 — 토·일은 원래 휴무). 출처: 행정안전부 발표를 정리한 달력(kholidayz, shiftee) 2026-10 확인.
+    // 해마다 다음 해 목록을 추가해야 함 (선거일·임시공휴일은 발표되면 추가). 근로자의 날(노동절)도 포함 — 회사가 쉬지 않으면 목록에서 ✕
+    const KR_HOLIDAYS = {
+      "2026-01-01":"신정","2026-02-16":"설날 연휴","2026-02-17":"설날","2026-02-18":"설날 연휴","2026-03-02":"대체공휴일(삼일절)",
+      "2026-05-01":"노동절","2026-05-05":"어린이날","2026-05-25":"대체공휴일(부처님오신날)","2026-06-03":"지방선거",
+      "2026-07-17":"제헌절","2026-08-17":"대체공휴일(광복절)","2026-09-24":"추석 연휴","2026-09-25":"추석",
+      "2026-10-05":"대체공휴일(개천절)","2026-10-09":"한글날","2026-12-25":"성탄절",
+      "2027-01-01":"신정","2027-02-08":"설날 연휴","2027-02-09":"대체공휴일(설날)","2027-03-01":"삼일절",
+      "2027-05-03":"대체공휴일(노동절)","2027-05-05":"어린이날","2027-05-13":"부처님오신날","2027-07-19":"대체공휴일(제헌절)",
+      "2027-08-16":"대체공휴일(광복절)","2027-09-14":"추석 연휴","2027-09-15":"추석","2027-09-16":"추석 연휴",
+      "2027-10-04":"대체공휴일(개천절)","2027-10-11":"대체공휴일(한글날)","2027-12-27":"대체공휴일(성탄절)",
+    };
+    const KR_HOL_LAST = Object.keys(KR_HOLIDAYS).sort().pop().slice(0,4); // 목록이 들어 있는 마지막 해
     const holidayReason = k => ((state.holidays||{}).days||{})[k] || (isWeekend(k) ? "주말" : "");
 
     // ---------- which session is open now ----------
@@ -943,6 +975,13 @@
     //   해시가 우연히 다른 사람과 같으면(사실상 없음) commitNewOrder가 예전처럼 무작위 id로 바꿈.
     function fnv(str, seed){ let h=seed>>>0; for(let i=0;i<str.length;i++){ h^=str.charCodeAt(i); h=Math.imul(h,16777619)>>>0; } return h.toString(16).padStart(8,"0"); }
     const slotId = (team, name) => { const k=String(team)+"|"+nm(name); return "o-s"+todayKey().replace(/-/g,"")+"-"+fnv(k,2166136261)+fnv(k,0x9747b28c); };
+    // (10-20) 이 버전부터 주문 중복 방지가 완전해짐 → 이보다 오래된 앱으로 들어온 주문은 담당자 화면에 알려서 업데이트를 부탁할 수 있게
+    const MIN_SAFE_BUILD = "2026-10-20-02";
+    const isOldBuild = o => !!o && (!o.build || String(o.build) < MIN_SAFE_BUILD);
+    // 대기 주문의 음료가 품절됐는지 (메뉴에서 판매 끔). 메뉴에서 삭제된 음료는 품절로 보지 않음(이름이 '삭제된 메뉴'로 따로 보임)
+    const soldOutOrder = o => !!o && o.status==="pending" && (state.menu.find(m=>m.id===o.drinkId)||{}).active===false;
+    // 품절 때문에 음료를 바꾸면 줄 순서는 그대로 (스스로 바꾼 게 아니라서 맨 뒤로 보내지 않음). 그 외 변경은 예전처럼 지금 시각 → 맨 뒤
+    const changedTime = (cur, t) => soldOutOrder(cur) ? cur.time : t;
     const sameOwner = (a,b) => !!(a && b && a.team===b.team && sameName(a.name,b.name));
     // 서버 주문 목록에서 같은 사람(팀+이름)의 오늘 주문 찾기 → [id, 주문] | null
     const findOwnerOrder = (orders, f) => Object.entries(orders||{}).find(([id,o])=>sameOwner(o,f)) || null;
@@ -964,7 +1003,7 @@
             const [eid,cur]=own;
             if(eid===fields.id && cur.no) return {id:eid, no:cur.no}; // 앞선 시도가 이미 저장됐으면 그대로
             if(cur.status!=="pending") return {err:"started", cur};
-            const next={...cur, ...fields, id:eid}; // fields엔 번호가 없어서 cur.no 그대로 // 기존 주문의 음료만 바꿈 (번호 유지, 시간은 지금 → 큐 맨 뒤, 기존 변경 규칙과 같음)
+            const next={...cur, ...fields, id:eid, time:changedTime(cur, fields.time)}; // fields엔 번호가 없어서 cur.no 그대로 // 기존 주문의 음료만 바꿈 (번호 유지, 시간은 지금 → 큐 맨 뒤, 기존 변경 규칙과 같음)
             tx.update(ref, new FieldPath("orders", eid), next);
             return {id:eid, no:cur.no, prev:cur.drinkId, next};
           }
@@ -987,7 +1026,7 @@
         if(own){
           const [eid,cur]=own;
           if(cur.status!=="pending") return {err:"started", cur};
-          const patch={drinkId:fields.drinkId, session:fields.session, time:fields.time, by:fields.by, build:fields.build}; // 상태·번호는 건드리지 않음
+          const patch={drinkId:fields.drinkId, session:fields.session, time:changedTime(cur, fields.time), by:fields.by, build:fields.build}; // 상태·번호는 건드리지 않음
           await setDoc(ref,{orders:{[eid]:patch}},{merge:true});
           fields.id=eid;
           state.orders={...state.orders,[eid]:{...cur, ...patch}};
@@ -1112,7 +1151,7 @@
           if(_myReadyIds!==null && myReady.some(id=>!_myReadyIds.has(id))) playDing();
           _myReadyIds=new Set(myReady);
         }
-        state.orders=orders; checkNotif(); if(state.user) safeRender(); // 로그인 화면은 주문과 무관 → 다시 그리지 않음
+        state.orders=orders; checkNotif(); checkMySoldOut(); if(state.user) safeRender(); // 로그인 화면은 주문과 무관 → 다시 그리지 않음
         if(isBarista && pickupNoProblems(orders).length) repairPickupNos();
       },e=>console.error(e));
     }
@@ -1135,7 +1174,7 @@
         const v=(s.exists()&&Array.isArray(s.data().items)&&s.data().items.length) ? dedupeMenuColors(s.data().items) : DEFAULT_MENU;
         _srvMenu=v;
         if(state.view==="menu-edit"){ if(_menuBase!==null && JSON.stringify(v)!==_menuBase) _menuRemote=true; return; }
-        state.menu=clone(v); safeRender(); },e=>console.error(e));
+        state.menu=clone(v); checkMySoldOut(); safeRender(); },e=>console.error(e));
       onSnapshot(doc(db,"config","teams"),s=>{
         const v=(s.exists()&&Array.isArray(s.data().items)&&s.data().items.length) ? s.data().items.map((t,i)=>({...t, color:colorFor(i)})) : DEFAULT_TEAMS;
         _srvTeams=v;
@@ -1209,6 +1248,17 @@
     function isMyOrder(o){
       // an order "belongs" to this user if they placed it (their own, or one they ordered on behalf of someone)
       return sameName(o.by,state.user.name) || (sameName(o.name,state.user.name) && (!o.by));
+    }
+    // 내 대기 주문의 음료가 품절되면 한 번 딩동 + 안내 (화면 카드에도 빨간 안내가 계속 보임)
+    const _soldWarned=new Set();
+    function checkMySoldOut(){
+      if(!state.user || state.user.team==="barista") return;
+      Object.entries(state.orders).forEach(([id,o])=>{
+        if(!isMyOrder(o) || !soldOutOrder(o)) return;
+        const k=id+"|"+o.drinkId; if(_soldWarned.has(k)) return; _soldWarned.add(k);
+        const who=!sameName(o.name,state.user.name)?`${o.name}님 `:"";
+        playDing(); setTimeout(()=>toast(`⚠️ ${who}주문한 음료가 품절됐어요. 다른 음료로 바꿔 주세요`),50);
+      });
     }
     const _notified=new Set();
     // 완료 알림 "확인" 기록: id + 완료 시각 (주문 칸 고정으로 같은 날 삭제→재주문 시 id가 같아도 새 완료는 다시 알림)
@@ -1505,7 +1555,8 @@
           <div class="hrow"><div class="hmain">
             <div class="sub">${sessName(mine.session)} 주문 · ${stat}${by}</div>
             <h1 class="mstat hdrink">${dn}</h1>
-            ${ss.open&&mine.status==="pending" ? `<button class="hchg" data-act="goOrder">음료 변경하기 ›</button>` : mine.status==="confirmed" ? `<div class="hnote">담당자가 만들고 있어요</div>` : ``}
+            ${soldOutOrder(mine) ? `<div class="hsold">⚠️ 주문한 음료가 품절됐어요<br/>${ss.open?"다른 음료로 바꿔 주세요<br/><small>바꿔도 순서는 그대로예요</small>":"담당자에게 문의해 주세요"}</div>` : ``}
+            ${ss.open&&mine.status==="pending" ? `<button class="hchg${soldOutOrder(mine)?' must':''}" data-act="goOrder">${soldOutOrder(mine)?"다른 음료로 바꾸기 ›":"음료 변경하기 ›"}</button>` : mine.status==="confirmed" ? `<div class="hnote">담당자가 만들고 있어요</div>` : ``}
           </div>
           <div class="pickno ${mine.status==="confirmed"?"green":"orange"}"><span class="pickno-lbl">수령 번호</span><span class="pickno-n">${pickNo(mine)}</span></div></div>
           ${steps}
@@ -1820,6 +1871,10 @@
             ${cells}
           </div>
         </div></div><div class="hg-r">
+        ${(()=>{ const add=Object.keys(KR_HOLIDAYS).filter(k=>k>=today && !isWeekend(k) && !(k in dr.days)).length;
+          return todayKey().slice(0,4)>KR_HOL_LAST ? `<div class="holimp off">공휴일 목록이 ${KR_HOL_LAST}년까지만 있어요 · 앱 업데이트가 필요해요</div>`
+            : add ? `<button class="holimp" data-act="importHol">🇰🇷 공휴일 한 번에 넣기 <span>${KR_HOL_LAST}년까지 · 새로 ${add}일</span></button>`
+            : `<div class="holimp off">✓ ${KR_HOL_LAST}년까지 공휴일이 모두 들어가 있어요</div>`; })()}
         <div class="sectlbl" style="margin-top:0">예정된 휴무일 ${list.length}일</div>
         ${list.length===0?`<div class="empty small">지정된 휴무일이 없어요</div>`:list.map(k=>`<div class="holrow">
           <span class="hr-d">${dayLabel(k)}${k===today?" · 오늘":""}</span>
@@ -1900,9 +1955,11 @@
           </div>
           <div class="dashfoot">
             <span class="dfstatus">${ss.open?`<span style="color:${ss.soon?'#fde68a':'#bbf7d0'}">● ${sessName(ss.session)} 주문 접수 중 (~${ss.endsAt})${ss.soon?` · 마감 ${ss.left}분 전`:""}</span>`:ss.holiday?`📅 오늘 휴무${ss.reason?` (${esc(ss.reason)})`:""} · 다음: ${ss.next} ${ss.at}`:`○ 주문 시간 외 · 다음: ${ss.next} ${ss.at}`}</span>
+            ${oldBuildChipHTML()}
             <button class="swt ${state.soundOn?'on':''}" data-act="toggleSound" aria-label="새 주문 알림 소리"><span class="swt-l">알림</span><span class="swt-t"></span></button>
           </div>
         </div></div>
+        ${oldBuildPopHTML()}
 
         <div class="bgrid">
         <div class="bcol-main">
@@ -1922,16 +1979,20 @@
             `<div class="dshint" style="margin-top:4px">완료를 잘못 눌렀으면 '되돌리기' · ${RECENT_MIN}분이 지나면 목록에서 자동으로 사라져요</div>`}
 
           <h2 class="sec serif" style="margin-top:24px">관리 메뉴</h2>
+          <div class="mg-h">☀️ 매일 쓰는 것</div>
           <div class="navtext">
-            <button data-act="disp">주문 목록</button>
-            <button data-act="editMenu"${isTestMode()?' class="locked"':''}>${isTestMode()?"🔒 ":""}메뉴 관리</button>
-            <button data-act="editTeams"${isTestMode()?' class="locked"':''}>${isTestMode()?"🔒 ":""}팀 관리</button>
-            <button data-act="editTime"${isTestMode()?' class="locked"':''}>${isTestMode()?"🔒 ":""}주문 시간 설정</button>
-            <button data-act="editHol"${isTestMode()?' class="locked"':''}>${isTestMode()?"🔒":"📅"} 휴무일 설정</button>
-            <button data-act="stats">📊 집계</button>
+            <button data-act="disp">📋 주문 목록</button>
+            <button data-act="editMenu"${isTestMode()?' class="locked"':''}>${isTestMode()?"🔒":"🧊"} 메뉴·품절</button>
             <button data-act="editNotice"${isTestMode()?' class="locked"':''}>${isTestMode()?"🔒":"📢"} 공지사항</button>
-            ${isTestMode()?`<button data-act="clearTest" class="cleartest">🧹 테스트 주문 모두 지우기</button>`:""}
+            <button data-act="stats">📊 집계</button>
           </div>
+          <div class="mg-h">⚙️ 가끔 바꾸는 설정</div>
+          <div class="navset">
+            <button data-act="editTeams"${isTestMode()?' class="locked"':''}>${isTestMode()?"🔒":"👥"} 팀 관리</button>
+            <button data-act="editTime"${isTestMode()?' class="locked"':''}>${isTestMode()?"🔒":"⏰"} 주문 시간</button>
+            <button data-act="editHol"${isTestMode()?' class="locked"':''}>${isTestMode()?"🔒":"📅"} 휴무일</button>
+          </div>
+          ${isTestMode()?`<div class="navtext" style="margin-top:8px"><button data-act="clearTest" class="cleartest" style="flex-basis:100%">🧹 테스트 주문 모두 지우기</button></div>`:""}
           <div style="text-align:center;color:#c4cede;font-size:11px;margin-top:16px">버전 ${APP_BUILD}</div>
         </div>
         </div>
@@ -1959,6 +2020,18 @@
       Object.values(by).forEach(ids=>{ if(ids.length>1) ids.forEach(id=>out.add(id)); });
       return out;
     }
+    // 업데이트 안 된 앱으로 들어온 오늘 주문 → 그 앱을 쓴 사람(대행이면 대행자) 이름을 보여줌
+    // 대시보드 아래 줄에 작은 칩 "❗ 구버전 앱 N명 ›" → 누르면 대시보드 바로 아래에 이름 펼침 (주문 목록 자리를 차지하지 않게, 10-20 사용자 선택)
+    function oldBuildUsers(){
+      const who=new Map();
+      Object.values(state.orders).filter(isOldBuild).forEach(o=>{ const n=nm(o.by||o.name), k=o.team+"|"+n; if(!who.has(k)) who.set(k, `${esc(n)}(${esc(teamById(o.team).name)})`); });
+      return [...who.values()];
+    }
+    function oldBuildChipHTML(){ const n=oldBuildUsers().length; return n ? `<button class="oldchip${state.oldOpen?' on':''}" data-act="oldToggle">❗ 구버전 앱 ${n}명 ${state.oldOpen?'▴':'›'}</button>` : ""; }
+    function oldBuildPopHTML(){
+      const list=oldBuildUsers(); if(!list.length || !state.oldOpen) return "";
+      return `<div class="oldbar">❗ <b>구버전 앱</b>으로 주문한 분: ${list.join(", ")}<br/><span>앱을 완전히 껐다 켜 달라고 알려 주세요 (중복 주문 방지)</span></div>`;
+    }
     function orderCardHTML(o, rowClass, badgeClass, actionHTML){
       const t=teamById(o.team), m=menuById(o.drinkId), dup=dupOrderIds(state.orders).has(o.id);
       const {temp,rest}=splitTemp(m?m.name:GONE_MENU);
@@ -1966,7 +2039,7 @@
         <div class="qno ${badgeClass}">${pickNo(o)}</div>
         <div class="qmain">
           <div class="qwho">${dup?`<span class="dupwarn">중복</span>`:""}<span class="qteam">${esc(t.name)}</span><span class="qsep">·</span><span class="qpname">${esc(o.name)}</span>${byOther(o)?` <span class="bytag">대행:${esc(o.by)}</span>`:""}</div>
-          <div class="qdrink"><span class="csq sm" style="background:${mColor(m)}"></span><span class="qdname">${esc(rest)}</span>${temp?`<span class="temptag ${temp==='ICE'?'ice':'hot'}">${temp}</span>`:``}</div>
+          <div class="qdrink"><span class="csq sm" style="background:${mColor(m)}"></span><span class="qdname">${esc(rest)}</span>${temp?`<span class="temptag ${temp==='ICE'?'ice':'hot'}">${temp}</span>`:``}${soldOutOrder(o)?`<span class="soldtag">품절</span>`:""}</div>
         </div>
         ${actionHTML}
       </div>`;
@@ -2230,6 +2303,11 @@
           toast(navigator.onLine===false ? "인터넷 연결이 끊겨 있어요. 연결을 확인해 주세요" : "최신 주문을 다시 불러왔어요"); break;
         case "editHol": state.holDraft={days:{...((state.holidays||{}).days||{})}}; state.holMonth=null; state.view="hol-edit"; render(); break;
         case "saveHol": doSaveHol(); break;
+        case "importHol": { // 앞으로의 평일 공휴일을 편집 중인 목록에 추가 (이미 있는 날은 사유 그대로). 저장해야 반영
+          readHolInputs(); const today=todayKey(); let n=0;
+          Object.entries(KR_HOLIDAYS).forEach(([k,r])=>{ if(k>=today && !isWeekend(k) && !(k in state.holDraft.days)){ state.holDraft.days[k]=r; n++; } });
+          render(); toast(n?`공휴일 ${n}일을 넣었어요 · 아래 '저장하기'를 눌러야 반영돼요`:"새로 넣을 공휴일이 없어요"); break; }
+        case "oldToggle": state.oldOpen=!state.oldOpen; render(); break;
         case "chipsToggle": state.chipsOpen=!state.chipsOpen; render(); break;
         case "clearQFilter": state.qFilter=null; render(); break;
         case "csv": downloadMonthCSV(); break;
@@ -2294,7 +2372,7 @@
         let id, prev=null;
         if(mine){
           if(mine.drinkId===drinkId && mine.status==="pending"){ goHome(); toast("이미 이 음료로 주문돼 있어요"); return; }
-          const res=await updateOrder(mine.id, cur=> cur.status!=="pending" ? "started" : {...cur, ...fields}); // fields엔 번호가 없어서 번호 유지
+          const res=await updateOrder(mine.id, cur=> cur.status!=="pending" ? "started" : {...cur, ...fields, build:APP_BUILD, time:changedTime(cur, fields.time)}); // fields엔 번호가 없어서 번호 유지
           if(res.err){ goHome(); orderFailToast(res); return; }
           id=mine.id; prev=mine.drinkId;
         } else {
@@ -2369,7 +2447,7 @@
         const fields={team, name, drinkId, session:ss.session, status:"pending", time:new Date().toISOString(), by:state.user.name};
         if(dup){
           // 이미 제조 중이거나 완료된 주문은 바꾸지 않음 (하루 1잔 — 완료된 음료를 새 주문으로 덮어쓰는 것 방지)
-          const res=await updateOrder(dup[0], cur=> cur.status!=="pending" ? "started" : {...cur, ...fields});
+          const res=await updateOrder(dup[0], cur=> cur.status!=="pending" ? "started" : {...cur, ...fields, build:APP_BUILD, time:changedTime(cur, fields.time)});
           if(res.err){ state.addName=""; goHome(); orderFailToast(res); return; }
         }
         let id = dup ? dup[0] : null, prev = dup ? dup[1].drinkId : null;
